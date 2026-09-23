@@ -682,6 +682,7 @@
     var slot=document.getElementById("rv-live-slot"), rvs=document.getElementById("reviews");
     if(lw && slot && rvs && lw.querySelector("*") && !editing){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); }
     try{ bind(); applyEditing(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); }
+    try{ updateNavActive(); }catch(e){}
   }
   function waLink(v){
     var n=String(v||"").split(/[\/,]/)[0].replace(/\D/g,""); if(!n) return "";
@@ -804,7 +805,7 @@
     });
     var mb=document.getElementById("menubtn");
     if(mb) mb.onclick=function(){ document.getElementById("navlinks").classList.toggle("open"); };
-    Array.prototype.forEach.call(document.querySelectorAll("#navlinks a"),function(a){ a.onclick=function(){ document.getElementById("navlinks").classList.remove("open"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("#navlinks a"),function(a){ a.onclick=function(){ document.getElementById("navlinks").classList.remove("open"); setTimeout(updateNavActive,400); }; });
 
     // image uploads
     Array.prototype.forEach.call(document.querySelectorAll(".imgedit"),function(lab){
@@ -1319,6 +1320,20 @@
     var a = (e.target && e.target.closest) ? e.target.closest("a") : null;
     if(a && !a.hasAttribute("data-nav") && !(a.closest && a.closest("#navlinks"))){ e.preventDefault(); }
   }, true);
+  function updateNavActive(){
+    var links=document.querySelectorAll("#navlinks a"); if(!links.length) return;
+    var cur;
+    if(view==="tours") cur="#/tours"; else if(view==="activities") cur="#/activities";
+    else {
+      var map=[["top","#top"],["services","#services"],["about","#services"],["tours","#/tours"],["activities","#/activities"],["rental","#rental"],["gallery","#rental"],["reviews","#reviews"],["contact","#contact"]];
+      cur="#top";
+      map.forEach(function(m){ var el=document.getElementById(m[0]); if(el&&el.getBoundingClientRect().top<=150) cur=m[1]; });
+      if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4) cur="#contact";
+    }
+    Array.prototype.forEach.call(links,function(a){ a.classList.toggle("on",a.getAttribute("href")===cur); });
+  }
+  var navTick=false;
+  window.addEventListener("scroll",function(){ if(navTick) return; navTick=true; requestAnimationFrame(function(){ navTick=false; updateNavActive(); }); },{passive:true});
   window.addEventListener("hashchange",function(){
     var nv=getView(), h=location.hash||"";
     if(nv!==view){ if(editing){ try{ syncEdits(); }catch(e){} } view=nv; render(); }

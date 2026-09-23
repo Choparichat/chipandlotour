@@ -708,7 +708,8 @@
     var sl=(data.social||[]).filter(function(x){ return x&&x.url; });
     if(!sl.length&&!editing) return "";
     var h='<div class="'+cls+'">';
-    sl.forEach(function(x){ h+='<a class="soc" target="_blank" rel="noopener" href="'+esc(x.url)+'">'+socialIcon(x.url)+'<span>'+esc(x.name||"Facebook")+'</span></a>'; });
+    var all=data.social||[];
+    sl.forEach(function(x){ var k=all.indexOf(x), editable=editing&&cls==="soc-row"; h+='<a class="soc" target="_blank" rel="noopener" href="'+esc(x.url)+'">'+socialIcon(x.url)+'<span'+(editable?ed("social."+k+".name"):'')+'>'+esc(x.name||"Facebook")+'</span></a>'; });
     if(editing) h+='<button class="btn btn-ghost btn-sm" type="button" data-socedit>'+(lang==="th"?"แก้ลิงก์โซเชียล & วิดีโอ":"Edit social links & videos")+'</button>';
     return h+'</div>';
   }
@@ -981,7 +982,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
       var val=el.textContent.replace(/ /g," ").trim();
-      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||/^bikes\.\d+\.name$/.test(path)||path==="contact.line_link"||/^reviews\./.test(path)||/\.price$/.test(path)){
+      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||/^social\.\d+\.name$/.test(path)||/^bikes\.\d+\.name$/.test(path)||path==="contact.line_link"||/^reviews\./.test(path)||/\.price$/.test(path)){
         setPlain(path,val);
       } else {
         setText(path,val);

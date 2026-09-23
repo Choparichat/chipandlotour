@@ -986,7 +986,7 @@
   }
   function mapEmbedSrc(v){
     v=String(v||"").trim(); if(!v) return "";
-    var m=v.match(/src\s*=\s*["']([^"']+)["']/i); var u=(m?m[1]:v).replace(/&amp;/g,"&").trim();
+    var m=v.match(/src\s*=\s*"([^"]+)"/i)||v.match(/src\s*=\s*'([^']+)'/i); var u=(m?m[1]:v).replace(/&amp;/g,"&").trim();
     return /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed\?/i.test(u)?u:"";
   }
   function openMapEmbedForm(){

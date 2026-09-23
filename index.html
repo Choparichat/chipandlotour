@@ -558,9 +558,9 @@
     H.push('<div class="contact-grid"><div class="clist">');
     H.push(crow(ICON.phone,(lang==="th"?"โทรศัพท์":"Phone"),'<a href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'"><span'+ed("contact.phone")+'>'+esc(c.phone)+'</span></a>'));
     H.push(crow(ICON.mail,"Email",'<a href="mailto:'+esc(c.email)+'"><span'+ed("contact.email")+'>'+esc(c.email)+'</span></a>'));
-    H.push(crow(ICON.chat,"LINE",'<span'+ed("contact.line")+'>'+esc(c.line)+'</span>',"line_qr"));
     H.push(crow(ICON.chat,"WhatsApp",'<span'+ed("contact.whatsapp")+'>'+esc(c.whatsapp)+'</span>',"whatsapp_qr"));
     H.push(crow(ICON.wechat,"WeChat",'<span'+ed("contact.wechat")+'>'+esc(c.wechat||"")+'</span>',"wechat_qr"));
+    H.push(crow(ICON.chat,"LINE",'<span'+ed("contact.line")+'>'+esc(c.line)+'</span>',"line_qr"));
     H.push(crow(ICON.clock,(lang==="th"?"เวลาทำการ":"Hours"),'<span'+ed("contact.hours")+'>'+esc(t(c,"hours"))+'</span>'));
     H.push(crow(ICON.pin,(lang==="th"?"ที่อยู่":"Address"),'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t(c,"addr"))+'"><span'+ed("contact.addr")+'>'+esc(t(c,"addr"))+'</span></a>'));
     H.push('</div>');

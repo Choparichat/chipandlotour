@@ -413,6 +413,8 @@
     .menu-toggle{display:grid;place-items:center}
     .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px;gap:6px}
   }
+  .bcard .meta{flex-wrap:wrap;row-gap:6px} .bcard .meta .dur,.bcard .meta .price{white-space:nowrap}
+  .tours-grid.bikes-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
   .rental-note{margin:22px 0 0;color:var(--muted);font-size:.95rem;text-align:center}
   .bcard .act{margin-top:4px} .bcard .act .btn{width:100%;justify-content:center}
   .tcard.dragging{opacity:.55;outline:2px dashed var(--primary);outline-offset:4px}
@@ -587,15 +589,18 @@
       H.push('<div class="sec-head"><div class="eyebrow"'+ed("rental.eyebrow")+'>'+esc(t(rt,"eyebrow"))+'</div>');
       H.push('<h2'+ed("rental.title")+'>'+esc(t(rt,"title"))+'</h2>');
       H.push('<p'+ed("rental.sub")+'>'+esc(t(rt,"sub"))+'</p></div>');
-      H.push('<div class="tours-grid">');
+      H.push('<div class="tours-grid bikes-grid">');
       d.bikes.forEach(function(bk,i){
         var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.name||"");
         var href=wab?wab+"?text="+encodeURIComponent(msg):"#contact";
         H.push('<article class="tcard bcard"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>');
-        H.push('<div class="media">'+media(bk)+imgOverlay("bikes."+i+".img")+'</div>');
+        var bph=(bk.photos||[]).filter(Boolean), bn=bph.length+(bk.img?1:0);
+        H.push('<div class="media" data-open="bikes:'+i+'">'+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
         H.push('<div class="body"><h3'+ed("bikes."+i+".name")+'>'+esc(bk.name||"")+'</h3>');
         H.push('<p class="desc"'+ed("bikes."+i+".desc")+'>'+esc(t(bk,"desc"))+'</p>');
-        H.push('<div class="meta"><span class="dur">'+ICON.bike+(lang==="th"?"ค่าเช่า":"Rental")+'</span><span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(lang==="th"?" / วัน":" / day")+'</span></div>');
+        if(editing){ var PH='<div class="iph">'; bph.forEach(function(src,k){ PH+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="bikes:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; }); H.push(PH+'<button class="iph-add" type="button" data-iphadd="bikes:'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div>'); }
+        H.push('<div class="meta"><span class="dur">'+ICON.bike+'<span'+ed("bikes."+i+".spec")+'>'+esc(t(bk,"spec")||(lang==="th"?"ค่าเช่า":"Rental"))+'</span></span>'
+          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(lang==="th"?" / วัน":" / day")+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
         H.push('<div class="act"><a class="btn btn-primary btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"จองรถคันนี้":"Book this bike")+'</a></div>');
         H.push('</div></article>');
       });
@@ -1446,6 +1451,9 @@
         sub_en:"Well-maintained scooters with helmets included — rent by the day, week or month.",sub_th:"รถสภาพดี พร้อมหมวกกันน็อก เช่าได้ทั้งรายวัน รายสัปดาห์ และรายเดือน",
         note_en:"Passport required · Helmets included · Ask us about weekly and monthly rates",note_th:"ใช้พาสปอร์ตหรือบัตรประชาชน · มีหมวกกันน็อกให้ · สอบถามราคารายสัปดาห์/รายเดือนได้"};
     }
+    var PLACEHOLDER_BIKES=["Honda Click 125i","Yamaha NMAX 155","Honda PCX 160"];
+    if(data.bikes&&data.bikes.length&&data.bikes.every(function(b){ return !b.img&&PLACEHOLDER_BIKES.indexOf(b.name)>=0; })) data.bikes=null;
+    if(!data.bikes){ data.bikes=[{"name": "Honda Wave 125i", "spec_en": "Semi-automatic · 125cc", "spec_th": "เกียร์กึ่งอัตโนมัติ · 125cc", "desc_en": "Thailand's favourite everyday bike — light, reliable and very fuel-efficient. Semi-automatic gears (no clutch), great on mountain roads.", "desc_th": "รถยอดนิยมของคนไทย เบา ทนทาน ประหยัดน้ำมันมาก เกียร์กึ่งอัตโนมัติ ไม่ต้องบีบคลัตช์ ขึ้นดอยได้สบาย", "price": "", "img": "images/bike-wave-1.jpg", "photos": ["images/bike-wave-2.jpg", "images/bike-wave-3.jpg"], "c1": "#1E3A5F", "c2": "#0B1A2E"}, {"name": "Yamaha Fino 125", "spec_en": "Automatic · 125cc", "spec_th": "ออโต้ · 125cc", "desc_en": "Cute retro-style scooter that is light and easy to ride — perfect for beginners and cruising around the Old City.", "desc_th": "สกู๊ตเตอร์สไตล์เรโทรน่ารัก ตัวเบา ขับง่าย เหมาะกับมือใหม่และขี่เที่ยวรอบคูเมือง", "price": "", "img": "images/bike-fino-1.jpg", "photos": ["images/bike-fino-2.jpg", "images/bike-fino-3.jpg"], "c1": "#1B8A8A", "c2": "#0B3B3B"}, {"name": "Yamaha GT125", "spec_en": "Automatic · 125cc", "spec_th": "ออโต้ · 125cc", "desc_en": "Sporty automatic scooter with LED headlight and a comfortable seat — smooth and economical for city and day trips.", "desc_th": "สกู๊ตเตอร์ออโต้ดีไซน์สปอร์ต ไฟหน้า LED เบาะนั่งสบาย ขับนุ่ม ประหยัด ทั้งในเมืองและเที่ยวนอกเมือง", "price": "", "img": "images/bike-gt125-1.jpg", "photos": ["images/bike-gt125-2.jpg", "images/bike-gt125-3.jpg"], "c1": "#3A3F44", "c2": "#15181A"}, {"name": "Honda Lead 125", "spec_en": "Automatic · 125cc", "spec_th": "ออโต้ · 125cc", "desc_en": "Comfortable family scooter with a huge under-seat trunk and roomy seat for two — ideal for longer rides and Doi Suthep.", "desc_th": "สกู๊ตเตอร์นั่งสบาย ใต้เบาะกว้างมาก เบาะใหญ่ซ้อนสองสบาย เหมาะกับการขี่ไกลและขึ้นดอยสุเทพ", "price": "", "img": "images/bike-lead-1.jpg", "photos": ["images/bike-lead-2.jpg", "images/bike-lead-3.jpg"], "c1": "#7A1F1F", "c2": "#2E0B0B"}]; }
     if(!data.bikes){
       data.bikes=[
         {name:"Honda Click 125i",price:"250",desc_en:"Light, easy automatic scooter — perfect for the city and the Old Town.",desc_th:"รถออโต้ขับง่าย คล่องตัว เหมาะกับการเที่ยวในเมือง",img:"",c1:"#2E6B6B",c2:"#123B3B"},

@@ -244,6 +244,8 @@
   .crow .val{font-weight:600;word-break:break-word}
   .crow .val a{text-decoration:none}
   .crow .val a:hover{color:var(--primary)}
+  .crow .val a.ext{border-bottom:1px dashed currentColor} .crow .val a.ext::after{content:" ↗";font-size:.8em;opacity:.55}
+  body.editing .crow .val a.ext{border-bottom:0} body.editing .crow .val a.ext::after{content:""}
   .contact-cta{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow)}
   .contact-media{position:relative;margin:-30px -30px 24px;aspect-ratio:16/10;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0}
   .contact-media .ph,.contact-media img{width:100%;height:100%;object-fit:cover}
@@ -558,9 +560,11 @@
     H.push('<div class="contact-grid"><div class="clist">');
     H.push(crow(ICON.phone,(lang==="th"?"โทรศัพท์":"Phone"),'<a href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'"><span'+ed("contact.phone")+'>'+esc(c.phone)+'</span></a>'));
     H.push(crow(ICON.mail,"Email",'<a href="mailto:'+esc(c.email)+'"><span'+ed("contact.email")+'>'+esc(c.email)+'</span></a>'));
-    H.push(crow(ICON.chat,"WhatsApp",'<span'+ed("contact.whatsapp")+'>'+esc(c.whatsapp)+'</span>',"whatsapp_qr"));
-    H.push(crow(ICON.wechat,"WeChat",'<span'+ed("contact.wechat")+'>'+esc(c.wechat||"")+'</span>',"wechat_qr"));
-    H.push(crow(ICON.chat,"LINE",'<span'+ed("contact.line")+'>'+esc(c.line)+'</span>',"line_qr"));
+    var wa=waLink(c.whatsapp), ln=lineLink(c);
+    H.push(crow(ICON.chat,"WhatsApp",(wa?'<a class="ext" target="_blank" rel="noopener" href="'+esc(wa)+'">':'')+'<span'+ed("contact.whatsapp")+'>'+esc(c.whatsapp)+'</span>'+(wa?'</a>':''),"whatsapp_qr"));
+    H.push(crow(ICON.wechat,"WeChat",((c.wechat&&!editing)?'<a class="ext wc-copy" href="#" data-copy="'+esc(c.wechat)+'" title="'+(lang==="th"?"กดเพื่อคัดลอก ID":"Click to copy ID")+'">':'')+'<span'+ed("contact.wechat")+'>'+esc(c.wechat||"")+'</span>'+((c.wechat&&!editing)?'</a>':''),"wechat_qr"));
+    H.push(crow(ICON.chat,"LINE",(ln?'<a class="ext" target="_blank" rel="noopener" href="'+esc(ln)+'">':'')+'<span'+ed("contact.line")+'>'+esc(c.line||"")+'</span>'+(ln?'</a>':'')
+      +'<div class="map-q">'+(lang==="th"?"ลิงก์ LINE / OpenChat (ถ้ามี จะใช้ลิงก์นี้แทน): ":"LINE / OpenChat link (optional, used instead of the ID): ")+'<span'+ed("contact.line_link")+'>'+esc(c.line_link||"")+'</span></div>',"line_qr"));
     H.push(crow(ICON.clock,(lang==="th"?"เวลาทำการ":"Hours"),'<span'+ed("contact.hours")+'>'+esc(t(c,"hours"))+'</span>'));
     H.push(crow(ICON.pin,(lang==="th"?"ที่อยู่":"Address"),'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t(c,"addr"))+'"><span'+ed("contact.addr")+'>'+esc(t(c,"addr"))+'</span></a>'));
     H.push('</div>');
@@ -588,6 +592,17 @@
     var slot=document.getElementById("rv-live-slot"), rvs=document.getElementById("reviews");
     if(lw && slot && rvs && lw.querySelector("*") && !editing){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); }
     try{ bind(); applyEditing(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); }
+  }
+  function waLink(v){
+    var n=String(v||"").split(/[\/,]/)[0].replace(/\D/g,""); if(!n) return "";
+    if(n.charAt(0)==="0") n="66"+n.slice(1);
+    return "https://wa.me/"+n;
+  }
+  function lineLink(c){
+    var l=String(c.line_link||"").trim(); if(/^https?:\/\//i.test(l)) return l;
+    var v=String(c.line||"").trim(); if(!v) return "";
+    if(/^https?:\/\//i.test(v)) return v;
+    return "https://line.me/R/ti/p/"+(v.charAt(0)==="@"?encodeURIComponent(v):"~"+encodeURIComponent(v));
   }
   function crow(ico,lbl,val,qrKey){
     var q="";
@@ -665,6 +680,11 @@
     // visitor "write a review" form -> email to the owner, or post on Google
     var rwd=document.getElementById("rvwidget"); if(rwd) rwd.onclick=openWidgetForm;
     var mpe=document.getElementById("mapembed"); if(mpe) mpe.onclick=openMapEmbedForm;
+    Array.prototype.forEach.call(document.querySelectorAll(".wc-copy"),function(a){ a.onclick=function(e){ e.preventDefault(); if(editing) return;
+      var id=a.getAttribute("data-copy"), th=lang==="th";
+      var done=function(){ toast(th?"คัดลอก WeChat ID แล้ว — เปิด WeChat → เพิ่มเพื่อน → วาง ID หรือสแกน QR":"WeChat ID copied — open WeChat → Add contacts → paste, or scan the QR"); };
+      try{ navigator.clipboard.writeText(id).then(done,done); }catch(err){ done(); }
+      if(data.contact.wechat_qr) openLB([data.contact.wechat_qr],0); }; });
     var rw=document.getElementById("rvwrite");
     if(rw) rw.onclick=function(){ openReviewForm(); };
     // review photos: view (lightbox) / add / delete
@@ -759,7 +779,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
       var val=el.textContent.replace(/ /g," ").trim();
-      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||/^reviews\./.test(path)||/\.price$/.test(path)){
+      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||path==="contact.line_link"||/^reviews\./.test(path)||/\.price$/.test(path)){
         setPlain(path,val);
       } else {
         setText(path,val);

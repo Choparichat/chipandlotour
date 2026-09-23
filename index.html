@@ -112,6 +112,40 @@
   .hero p.tag{font-family:var(--serif);font-style:italic;color:#ffe9b8;font-size:clamp(1rem,2vw,1.15rem);margin:-.6em 0 1.8em;max-width:36em}
   /* moments strip */
   section.moments{padding-block:44px 8px}
+  section.events{padding-block:56px 20px}
+  .ev-grid{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+  .ev-grid.ev-n1{grid-template-columns:1fr} .ev-grid.ev-n2{grid-template-columns:1fr 1fr}
+  .ev-card{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);cursor:pointer}
+  body.editing .ev-card{cursor:default}
+  .ev-media{position:relative;aspect-ratio:4/3;overflow:hidden}
+  .ev-n1 .ev-media{aspect-ratio:21/9} .ev-n2 .ev-media{aspect-ratio:16/9}
+  .ev-media>img,.ev-media>.ph{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+  .ev-card:hover .ev-media>img{transform:scale(1.04)}
+  .ev-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.05) 55%);pointer-events:none;z-index:1}
+  .ev-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 24px;color:#fff}
+  .ev-cap h3{margin:.15em 0 .3em;font-family:var(--serif);font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.15;color:#fff}
+  .ev-date{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+  .ev-more{display:inline-block;font-weight:600;font-size:.9rem;padding:.45em .9em;border-radius:999px;background:rgba(255,255,255,.16);backdrop-filter:blur(4px)}
+  .ev-card:hover .ev-more{background:var(--primary)}
+  .ev-edit{padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+  .ev-edit label{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .ev-edit p{margin:0}
+  .ev-view{padding:16px}
+  .ev-box{position:relative;background:var(--surface);color:var(--ink);border-radius:18px;max-width:760px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .ev-box .ev-x{position:absolute;top:10px;right:10px;z-index:3;background:rgba(0,0,0,.55);color:#fff}
+  .ev-hero{position:relative;aspect-ratio:16/9;background:#000}
+  .ev-hero>img,.ev-hero>.ph{width:100%;height:100%;object-fit:cover;display:block}
+  .ev-thumbs{display:flex;gap:8px;padding:10px 16px 0;overflow-x:auto}
+  .ev-thumbs img{width:70px;height:52px;object-fit:cover;border-radius:8px;opacity:.55;cursor:pointer;flex:none}
+  .ev-thumbs img.on{opacity:1;outline:2px solid var(--primary)}
+  .qr-view.ev-view .ev-thumbs img{width:70px;height:52px;display:inline-block}
+  .qr-view.ev-view .ev-hero>img{width:100%;height:100%;object-fit:cover}
+  .ev-body{padding:18px 22px 22px}
+  .ev-body h3{font-family:var(--serif);font-size:1.6rem;margin:.2em 0 .4em}
+  .ev-body p{color:var(--muted);line-height:1.7;margin:0 0 18px;white-space:pre-line}
+  .ev-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:16px}
+  .ev-pr{font-family:var(--serif);font-size:1.2rem}
+  @media (max-width:760px){ .ev-grid,.ev-grid.ev-n2{grid-template-columns:1fr} .ev-n1 .ev-media{aspect-ratio:4/3} }
   .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   .mcell{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--surface-2)}
   .mcell .ph,.mcell img{width:100%;height:100%;object-fit:cover}
@@ -503,13 +537,27 @@
     H.push('<a class="btn btn-ghost" href="#contact"'+ed("hero.cta2")+'>'+esc(t(d.hero,"cta2"))+'</a></div>');
     H.push('</div></section>');
 
-    // moments strip (photos supporting the headline)
-    if(d.moments&&d.moments.length){
-      H.push('<section class="moments"><div class="wrap"><div class="mgrid">');
-      d.moments.forEach(function(m,i){
-        H.push('<div class="mcell">'+media(m)+imgOverlay("moments."+i+".img")+'<span class="mcap"'+ed("moments."+i+".cap")+'>'+esc(t(m,"cap"))+'</span></div>');
+    // special events (photo cards -> details popup)
+    var evs=d.events||[];
+    if(evs.length||editing){
+      var es=d.eventsSection||{};
+      H.push('<section class="blk events" id="events"><div class="wrap"><div class="sec-head"><div class="eyebrow"'+ed("eventsSection.eyebrow")+'>'+esc(t(es,"eyebrow"))+'</div><h2'+ed("eventsSection.title")+'>'+esc(t(es,"title"))+'</h2></div>');
+      H.push('<div class="ev-grid ev-n'+Math.min(evs.length,3)+'">');
+      evs.forEach(function(ev,i){
+        H.push('<article class="ev-card" data-ev="'+i+'"><button class="card-del" data-del="events" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>');
+        H.push('<div class="ev-media">'+media(ev)+imgOverlay("events."+i+".img")+'<div class="ev-shade"></div>');
+        H.push('<div class="ev-cap"><span class="ev-date"'+ed("events."+i+".date")+'>'+esc(t(ev,"date"))+'</span><h3'+ed("events."+i+".title")+'>'+esc(t(ev,"title"))+'</h3>'
+          +(editing?'':'<span class="ev-more">'+(lang==="th"?"ดูรายละเอียด":"View details")+' →</span>')+'</div></div>');
+        if(editing){
+          H.push('<div class="ev-edit"><label>'+(lang==="th"?"รายละเอียด":"Details")+'</label><p'+ed("events."+i+".desc")+'>'+esc(t(ev,"desc"))+'</p>');
+          H.push('<label>'+(lang==="th"?"ราคา (฿) — เว้นว่าง = สอบถามราคา":"Price (฿) — leave empty = ask for price")+'</label><p class="ev-price"><b'+ed("events."+i+".price")+'>'+esc(ev.price||"")+'</b></p>');
+          var ph=(ev.photos||[]); H.push('<label>'+(lang==="th"?"รูปเพิ่มเติม":"More photos")+'</label><div class="iph">');
+          ph.forEach(function(src,k){ H.push('<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="events:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'); });
+          H.push('<button class="iph-add" type="button" data-iphadd="events:'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div></div>');
+        }
+        H.push('</article>');
       });
-      H.push('</div></div></section>');
+      H.push('</div><button class="btn btn-ghost addbtn" data-add="events">'+ICON.plus+(lang==="th"?"เพิ่มอีเวนต์":"Add an event")+'</button></div></section>');
     }
 
     // services / core features
@@ -725,6 +773,30 @@
       w.remove(); render(); toast(th?"อัปเดตแล้ว อย่าลืมกดบันทึก":"Updated — remember to save");
     };
   }
+  function openEvent(i){
+    var ev=data.events[i]; if(!ev) return; var th=lang==="th";
+    var pics=[ev.img].concat(ev.photos||[]).filter(Boolean), k=0;
+    var wab=waLink(data.contact&&data.contact.whatsapp), title=t(ev,"title");
+    var href=wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+title):"#contact";
+    var v=document.createElement("div"); v.className="qr-view ev-view";
+    function draw(){
+      v.innerHTML='<div class="ev-box" role="dialog" aria-modal="true"><button class="rw-close ev-x" type="button" aria-label="Close">×</button>'
+        +'<div class="ev-hero">'+(pics.length?'<img src="'+esc(pics[k])+'" alt="">':media(ev))+(pics.length>1?'<button class="lb-nav lb-prev ev-p" type="button">‹</button><button class="lb-nav lb-next ev-n" type="button">›</button>':'')+'</div>'
+        +(pics.length>1?'<div class="ev-thumbs">'+pics.map(function(src,j){ return '<img data-k="'+j+'" class="'+(j===k?'on':'')+'" src="'+esc(src)+'" alt="">'; }).join("")+'</div>':'')
+        +'<div class="ev-body"><div class="ev-date">'+esc(t(ev,"date"))+'</div><h3>'+esc(title)+'</h3><p>'+esc(t(ev,"desc"))+'</p>'
+        +'<div class="ev-foot"><span class="ev-pr">'+(ev.price?(th?"เริ่ม ฿":"from ฿")+esc(ev.price):(th?"สอบถามราคา":"Ask for price"))+'</span>'
+        +'<a class="btn btn-primary"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a></div></div></div>';
+    }
+    draw();
+    v.addEventListener("click",function(e){ var tg=e.target;
+      if(tg===v||tg.classList.contains("ev-x")){ v.remove(); return; }
+      if(tg.classList.contains("ev-p")){ k=(k-1+pics.length)%pics.length; draw(); return; }
+      if(tg.classList.contains("ev-n")){ k=(k+1)%pics.length; draw(); return; }
+      if(tg.hasAttribute&&tg.hasAttribute("data-k")){ k=+tg.getAttribute("data-k"); draw(); return; }
+      if(tg.closest&&tg.closest("a[href='#contact']")) v.remove();
+    });
+    document.body.appendChild(v);
+  }
   function catsFor(arr){ return arr==="activities"?ACT_CATS:TOUR_CATS; }
   function catOf(arr,it){ var cs=catsFor(arr); for(var k=0;k<cs.length;k++) if(cs[k][0]===it.cat) return cs[k]; return cs[0]; }
   function itemCard(arr,i,it){
@@ -939,6 +1011,8 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphadd]"),function(b){ b.onclick=function(){ var v=b.getAttribute("data-iphadd").split(":");
       pickFiles(function(files){ var it=data[v[0]][+v[1]]; it.photos=it.photos||[]; var jobs=files.map(function(f){ return compress(f,1400,0.8); });
         Promise.all(jobs).then(function(uris){ syncEdits(); uris.forEach(function(u){ if(!it.img) it.img=u; else it.photos.push(u); }); render(); toast(lang==="th"?"เพิ่มรูปแล้ว อย่าลืมกดบันทึก":"Photos added — remember to save"); }).catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); }); }); }; });
+    // special events: open details popup
+    Array.prototype.forEach.call(document.querySelectorAll(".ev-card"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a")) return; openEvent(+c.getAttribute("data-ev")); }; });
     // delete card
     Array.prototype.forEach.call(document.querySelectorAll(".card-del"),function(b){
       b.onclick=function(){ syncEdits(); var arr=b.getAttribute("data-del"), i=+b.getAttribute("data-i"); data[arr].splice(i,1); render(); };
@@ -946,7 +1020,8 @@
     // add
     Array.prototype.forEach.call(document.querySelectorAll("[data-add]"),function(b){
       b.onclick=function(){ syncEdits(); var which=b.getAttribute("data-add");
-        if(which==="activities") data.activities.push({cat:(actCat!=="all"?actCat:"adventure"),region_en:"Chiang Mai",region_th:"เชียงใหม่",title_en:"New activity",title_th:"กิจกรรมใหม่",desc_en:"Describe this activity...",desc_th:"อธิบายกิจกรรมนี้...",dur_en:"Half day",dur_th:"ครึ่งวัน",price:"",img:"",c1:"#1F5E55",c2:"#0E2E2A",photos:[]});
+        if(which==="events") data.events.push({title_en:"New event",title_th:"อีเวนต์ใหม่",date_en:"Date",date_th:"วันที่",desc_en:"Describe this event...",desc_th:"รายละเอียดอีเวนต์...",price:"",img:"",c1:"#2E6B6B",c2:"#123B3B",photos:[]});
+        else if(which==="activities") data.activities.push({cat:(actCat!=="all"?actCat:"adventure"),region_en:"Chiang Mai",region_th:"เชียงใหม่",title_en:"New activity",title_th:"กิจกรรมใหม่",desc_en:"Describe this activity...",desc_th:"อธิบายกิจกรรมนี้...",dur_en:"Half day",dur_th:"ครึ่งวัน",price:"",img:"",c1:"#1F5E55",c2:"#0E2E2A",photos:[]});
         else if(which==="tours"&&tourCat==="intl") data.tours.push({cat:"intl",img:"",c1:"#123B4E",c2:"#0B2330",region_en:"Country",region_th:"ประเทศ",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน",price:""});
         else if(which==="bikes") data.bikes.push({name:"New bike",price:"300",desc_en:"Describe this bike...",desc_th:"รายละเอียดรถ...",img:"",c1:"#2E6B6B",c2:"#123B3B"});
         else if(which==="tours") data.tours.push({img:"",c1:"#0F6E5C",c2:"#123B4E",region_en:"Region",region_th:"พื้นที่",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"0"});
@@ -1370,7 +1445,14 @@
   function ensureSocial(){
     if(!data.social) data.social=[{name:"Chip n Lo Tour",url:"https://www.facebook.com/Chipnlotour2"},{name:"Cool Travel Chiang Mai",url:"https://www.facebook.com/cooltravelchiangmai"}];
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureSocial(); render(); mountWidget(); }
+  function ensureEvents(){
+    if(!data.eventsSection) data.eventsSection={eyebrow_en:"Special events",eyebrow_th:"อีเวนต์พิเศษ",title_en:"Festivals you shouldn't miss",title_th:"เทศกาลที่ไม่ควรพลาด"};
+    if(!data.events) data.events=[{title_en:"Loy Krathong & Yi Peng Lantern Festival",title_th:"ลอยกระทง & ยี่เป็ง",date_en:"November",date_th:"เดือนพฤศจิกายน",
+      desc_en:"Float a krathong on the Ping River and release sky lanterns under the full moon — Chiang Mai's most magical night of the year. We arrange tickets, transfers and a local guide so you can simply enjoy it.",
+      desc_th:"ลอยกระทงริมแม่น้ำปิงและปล่อยโคมลอยใต้แสงจันทร์เต็มดวง คืนที่งดงามที่สุดของเชียงใหม่ เราจัดการตั๋ว รถรับส่ง และไกด์ท้องถิ่นให้ครบ คุณแค่มาเพลิดเพลินกับบรรยากาศ",
+      price:"",img:"",c1:"#B7791F",c2:"#2B1606",photos:[]}];
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureSocial(); ensureEvents(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

@@ -154,9 +154,13 @@
   .tcard .act .btn{width:100%;justify-content:center}
 
   /* gallery */
-  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:14px}
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:14px;grid-auto-flow:dense}
   .gcell{position:relative;border-radius:14px;overflow:hidden;background:var(--surface-2)}
-  .gcell:nth-child(4n+1){grid-row:span 2}
+  .gcell.gs-tall{grid-row:span 2} .gcell.gs-wide{grid-column:span 2} .gcell.gs-big{grid-row:span 2;grid-column:span 2}
+  .gcell img{cursor:zoom-in;transition:transform .35s ease} .gcell:hover img{transform:scale(1.03)} body.editing .gcell img{cursor:default;transform:none}
+  .gsize{display:none;position:absolute;left:8px;top:8px;z-index:7;align-items:center;gap:6px;padding:6px 10px;border:0;border-radius:9px;background:rgba(20,16,12,.82);color:#fff;font:600 12px/1 inherit;cursor:pointer}
+  .gsize:hover{background:rgba(20,16,12,.95)} .gsize svg{width:14px;height:14px}
+  body.editing .gsize{display:inline-flex}
   .gcell .ph,.gcell img{width:100%;height:100%;object-fit:cover}
 
   /* reviews */
@@ -488,7 +492,9 @@
     H.push('<p'+ed("gallerySection.sub")+'>'+esc(t(d.gallerySection,"sub"))+'</p></div>');
     H.push('<div class="gallery">');
     d.gallery.forEach(function(g,i){
-      H.push('<div class="gcell"><button class="card-del" data-del="gallery" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+media(g)+imgOverlay("gallery."+i+".img")+'</div>');
+      var sz=g.size||(i%4===0?"tall":"normal"), szl={normal:["ปกติ","Normal"],wide:["กว้าง","Wide"],tall:["สูง","Tall"],big:["ใหญ่","Large"]}[sz]||["ปกติ","Normal"];
+      H.push('<div class="gcell gs-'+esc(sz)+'" data-gi="'+i+'"><button class="card-del" data-del="gallery" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+media(g)+imgOverlay("gallery."+i+".img")
+        +'<button class="gsize" type="button" data-gsize="'+i+'" title="'+(lang==="th"?"กดเพื่อเปลี่ยนขนาด":"Click to change size")+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>'+(lang==="th"?"ขนาด: "+szl[0]:"Size: "+szl[1])+'</button></div>');
     });
     H.push('</div>');
     H.push('<button class="btn btn-ghost addbtn" data-add="gallery">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add a photo")+'</button>');
@@ -698,6 +704,16 @@
     });
     var lr=document.getElementById("logoreset");
     if(lr) lr.onclick=function(){ syncEdits(); data.brand.logo=""; render(); };
+    // gallery: size cycle (edit) + lightbox (view)
+    Array.prototype.forEach.call(document.querySelectorAll("[data-gsize]"),function(b){
+      b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); syncEdits(); var i=+b.getAttribute("data-gsize"), g=data.gallery[i];
+        var order=["normal","wide","tall","big"], cur=g.size||(i%4===0?"tall":"normal"); g.size=order[(order.indexOf(cur)+1)%order.length]; render(); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".gcell"),function(c){
+      c.onclick=function(e){ if(editing||e.target.closest("button,label")) return; var i=+c.getAttribute("data-gi");
+        var list=[], k=0; data.gallery.forEach(function(g,j){ if(g.img){ if(j===i) k=list.length; list.push(g.img); } });
+        if(data.gallery[i]&&data.gallery[i].img) openLB(list,k); };
+    });
     // delete card
     Array.prototype.forEach.call(document.querySelectorAll(".card-del"),function(b){
       b.onclick=function(){ syncEdits(); var arr=b.getAttribute("data-del"), i=+b.getAttribute("data-i"); data[arr].splice(i,1); render(); };

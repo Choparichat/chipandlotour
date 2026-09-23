@@ -228,6 +228,12 @@
   .ph svg{width:34px;height:34px;opacity:.55;color:#fff;position:relative}
 
   /* contact */
+  .map-wrap{position:relative;margin-top:36px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface-2);height:380px}
+  .map-wrap iframe{display:block;width:100%;height:100%;border:0}
+  .map-empty{height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);padding:20px;text-align:center}
+  .map-open{position:absolute;left:14px;bottom:14px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .map-q{display:none;margin-top:10px;font-size:.85rem;color:var(--muted)} body.editing .map-q{display:block}
+  @media (max-width:760px){ .map-wrap{height:280px} }
   .contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
   .clist{display:flex;flex-direction:column;gap:2px}
   .crow{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border)}
@@ -544,6 +550,7 @@
 
     // contact
     var c=d.contact;
+    ["addr_en","addr_th","map_q"].forEach(function(k){ var v=c[k]||""; if(/<iframe|maps\/embed/i.test(v)){ var src=mapEmbedSrc(v); if(src){ c.map_embed=src; c[k]=""; if(editing) setTimeout(function(){ toast(lang==="th"?"ย้ายโค้ดแผนที่ไปไว้ที่แผนที่ให้แล้ว — พิมพ์ที่อยู่ใหม่ในช่อง Address":"Moved the map code into the map — please retype the address"); },50); } } });
     H.push('<section class="blk" id="contact" style="background:var(--surface-2)"><div class="wrap">');
     H.push('<div class="sec-head"><div class="eyebrow"'+ed("contact.eyebrow")+'>'+esc(t(c,"eyebrow"))+'</div>');
     H.push('<h2'+ed("contact.title")+'>'+esc(t(c,"title"))+'</h2>');
@@ -560,7 +567,16 @@
     H.push('<div class="contact-cta"><h3>'+(lang==="th"?"พร้อมออกเดินทางแล้วหรือยัง?":"Ready to go?")+'</h3><p>'+(lang==="th"?"ทักหาเราได้ทุกช่องทาง เราพร้อมช่วยวางแผนทริปในฝันของคุณ":"Reach us on any channel — we're happy to plan your perfect trip.")+'</p>');
     H.push('<a class="btn btn-primary" href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'">'+ICON.phone+' '+(lang==="th"?"โทรเลย":"Call now")+'</a>');
     H.push('<a class="btn btn-ghost" href="mailto:'+esc(c.email)+'">'+ICON.mail+' '+(lang==="th"?"ส่งอีเมล":"Email us")+'</a></div>');
-    H.push('</div></div></section>');
+    H.push('</div>');
+    var mq=(c.map_q||c.addr_en||c.addr_th||"").trim(), memb=mapEmbedSrc(c.map_embed);
+    if(mq||memb||editing){
+      var murl=(d.reviewsSection&&d.reviewsSection.url)||("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(mq));
+      H.push('<div class="map-wrap">'+((mq||memb)?'<iframe title="Map" src="'+(memb?esc(memb):'https://www.google.com/maps?q='+encodeURIComponent(mq)+'&hl='+(lang==="th"?"th":"en")+'&z=16&output=embed')+'" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>':'<div class="map-empty">'+(lang==="th"?"ใส่ชื่อสถานที่หรือพิกัดด้านล่างเพื่อแสดงแผนที่":"Enter a place name or coordinates below to show the map")+'</div>')
+        +'<a class="btn btn-primary btn-sm map-open" target="_blank" rel="noopener" href="'+esc(murl)+'">'+ICON.pin+' '+(lang==="th"?"เปิดใน Google Maps":"Open in Google Maps")+'</a></div>');
+      H.push('<div class="map-q">'+(lang==="th"?"ตำแหน่งบนแผนที่ (ชื่อสถานที่ ที่อยู่ หรือพิกัด เช่น 18.7883,98.9853): ":"Map location (place name, address or coordinates e.g. 18.7883,98.9853): ")+'<span'+ed("contact.map_q")+'>'+esc(c.map_q||"")+'</span>'
+        +'<div style="margin-top:8px"><button class="btn btn-ghost btn-sm" type="button" id="mapembed">'+ICON.pin+' '+(lang==="th"?(memb?"แก้โค้ดฝังแผนที่ (กำลังใช้อยู่)":"วางโค้ดฝังแผนที่จาก Google Maps"):(memb?"Edit map embed code (in use)":"Paste Google Maps embed code"))+'</button></div></div>');
+    }
+    H.push('</div></section>');
 
     // footer
     H.push('<footer class="site"><div class="wrap frow"><div><strong style="font-family:var(--serif);color:var(--ink)">'+esc(d.brand.name)+'</strong> · <span'+ed("footer.note")+'>'+esc(t(d.footer,"note"))+'</span></div>');
@@ -648,6 +664,7 @@
     });
     // visitor "write a review" form -> email to the owner, or post on Google
     var rwd=document.getElementById("rvwidget"); if(rwd) rwd.onclick=openWidgetForm;
+    var mpe=document.getElementById("mapembed"); if(mpe) mpe.onclick=openMapEmbedForm;
     var rw=document.getElementById("rvwrite");
     if(rw) rw.onclick=function(){ openReviewForm(); };
     // review photos: view (lightbox) / add / delete
@@ -742,7 +759,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
       var val=el.textContent.replace(/ /g," ").trim();
-      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||/^reviews\./.test(path)||/\.price$/.test(path)){
+      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||/^reviews\./.test(path)||/\.price$/.test(path)){
         setPlain(path,val);
       } else {
         setText(path,val);
@@ -966,6 +983,30 @@
       n.text=o.text; o.parentNode.replaceChild(n,o); });
     var rv=document.getElementById("reviews"); if(rv) rv.classList.remove("has-live");
     try{ render(); }catch(e){}
+  }
+  function mapEmbedSrc(v){
+    v=String(v||"").trim(); if(!v) return "";
+    var m=v.match(/src\s*=\s*["']([^"']+)["']/i); var u=(m?m[1]:v).replace(/&amp;/g,"&").trim();
+    return /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed\?/i.test(u)?u:"";
+  }
+  function openMapEmbedForm(){
+    var th=lang==="th", w=document.createElement("div");
+    w.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.55);display:flex;align-items:center;justify-content:center;padding:16px";
+    w.innerHTML='<div style="background:var(--surface);color:var(--ink);border-radius:16px;max-width:560px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+      +'<h3 style="margin:0 0 6px;font-family:var(--serif)">'+(th?"โค้ดฝังแผนที่ Google Maps":"Google Maps embed code")+'</h3>'
+      +'<p style="margin:0 0 12px;color:var(--muted);font-size:.9rem">'+(th?"ใน Google Maps: ค้นหาร้าน → แชร์ → ฝังแผนที่ → คัดลอก HTML แล้ววางที่นี่ (ลบออกเพื่อกลับไปใช้ที่อยู่/พิกัด)":"In Google Maps: find the place → Share → Embed a map → Copy HTML, then paste here (clear it to use the address/coordinates instead)")+'</p>'
+      +'<textarea id="me-code" rows="5" placeholder="<iframe src=&quot;https://www.google.com/maps/embed?pb=...&quot; ...></iframe>" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:13px ui-monospace,monospace;background:#fff;color:#241F19;-webkit-text-fill-color:#241F19"></textarea>'
+      +'<div id="me-err" style="color:#b4281e;font-size:.85rem;min-height:1.2em;margin-top:6px"></div>'
+      +'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px"><button class="btn btn-ghost btn-sm" id="me-cancel" type="button">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" id="me-ok" type="button">'+(th?"ตกลง":"OK")+'</button></div></div>';
+    document.body.appendChild(w);
+    var ta=document.getElementById("me-code"); ta.value=(data.contact&&data.contact.map_embed)||"";
+    document.getElementById("me-cancel").onclick=function(){ w.remove(); };
+    document.getElementById("me-ok").onclick=function(){
+      var v=ta.value.trim();
+      if(v && !mapEmbedSrc(v)){ document.getElementById("me-err").textContent=th?"โค้ดไม่ถูกต้อง ต้องเป็นโค้ดจาก Google Maps → แชร์ → ฝังแผนที่":"That doesn't look like a Google Maps embed code"; return; }
+      syncEdits(); data.contact.map_embed=v?mapEmbedSrc(v):""; w.remove(); render();
+      toast(th?"เปลี่ยนแผนที่แล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Map updated — tap “Save & publish”");
+    };
   }
   function openWidgetForm(){
     var th=lang==="th", w=document.createElement("div");

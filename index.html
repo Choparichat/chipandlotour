@@ -634,7 +634,7 @@
     H.push('<div class="cgrp-title">'+(lang==="th"?"แชทกับเรา":"Chat with us")+'</div><div class="chat-grid">');
     H.push(crow(ICON.chat,"WhatsApp",(wa?'<a class="ext" target="_blank" rel="noopener" href="'+esc(wa)+'">':'')+'<span'+ed("contact.whatsapp")+'>'+esc(c.whatsapp)+'</span>'+(wa?'</a>':''),"whatsapp_qr"));
     H.push(crow(ICON.wechat,"WeChat",((c.wechat&&!editing)?'<a class="ext wc-copy" href="#" data-copy="'+esc(c.wechat)+'" title="'+(lang==="th"?"กดเพื่อคัดลอก ID":"Click to copy ID")+'">':'')+'<span'+ed("contact.wechat")+'>'+esc(c.wechat||"")+'</span>'+((c.wechat&&!editing)?'</a>':''),"wechat_qr"));
-    H.push(crow(ICON.chat,"LINE",(ln?'<a class="ext" target="_blank" rel="noopener" href="'+esc(ln)+'">':'')+'<span'+ed("contact.line")+'>'+esc(c.line||"")+'</span>'+(ln?'</a>':'')
+    H.push(crow(ICON.chat,"LINE",(ln?'<a class="ext" target="_blank" rel="noopener" href="'+esc(ln)+'">':'')+((!editing&&!c.line&&ln)?(/\/ti\/g2\//.test(ln)?(lang==="th"?"เข้าร่วม OpenChat":"Join our OpenChat"):(lang==="th"?"แชทใน LINE":"Chat on LINE")):'<span'+ed("contact.line")+'>'+esc(c.line||"")+'</span>')+(ln?'</a>':'')
       +'<div class="map-q">'+(lang==="th"?"ลิงก์ LINE / OpenChat (ถ้ามี จะใช้ลิงก์นี้แทน): ":"LINE / OpenChat link (optional, used instead of the ID): ")+'<span'+ed("contact.line_link")+'>'+esc(c.line_link||"")+'</span></div>',"line_qr"));
     H.push('</div>');
     H.push('<div class="cgrp cgrp-2">');

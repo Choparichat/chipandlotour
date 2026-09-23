@@ -5,7 +5,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#151210">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Chip' n Lo Tour | Chiang Mai Tours &amp; Activities</title>
+<title>Chip' n Lo Tour</title>
 <meta name="description" content="“Saw that, done those” is such a common cliché among frequent fliers. But what if this turns out to be one of the most meaningful trips you've ever taken — where learning and experiencing open your eyes to a new vision that enriches your quality of life?">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Chip' n Lo Tour">
@@ -468,7 +468,7 @@
 
   // ---------- render ----------
   function render(){
-    try{ var bn=(data.brand&&data.brand.name)||"Chip' n Lo Tour"; document.title=view==="tours"?((lang==="th"?"ทัวร์":"Tours")+" | "+bn):(view==="activities"?((lang==="th"?"กิจกรรม":"Activities")+" | "+bn):(bn+" | "+(lang==="th"?"ทัวร์และกิจกรรมเชียงใหม่":"Chiang Mai Tours & Activities"))); }catch(e){}
+    try{ var bn=(data.brand&&data.brand.name)||"Chip' n Lo Tour"; document.title=bn; }catch(e){}
     var d=data, H=[];
     // header
     if(d.contact&&d.contact.email) H.push('<div class="topbar"><div class="wrap"><a href="mailto:'+esc(d.contact.email)+'">'+ICON.mail+esc(d.contact.email)+'</a></div></div>');

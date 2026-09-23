@@ -589,16 +589,6 @@
     H.push('<button class="btn btn-ghost addbtn" data-add="gallery">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add a photo")+'</button>');
     H.push('</div></section>');
 
-    // videos
-    var vids=(d.videos||[]).filter(Boolean);
-    if(vids.length||editing){
-      H.push('<section class="blk" id="videos"><div class="wrap"><div class="sec-head"><div class="eyebrow">'+(lang==="th"?"วิดีโอ":"Videos")+'</div><h2>'+(lang==="th"?"ดูบรรยากาศทริปของเรา":"See our trips in action")+'</h2></div>');
-      H.push('<div class="vid-grid">');
-      vids.forEach(function(u){ H.push('<div class="vid"><iframe src="'+esc(fbEmbed(u))+'" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen title="Facebook video"></iframe><a class="vid-link" target="_blank" rel="noopener" href="'+esc(u)+'">'+ICON.fb+(lang==="th"?"ดูบน Facebook":"Watch on Facebook")+'</a></div>'); });
-      H.push('</div>');
-      if(editing) H.push('<div style="margin-top:16px"><button class="btn btn-ghost btn-sm" type="button" data-socedit>'+(lang==="th"?"แก้ลิงก์โซเชียล & วิดีโอ":"Edit social links & videos")+'</button></div>');
-      H.push('</div></section>');
-    }
     // reviews
     var rs=d.reviewsSection||{}, rl=d.reviews||[];
     if(rl.length||editing||rs.url){
@@ -709,8 +699,8 @@
     if(!sl.length&&!editing) return "";
     var h='<div class="'+cls+'">';
     var all=data.social||[];
-    sl.forEach(function(x){ var k=all.indexOf(x), editable=editing&&cls==="soc-row"; h+='<a class="soc" target="_blank" rel="noopener" href="'+esc(x.url)+'">'+socialIcon(x.url)+'<span'+(editable?ed("social."+k+".name"):'')+'>'+esc(x.name||"Facebook")+'</span></a>'; });
-    if(editing) h+='<button class="btn btn-ghost btn-sm" type="button" data-socedit>'+(lang==="th"?"แก้ลิงก์โซเชียล & วิดีโอ":"Edit social links & videos")+'</button>';
+    sl.forEach(function(x){ var k=all.indexOf(x), editable=editing&&cls==="soc-row"; h+=(editable?'<span class="soc">':'<a class="soc" target="_blank" rel="noopener" href="'+esc(x.url)+'">')+socialIcon(x.url)+'<span'+(editable?ed("social."+k+".name"):'')+'>'+esc(x.name||"Facebook")+'</span>'+(editable?'</span>':'</a>'); });
+    if(editing) h+='<button class="btn btn-ghost btn-sm" type="button" data-socedit>'+(lang==="th"?"แก้ลิงก์โซเชียล":"Edit social links")+'</button>';
     return h+'</div>';
   }
   function fbEmbed(u){ return "https://www.facebook.com/plugins/video.php?href="+encodeURIComponent(u)+"&show_text=false&width=320&height=568&t=0"; }
@@ -719,21 +709,17 @@
     w.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.55);display:flex;align-items:center;justify-content:center;padding:16px";
     var ta="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:13px ui-monospace,monospace;background:#fff;color:#241F19;-webkit-text-fill-color:#241F19;margin:4px 0 12px";
     w.innerHTML='<div style="background:var(--surface);color:var(--ink);border-radius:16px;max-width:600px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
-      +'<h3 style="margin:0 0 10px;font-family:var(--serif)">'+(th?"ลิงก์โซเชียล & วิดีโอ":"Social links & videos")+'</h3>'
+      +'<h3 style="margin:0 0 10px;font-family:var(--serif)">'+(th?"ลิงก์โซเชียล":"Social links")+'</h3>'
       +'<label style="font-size:.85rem;font-weight:600">'+(th?"เพจ / โซเชียล — บรรทัดละ 1 เพจ ในรูปแบบ  ชื่อ | ลิงก์":"Pages — one per line as  Name | link")+'</label>'
       +'<textarea id="so-links" rows="4" style="'+ta+'"></textarea>'
-      +'<label style="font-size:.85rem;font-weight:600">'+(th?"วิดีโอ Facebook (Reel / Video) — บรรทัดละ 1 ลิงก์":"Facebook videos (reels) — one link per line")+'</label>'
-      +'<textarea id="so-videos" rows="4" style="'+ta+'"></textarea>'
       +'<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" id="so-cancel" type="button">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" id="so-ok" type="button">'+(th?"ตกลง":"OK")+'</button></div></div>';
     document.body.appendChild(w);
     document.getElementById("so-links").value=(data.social||[]).map(function(x){ return (x.name||"")+" | "+(x.url||""); }).join("\n");
-    document.getElementById("so-videos").value=(data.videos||[]).join("\n");
     document.getElementById("so-cancel").onclick=function(){ w.remove(); };
     document.getElementById("so-ok").onclick=function(){
       var clean=function(u){ u=u.trim(); if(!/^https?:\/\//i.test(u)) return ""; return u.replace(/[?#].*$/,function(q){ return /\/reel\/|\/videos?\//.test(u)?"":(/profile\.php/.test(u)?q:""); }); };
       syncEdits();
       data.social=document.getElementById("so-links").value.split("\n").map(function(l){ var p=l.split("|"); var url=clean(p.length>1?p.slice(1).join("|"):p[0]); var name=p.length>1?p[0].trim():""; return url?{name:name||"Facebook",url:url}:null; }).filter(Boolean);
-      data.videos=document.getElementById("so-videos").value.split("\n").map(clean).filter(Boolean);
       w.remove(); render(); toast(th?"อัปเดตแล้ว อย่าลืมกดบันทึก":"Updated — remember to save");
     };
   }
@@ -1367,7 +1353,6 @@
   }
   function ensureSocial(){
     if(!data.social) data.social=[{name:"Chip n Lo Tour",url:"https://www.facebook.com/Chipnlotour2"},{name:"Cool Travel Chiang Mai",url:"https://www.facebook.com/cooltravelchiangmai"}];
-    if(!data.videos) data.videos=["https://www.facebook.com/reel/412715754573121"];
   }
   function boot(){ ensureRental(); ensureActivities(); ensureSocial(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){

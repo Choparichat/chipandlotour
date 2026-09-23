@@ -512,10 +512,10 @@
     if(hasLogo) H.push('<button class="logo-reset" id="logoreset" title="'+(lang==="th"?"ลบโลโก้ กลับไปใช้แบบเดิม":"Remove logo")+'">'+ICON.trash+'</button>');
     H.push('<nav class="nav-links" id="navlinks">');
     H.push('<a href="#top">'+(lang==="th"?"หน้าแรก":"Home")+'</a>');
-    H.push('<a href="#services">'+(lang==="th"?"บริการ":"Services")+'</a>');
     H.push('<a href="#/tours" data-nav'+(view==="tours"?' class="on"':'')+'>'+(lang==="th"?"ทัวร์":"Tours")+'</a>');
     H.push('<a href="#/activities" data-nav'+(view==="activities"?' class="on"':'')+'>'+(lang==="th"?"กิจกรรม":"Activities")+'</a>');
     if(d.bikes&&(d.bikes.length||editing)) H.push('<a href="#rental">'+(lang==="th"?"เช่ารถ":"Rentals")+'</a>');
+    H.push('<a href="#services">'+(lang==="th"?"บริการ":"Services")+'</a>');
     if((d.reviews||[]).length||(d.reviewsSection&&d.reviewsSection.url)) H.push('<a href="#reviews">'+(lang==="th"?"รีวิว":"Reviews")+'</a>');
     H.push('<a href="#contact">'+(lang==="th"?"ติดต่อ":"Contact")+'</a>');
     H.push('</nav>');
@@ -559,37 +559,6 @@
       });
       H.push('</div><button class="btn btn-ghost addbtn" data-add="events">'+ICON.plus+(lang==="th"?"เพิ่มอีเวนต์":"Add an event")+'</button></div></section>');
     }
-
-    // services / core features
-    if(d.services&&d.services.cards){
-      var sv=d.services, sico=[ICON.sliders,ICON.car,ICON.star];
-      H.push('<section class="blk" id="services"><div class="wrap">');
-      H.push('<div class="sec-head"><div class="eyebrow"'+ed("services.eyebrow")+'>'+esc(t(sv,"eyebrow"))+'</div>');
-      H.push('<h2'+ed("services.title")+'>'+esc(t(sv,"title"))+'</h2>');
-      H.push('<p'+ed("services.sub")+'>'+esc(t(sv,"sub"))+'</p></div>');
-      H.push('<div class="fgrid">');
-      sv.cards.forEach(function(c,i){
-        H.push('<article class="fcard"><div class="ico">'+(c.link==="#rental"?ICON.bike:sico[i%3])+'</div>');
-        H.push('<h3'+ed("services.cards."+i+".title")+'>'+esc(t(c,"title"))+'</h3>');
-        H.push('<p'+ed("services.cards."+i+".body")+'>'+esc(t(c,"body"))+'</p>');
-        H.push('<a class="btn btn-ghost btn-sm" href="'+esc(c.link||"#contact")+'"'+ed("services.cards."+i+".cta")+'>'+esc(t(c,"cta"))+'</a></article>');
-      });
-      H.push('</div></div></section>');
-    }
-
-    // about (why us)
-    H.push('<section class="blk" id="about" style="background:var(--surface-2)"><div class="wrap">');
-    H.push('<div class="sec-head"><div class="eyebrow"'+ed("about.eyebrow")+'>'+esc(t(d.about,"eyebrow"))+'</div>');
-    H.push('<h2'+ed("about.title")+'>'+esc(t(d.about,"title"))+'</h2>');
-    H.push('<p'+ed("about.sub")+'>'+esc(t(d.about,"sub"))+'</p></div>');
-    H.push('<div class="points">');
-    var pico=[ICON.chat,ICON.guide,ICON.check];
-    d.about.points.forEach(function(p,i){
-      H.push('<div class="point"><div class="ico">'+pico[i%3]+'</div>');
-      H.push('<h3'+ed("about.points."+i+".title")+'>'+esc(t(p,"title"))+'</h3>');
-      H.push('<p'+ed("about.points."+i+".body")+'>'+esc(t(p,"body"))+'</p></div>');
-    });
-    H.push('</div></div></section>');
 
     }
     // tours & activities
@@ -637,6 +606,37 @@
     H.push('</div>');
     H.push('<button class="btn btn-ghost addbtn" data-add="gallery">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add a photo")+'</button>');
     H.push('</div></section>');
+
+    // services / core features
+    if(d.services&&d.services.cards){
+      var sv=d.services, sico=[ICON.sliders,ICON.car,ICON.star];
+      H.push('<section class="blk" id="services" style="background:var(--surface-2)"><div class="wrap">');
+      H.push('<div class="sec-head"><div class="eyebrow"'+ed("services.eyebrow")+'>'+esc(t(sv,"eyebrow"))+'</div>');
+      H.push('<h2'+ed("services.title")+'>'+esc(t(sv,"title"))+'</h2>');
+      H.push('<p'+ed("services.sub")+'>'+esc(t(sv,"sub"))+'</p></div>');
+      H.push('<div class="fgrid">');
+      sv.cards.forEach(function(c,i){
+        H.push('<article class="fcard"><div class="ico">'+(c.link==="#rental"?ICON.bike:sico[i%3])+'</div>');
+        H.push('<h3'+ed("services.cards."+i+".title")+'>'+esc(t(c,"title"))+'</h3>');
+        H.push('<p'+ed("services.cards."+i+".body")+'>'+esc(t(c,"body"))+'</p>');
+        H.push('<a class="btn btn-ghost btn-sm" href="'+esc(c.link||"#contact")+'"'+ed("services.cards."+i+".cta")+'>'+esc(t(c,"cta"))+'</a></article>');
+      });
+      H.push('</div></div></section>');
+    }
+
+    // about (why us)
+    H.push('<section class="blk" id="about"><div class="wrap">');
+    H.push('<div class="sec-head"><div class="eyebrow"'+ed("about.eyebrow")+'>'+esc(t(d.about,"eyebrow"))+'</div>');
+    H.push('<h2'+ed("about.title")+'>'+esc(t(d.about,"title"))+'</h2>');
+    H.push('<p'+ed("about.sub")+'>'+esc(t(d.about,"sub"))+'</p></div>');
+    H.push('<div class="points">');
+    var pico=[ICON.chat,ICON.guide,ICON.check];
+    d.about.points.forEach(function(p,i){
+      H.push('<div class="point"><div class="ico">'+pico[i%3]+'</div>');
+      H.push('<h3'+ed("about.points."+i+".title")+'>'+esc(t(p,"title"))+'</h3>');
+      H.push('<p'+ed("about.points."+i+".body")+'>'+esc(t(p,"body"))+'</p></div>');
+    });
+    H.push('</div></div></section>');
 
     // reviews
     var rs=d.reviewsSection||{}, rl=d.reviews||[];
@@ -1400,9 +1400,9 @@
     var cur;
     if(view==="tours") cur="#/tours"; else if(view==="activities") cur="#/activities";
     else {
-      var map=[["top","#top"],["services","#services"],["about","#services"],["tours","#/tours"],["activities","#/activities"],["rental","#rental"],["gallery","#rental"],["reviews","#reviews"],["contact","#contact"]];
+      var map=[["top","#top"],["services","#services"],["about","#services"],["tours","#/tours"],["activities","#/activities"],["rental","#rental"],["gallery","#rental"],["events","#top"],["reviews","#reviews"],["contact","#contact"]];
       cur="#top";
-      map.forEach(function(m){ var el=document.getElementById(m[0]); if(el&&el.getBoundingClientRect().top<=150) cur=m[1]; });
+      var best=-1e9; map.forEach(function(m){ var el=document.getElementById(m[0]); if(!el) return; var tp=el.getBoundingClientRect().top; if(tp<=150&&tp>best){ best=tp; cur=m[1]; } });
       if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4) cur="#contact";
     }
     Array.prototype.forEach.call(links,function(a){ a.classList.toggle("on",a.getAttribute("href")===cur); });

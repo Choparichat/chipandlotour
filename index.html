@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chip' n Lo Tour</title>
+<meta name="description" content="“Saw that, done those” is such a common cliché among frequent fliers. But what if this turns out to be one of the most meaningful trips you've ever taken — where learning and experiencing open your eyes to a new vision that enriches your quality of life?">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chip' n Lo Tour">
+<meta property="og:description" content="“Saw that, done those” is such a common cliché among frequent fliers. But what if this turns out to be one of the most meaningful trips you've ever taken — where learning and experiencing open your eyes to a new vision that enriches your quality of life?">
+<meta property="og:image" content="images/img-02.jpg">
+<link rel="icon" href="images/img-01.png">
+<link rel="apple-touch-icon" href="images/img-01.png">
+<link id="app-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&amp;family=Figtree:wght@400;500;600;700&amp;family=Noto+Serif+Thai:wght@400;500;600&amp;family=Noto+Sans+Thai:wght@400;500;600;700&amp;display=swap">
+<style id="app-style">
+  #live-reviews{margin-bottom:8px}
+  #reviews.has-live .rv-track,#reviews.has-live .rv-nav{display:none}
+
+  :root{
+    --bg:#FBF8F3; --surface:#FFFFFF; --surface-2:#F4EFE6;
+    --ink:#241F19; --muted:#6E665A; --border:#E7DFD1;
+    --primary:#0F6E5C; --primary-ink:#0B5648; --gold:#B4832A;
+    --shadow:0 1px 2px rgba(40,32,20,.06),0 8px 24px rgba(40,32,20,.06);
+    --radius:16px; --maxw:1120px;
+    --serif:"Fraunces","Noto Serif Thai",Georgia,serif;
+    --sans:"Figtree","Noto Sans Thai",system-ui,-apple-system,sans-serif;
+    color-scheme:light dark;
+  }
+  :root:not([data-theme="light"]){}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#151210; --surface:#201B16; --surface-2:#2A241D;
+      --ink:#F2ECE1; --muted:#A79C8B; --border:#372F26;
+      --primary:#2FA187; --primary-ink:#4FBFA3; --gold:#D6A64A;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#151210; --surface:#201B16; --surface-2:#2A241D;
+    --ink:#F2ECE1; --muted:#A79C8B; --border:#372F26;
+    --primary:#2FA187; --primary-ink:#4FBFA3; --gold:#D6A64A;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  img{max-width:100%;display:block}
+  [hidden]{display:none!important}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.12;letter-spacing:-.01em;text-wrap:balance;margin:0}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:20px}
+  .eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-weight:600}
+  .btn{display:inline-flex;align-items:center;gap:.5em;border:1px solid transparent;border-radius:999px;padding:.72em 1.4em;font-family:var(--sans);font-weight:600;font-size:.95rem;cursor:pointer;text-decoration:none;transition:transform .15s ease,background .15s ease,border-color .15s ease;white-space:nowrap}
+  .btn:active{transform:translateY(1px)}
+  .btn svg{width:17px;height:17px;flex:none}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-ink)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+  .btn-sm{padding:.5em 1em;font-size:.85rem}
+
+  /* header */
+  header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .nav{display:flex;align-items:center;gap:18px;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.28rem;font-weight:600;text-decoration:none;letter-spacing:-.01em}
+  .brand .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--gold));display:grid;place-items:center;color:#fff;flex:none}
+  .brand .logo svg{width:20px;height:20px}
+  .brand .logo{position:relative}
+  .brand .logo.img{background:none;width:auto;height:40px;max-width:170px;border-radius:0}
+  .brand .logo.img img{height:40px;width:auto;max-width:170px;object-fit:contain}
+  .logo-hint{display:none;position:absolute;left:50%;top:100%;transform:translate(-50%,6px);background:var(--ink);color:var(--bg);font-family:var(--sans);font-size:.7rem;font-weight:600;padding:.3em .7em;border-radius:999px;white-space:nowrap;pointer-events:none;z-index:5}
+  body.editing .brand .logo{outline:1.5px dashed color-mix(in srgb,var(--primary) 70%,transparent);outline-offset:4px;cursor:pointer}
+  body.editing .brand .logo:hover{filter:brightness(1.08)}
+  body.editing .logo-hint{display:block}
+  .logo-reset{display:none;width:24px;height:24px;border-radius:7px;border:0;background:rgba(180,40,30,.92);color:#fff;cursor:pointer;align-items:center;justify-content:center;flex:none;margin-left:-4px}
+  .logo-reset svg{width:13px;height:13px}
+  body.editing .logo-reset{display:inline-flex}
+  .nav-links{display:flex;gap:22px;margin-left:8px}
+  .nav-links a{text-decoration:none;color:var(--muted);font-weight:500;font-size:.95rem;padding:6px 2px;border-bottom:2px solid transparent}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .langtog{display:inline-flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;font-size:.82rem;font-weight:600}
+  .langtog button{border:0;background:transparent;color:var(--muted);padding:.42em .8em;cursor:pointer;font-family:var(--sans);font-weight:600}
+  .langtog button.on{background:var(--ink);color:var(--bg)}
+  .menu-toggle{display:none;background:transparent;border:1px solid var(--border);border-radius:10px;width:40px;height:40px;cursor:pointer;color:var(--ink)}
+  .menu-toggle svg{width:20px;height:20px}
+  .hide-sm{display:inline-flex}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;z-index:0}
+  .hero-media{position:absolute;inset:0}
+  .hero-media .ph,.hero-media img{width:100%;height:100%;object-fit:cover}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(15,20,18,.28),rgba(15,20,18,.62))}
+  .hero-inner{position:relative;z-index:2;padding-block:96px 104px;color:#fff;max-width:720px}
+  .hero-inner .eyebrow{color:#ffe9b8}
+  .hero h1{font-size:clamp(2.3rem,6vw,3.9rem);margin:.35em 0 .45em;color:#fff}
+  .hero p.sub{font-size:clamp(1.02rem,2.2vw,1.22rem);color:rgba(255,255,255,.9);max-width:36em;margin:0 0 1.8em}
+  .hero .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+  .hero .btn-ghost{color:#fff;border-color:rgba(255,255,255,.5)}
+  .hero .btn-ghost:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,.12)}
+
+  /* top bar */
+  .topbar{background:var(--ink);color:var(--bg);font-size:.82rem}
+  .topbar .wrap{display:flex;justify-content:flex-end;align-items:center;gap:8px;height:34px}
+  .topbar a{color:inherit;text-decoration:none;opacity:.9;display:inline-flex;align-items:center;gap:6px}
+  .topbar a:hover{opacity:1}
+  .topbar svg{width:14px;height:14px}
+  .hero p.tag{font-family:var(--serif);font-style:italic;color:#ffe9b8;font-size:clamp(1rem,2vw,1.15rem);margin:-.6em 0 1.8em;max-width:36em}
+  /* moments strip */
+  section.moments{padding-block:44px 8px}
+  .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .mcell{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--surface-2)}
+  .mcell .ph,.mcell img{width:100%;height:100%;object-fit:cover}
+  .mcap{position:absolute;left:12px;bottom:12px;z-index:3;background:rgba(0,0,0,.55);color:#fff;padding:.3em .85em;border-radius:999px;font-weight:600;font-size:.85rem;backdrop-filter:blur(4px)}
+  /* services */
+  .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .fcard{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:28px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+  .fcard .ico{width:48px;height:48px;border-radius:14px;background:var(--surface-2);color:var(--primary);display:grid;place-items:center}
+  .fcard .ico svg{width:24px;height:24px}
+  .fcard h3{font-size:1.3rem}
+  .fcard p{margin:0;color:var(--muted);font-size:.98rem;flex:1}
+  .fcard .btn{align-self:flex-start;margin-top:6px}
+
+  /* generic section */
+  section.blk{padding-block:72px}
+  .sec-head{max-width:640px;margin-bottom:38px}
+  .sec-head h2{font-size:clamp(1.7rem,3.6vw,2.5rem);margin:.25em 0 .3em}
+  .sec-head p{color:var(--muted);margin:0;font-size:1.05rem}
+
+  /* about points */
+  .points{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .point{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+  .point .ico{width:44px;height:44px;border-radius:12px;background:var(--surface-2);color:var(--primary);display:grid;place-items:center;margin-bottom:14px}
+  .point .ico svg{width:23px;height:23px}
+  .point h3{font-size:1.2rem;margin-bottom:.35em}
+  .point p{margin:0;color:var(--muted);font-size:.98rem}
+
+  /* tours */
+  .tours-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative}
+  .tcard .media{aspect-ratio:4/3;position:relative;overflow:hidden}
+  .tcard .media .ph,.tcard .media img{width:100%;height:100%;object-fit:cover}
+  .tcard .region{position:absolute;top:12px;left:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-size:.74rem;font-weight:600;letter-spacing:.04em;padding:.32em .7em;border-radius:999px;backdrop-filter:blur(4px)}
+  .tcard .body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .tcard h3{font-size:1.28rem}
+  .tcard .desc{color:var(--muted);font-size:.96rem;margin:0;flex:1}
+  .tcard .meta{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px;padding-top:14px;border-top:1px solid var(--border)}
+  .tcard .dur{color:var(--muted);font-size:.88rem;display:inline-flex;align-items:center;gap:.4em}
+  .tcard .dur svg{width:14px;height:14px;opacity:.7;flex:none}
+  .tcard .price{font-family:var(--serif);font-size:1.15rem;color:var(--ink)}
+  .tcard .price b{color:var(--primary);font-weight:600}
+  .tcard .act{margin-top:12px}
+  .tcard .act .btn{width:100%;justify-content:center}
+
+  /* gallery */
+  .gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:14px}
+  .gcell{position:relative;border-radius:14px;overflow:hidden;background:var(--surface-2)}
+  .gcell:nth-child(4n+1){grid-row:span 2}
+  .gcell .ph,.gcell img{width:100%;height:100%;object-fit:cover}
+
+  /* reviews */
+  .rv-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+  .rv-top .sec-head{margin-bottom:0}
+  .rv-nav{display:flex;gap:8px}
+  .rv-nav button{width:42px;height:42px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+  .rv-nav button:hover{border-color:var(--primary);color:var(--primary)}
+  .rv-nav svg{width:18px;height:18px}
+  .rv-track{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 2px 14px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+  .rv-card{position:relative;flex:0 0 min(340px,84vw);scroll-snap-align:start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+  .rv-head{display:flex;align-items:center;gap:12px}
+  .rv-av{width:40px;height:40px;border-radius:999px;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+  .rv-name{font-weight:700;line-height:1.3}
+  .rv-date{font-size:.82rem;color:var(--muted)}
+  .rv-stars{display:flex;gap:2px;color:#E8A317}
+  .rv-stars span{font-size:1.1rem;line-height:1}
+  .rv-stars span.off{color:var(--border)}
+  body.editing .rv-stars span{cursor:pointer}
+  .rv-text{display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;margin:0;color:var(--ink);font-size:.97rem;flex:1}
+  .rv-card.open .rv-text,body.editing .rv-text{-webkit-line-clamp:unset;display:block}
+  .rv-track{align-items:flex-start}
+  .rv-toggle{display:none;align-self:flex-start;border:0;background:none;padding:0;color:var(--primary);font:600 .88rem var(--sans);cursor:pointer}
+  .rv-toggle.show{display:inline}
+  body.editing .rv-toggle{display:none}
+  .rv-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .rv-ph{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--surface-2);cursor:zoom-in}
+  .rv-ph img{width:100%;height:100%;object-fit:cover}
+  .rv-ph .more{position:absolute;inset:0;background:rgba(0,0,0,.5);color:#fff;font-weight:700;font-size:1.1rem;display:grid;place-items:center}
+  .rv-ph .x{display:none;position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:6px;border:0;background:rgba(180,40,30,.95);color:#fff;cursor:pointer;align-items:center;justify-content:center}
+  .rv-ph .x svg{width:12px;height:12px}
+  body.editing .rv-ph .x{display:flex}
+  body.editing .rv-ph{cursor:default}
+  .rv-phadd{display:none;aspect-ratio:1;border-radius:10px;border:1.5px dashed color-mix(in srgb,var(--primary) 60%,transparent);background:transparent;color:var(--primary);font:600 .72rem var(--sans);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .rv-phadd svg{width:18px;height:18px}
+  body.editing .rv-phadd{display:flex}
+  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:999px;border:0;background:rgba(255,255,255,.9);color:#241F19;cursor:pointer;display:grid;place-items:center;font-size:1.4rem}
+  .lb-prev{left:14px}.lb-next{right:14px}
+  .qr-view .box.photo{max-width:min(720px,100%);padding:10px}
+  .qr-view .box.photo img{width:min(600px,84vw);max-height:78vh;object-fit:contain;margin:0 auto}
+  .rw-box{background:var(--surface);color:var(--ink);border-radius:20px;padding:26px;width:min(460px,100%);max-height:90vh;overflow:auto;text-align:left;position:relative}
+  .rw-box h3{font-size:1.4rem;margin-bottom:.3em}
+  .rw-box .hint{color:var(--muted);font-size:.9rem;margin:0 0 16px}
+  .rw-box label{display:block;font-size:.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+  .rw-box input,.rw-box textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:.7em .85em}
+  .rw-box textarea{min-height:120px;resize:vertical}
+  .rw-box input:focus,.rw-box textarea:focus{outline:2px solid var(--primary);outline-offset:1px}
+  .rw-stars{display:flex;gap:4px}
+  .rw-stars button{border:0;background:none;font-size:1.9rem;line-height:1;color:var(--border);cursor:pointer;padding:0 2px}
+  .rw-stars button.on{color:#E8A317}
+  .rw-actions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+  .rw-actions .btn{justify-content:center;width:100%}
+  .rw-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--ink);cursor:pointer;font-size:1.2rem;line-height:1}
+  .rw-err{color:#b4281e;font-size:.88rem;margin-top:8px;min-height:1.2em}
+  body.editing .rv-write{display:none}
+  .rv-src{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .rv-src b{font-weight:700;background:linear-gradient(90deg,#4285F4,#EA4335,#FBBC05,#34A853);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .rv-more{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .rv-url{display:none;font-size:.85rem;color:var(--muted)}
+  body.editing .rv-url{display:block;flex-basis:100%}
+  .rv-empty{display:none;color:var(--muted);font-size:.95rem;padding:18px;border:1.5px dashed var(--border);border-radius:var(--radius)}
+  body.editing .rv-empty{display:block}
+  .ph{background:linear-gradient(150deg,var(--c1,#0F6E5C),var(--c2,#123B4E));display:grid;place-items:center;position:relative}
+  .ph::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 22% 78%,rgba(255,255,255,.14),transparent 42%),radial-gradient(circle at 82% 22%,rgba(255,255,255,.1),transparent 40%)}
+  .ph svg{width:34px;height:34px;opacity:.55;color:#fff;position:relative}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
+  .clist{display:flex;flex-direction:column;gap:2px}
+  .crow{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border)}
+  .crow:last-child{border-bottom:0}
+  .crow .ico{width:40px;height:40px;flex:none;border-radius:11px;background:var(--surface-2);color:var(--primary);display:grid;place-items:center}
+  .crow .ico svg{width:20px;height:20px}
+  .crow .lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .crow .val{font-weight:600;word-break:break-word}
+  .crow .val a{text-decoration:none}
+  .crow .val a:hover{color:var(--primary)}
+  .contact-cta{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow)}
+  .contact-media{position:relative;margin:-30px -30px 24px;aspect-ratio:16/10;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0}
+  .contact-media .ph,.contact-media img{width:100%;height:100%;object-fit:cover}
+  .contact-cta{overflow:hidden}
+  .crow .cbody{flex:1;min-width:0}
+  .qr-wrap{margin-top:12px;display:flex}
+  .qr{flex:none;position:relative;width:150px;height:150px;border-radius:10px;border:1px solid var(--border);background:#fff;padding:5px;cursor:zoom-in}
+  .qr img{width:100%;height:100%;object-fit:contain}
+  .qr-add{display:none;flex:none;width:150px;height:150px;border-radius:10px;border:1.5px dashed color-mix(in srgb,var(--primary) 60%,transparent);background:transparent;color:var(--primary);font:600 .78rem var(--sans);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+  .qr-add svg{width:20px;height:20px}
+  body.editing .qr-add{display:flex}
+  body.editing .qr{cursor:pointer}
+  .qr-del{display:none;position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:7px;border:0;background:rgba(180,40,30,.95);color:#fff;cursor:pointer;align-items:center;justify-content:center}
+  .qr-del svg{width:13px;height:13px}
+  body.editing .qr-del{display:flex}
+  .qr-hint{display:none;position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);background:var(--ink);color:var(--bg);font:600 .66rem var(--sans);padding:.2em .6em;border-radius:999px;white-space:nowrap}
+  body.editing .qr-hint{display:block}
+  .qr-view{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:24px}
+  .qr-view .box{background:#fff;border-radius:18px;padding:18px;max-width:min(360px,100%);text-align:center;color:#241F19}
+  .qr-view img{width:100%;height:auto;display:block}
+  .qr-view .cap{margin-top:10px;font-weight:600}
+  .contact-cta h3{font-size:1.4rem;margin-bottom:.4em}
+  .contact-cta p{color:var(--muted);margin:0 0 1.2em}
+  .contact-cta .btn{width:100%;justify-content:center;margin-bottom:10px}
+
+  footer.site{border-top:1px solid var(--border);padding-block:34px;color:var(--muted);font-size:.9rem}
+  footer.site .frow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+
+  /* ===== admin / edit ===== */
+  #adminbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--ink);color:var(--bg);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;box-shadow:0 -6px 24px rgba(0,0,0,.18)}
+  #adminbar .ab-msg{font-size:.9rem;font-weight:500;flex:1;min-width:0}
+  #adminbar .ab-msg small{opacity:.7;font-weight:400}
+  #adminbar .ab-btns{display:flex;gap:8px;flex:none}
+  #adminbar .btn{border-radius:10px}
+  #adminbar .btn-primary{background:var(--gold);color:#231a06}
+  #adminbar .btn-primary:hover{filter:brightness(1.06)}
+  #adminbar .btn-ghost{color:var(--bg);border-color:rgba(255,255,255,.32)}
+  #adminbar .btn-ghost:hover{border-color:var(--bg);color:var(--bg);background:rgba(255,255,255,.1)}
+  #adminbar.busy{opacity:.7;pointer-events:none}
+  body.editing{padding-bottom:64px}
+
+  body.editing [data-edit]{outline:1.5px dashed color-mix(in srgb,var(--primary) 55%,transparent);outline-offset:3px;border-radius:3px;cursor:text;transition:background .12s}
+  body.editing [data-edit]:empty{display:inline-block;min-width:8em;min-height:1.4em}
+  body.editing [data-edit]:hover{background:color-mix(in srgb,var(--primary) 10%,transparent)}
+  body.editing [data-edit]:focus{outline:2px solid var(--primary);background:color-mix(in srgb,var(--primary) 8%,transparent)}
+  body.editing .hero [data-edit]:hover,body.editing .hero [data-edit]:focus{background:rgba(255,255,255,.14)}
+
+  .imgedit{position:absolute;right:10px;bottom:10px;z-index:20;display:none;cursor:pointer}
+  body.editing .imgedit{display:inline-flex}
+  .imgedit span{background:#fff;color:#241F19;font-size:.8rem;font-weight:600;padding:.55em 1em;border-radius:999px;box-shadow:0 2px 12px rgba(0,0,0,.35);display:inline-flex;gap:.45em;align-items:center;white-space:nowrap;border:1px solid rgba(0,0,0,.06)}
+  .imgedit span:hover{background:#f3efe6}
+  .imgedit span svg{width:15px;height:15px}
+
+  .editctl{display:none}
+  body.editing .editctl{display:inline-flex}
+  .card-del{display:none;position:absolute;top:12px;right:12px;z-index:6;width:34px;height:34px;border-radius:9px;border:0;background:rgba(180,40,30,.92);color:#fff;cursor:pointer;align-items:center;justify-content:center}
+  body.editing .card-del{display:flex}
+  .card-del svg{width:17px;height:17px}
+  .addbtn{display:none;margin-top:26px}
+  body.editing .addbtn{display:inline-flex}
+  .drag-h{display:none;position:absolute;top:16px;right:56px;z-index:7;align-items:center;gap:6px;padding:.4em .9em;border-radius:999px;border:0;background:rgba(255,255,255,.95);color:#241F19;font:600 .78rem var(--sans);cursor:grab;box-shadow:0 2px 10px rgba(0,0,0,.25);touch-action:none;user-select:none}
+  .drag-h svg{width:16px;height:16px}
+  body.editing .drag-h{display:inline-flex}
+  .tcard.dragging{opacity:.55;outline:2px dashed var(--primary);outline-offset:4px}
+  body.drag-active,body.drag-active *{cursor:grabbing!important;user-select:none!important}
+  .gcell .card-del{width:28px;height:28px;top:8px;right:8px}
+
+  .toast{position:fixed;left:50%;top:calc(20px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:80;background:var(--ink);color:var(--bg);padding:.8em 1.3em;border-radius:12px;font-weight:600;font-size:.92rem;box-shadow:var(--shadow);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:860px){
+    .fgrid{grid-template-columns:1fr}
+    .points,.tours-grid{grid-template-columns:repeat(2,1fr)}
+    .gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px}
+    .contact-grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .menu-toggle{display:grid;place-items:center}
+    .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px;gap:6px}
+  }
+  @media (max-width:560px){
+    .mgrid{grid-template-columns:1fr}
+    .topbar .wrap{justify-content:center}
+    .points,.tours-grid{grid-template-columns:1fr}
+    .hero-inner{padding-block:66px 74px}
+    section.blk{padding-block:52px}
+    #adminbar{flex-wrap:wrap}
+    #adminbar .ab-msg{flex-basis:100%}
+    .hide-sm{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<script id="site-data" type="application/json">{"brand":{"name":"Chip' n Lo Tour","tagline_en":"Northern Thailand, thoughtfully guided","tagline_th":"เที่ยวเหนือ อย่างเข้าใจ","logo":"images/img-01.png"},"hero":{"img":"images/img-02.jpg","eyebrow_en":"Chip'N Lo Tour · Chiang Mai","eyebrow_th":"Chip'N Lo Tour · เชียงใหม่","title_en":"Beyond a typical tour","title_th":"มากกว่าทัวร์ทั่วไป","sub_en":"“Saw that, done those” is such a common cliché among frequent fliers. But what if this turns out to be one of the most meaningful trips you've ever taken — where learning and experiencing open your eyes to a new vision that enriches your quality of life?","sub_th":"“เคยเห็นแล้ว เคยไปมาหมดแล้ว” คือประโยคที่นักเดินทางตัวยงพูดกันจนชิน แต่ถ้าทริปนี้กลายเป็นหนึ่งในการเดินทางที่มีความหมายที่สุดของคุณ ที่การเรียนรู้และประสบการณ์เปิดมุมมองใหม่ และเติมเต็มคุณภาพชีวิตของคุณล่ะ?","cta_en":"Explore tours","cta_th":"ดูแพ็กเกจทัวร์","cta2_en":"Contact us","cta2_th":"ติดต่อเรา","tag_en":"Bring home a memorable time with the comfort of hospitality — as if you've found a second home.","tag_th":"กลับบ้านพร้อมความทรงจำดีๆ และการต้อนรับที่อบอุ่น เหมือนได้พบบ้านหลังที่สอง","book_en":"Book a tour","book_th":"จองทัวร์"},"about":{"eyebrow_en":"Why us","eyebrow_th":"ทำไมต้องเรา","title_en":"We keep our promises — and your expectations","title_th":"เราใส่ใจให้ทุกทริปตรงกับที่คุณคาดหวัง","sub_en":"As a tour operator and agency, we put real effort into meeting every customer's expectations.","sub_th":"ในฐานะผู้ประกอบการและเอเจนซีทัวร์ เราตั้งใจทำทุกทริปให้ตรงกับความคาดหวังของลูกค้า","points":[{"title_en":"No language barrier","title_th":"ไม่มีปัญหาเรื่องภาษา","body_en":"We have strong communication skills, so the language barrier is down to zero.","body_th":"เราสื่อสารได้ดี หมดห่วงเรื่องอุปสรรคด้านภาษา"},{"title_en":"360° storytelling","title_th":"เล่าเรื่องรอบด้าน 360 องศา","body_en":"We provide insightful and analytical information, with facts and data wherever they matter.","body_th":"เราให้ข้อมูลเชิงลึกและวิเคราะห์ พร้อมข้อเท็จจริงและข้อมูลที่ถูกต้องในทุกเรื่องที่สำคัญ"},{"title_en":"Checked & trusted","title_th":"ตรวจสอบจริง ไว้ใจได้","body_en":"We regularly inspect camps and activity areas so what you see matches reality, and work closely with our partner tour operators for your satisfaction.","body_th":"เราตรวจเยี่ยมแคมป์และพื้นที่ทำกิจกรรมอย่างสม่ำเสมอ ให้สิ่งที่คุณเห็นตรงกับของจริง และร่วมงานใกล้ชิดกับพันธมิตรผู้ประกอบการทัวร์ เพื่อความพึงพอใจของคุณ"}]},"toursSection":{"eyebrow_en":"Our tours","eyebrow_th":"แพ็กเกจทัวร์ของเรา","title_en":"Journeys across the North","title_th":"เส้นทางทั่วภาคเหนือ","sub_en":"Hand-picked day trips and multi-day adventures. Prices are per person and fully customisable.","sub_th":"ทริปวันเดียวและทริปหลายวันคัดสรรมาอย่างดี ราคาต่อท่าน ปรับเปลี่ยนได้ตามต้องการ"},"tours":[{"img":"","c1":"#0F6E5C","c2":"#0B4A5C","region_en":"Chiang Mai","region_th":"เชียงใหม่","title_en":"Old City Temples & Doi Suthep","title_th":"วัดเมืองเก่า และดอยสุเทพ","desc_en":"Wander the moated old city, its centuries-old temples, then climb to the golden mountaintop temple of Doi Suthep at sunset.","desc_th":"เดินชมเมืองเก่าในคูเมือง วัดวาอารามอายุหลายร้อยปี แล้วขึ้นสู่วัดพระธาตุดอยสุเทพยามพระอาทิตย์ตก","dur_en":"Full day · 8 hrs","dur_th":"เต็มวัน · 8 ชม.","price":"1,500"},{"img":"","c1":"#1C5E8A","c2":"#123B4E","region_en":"Chiang Rai","region_th":"เชียงราย","title_en":"White Temple, Blue Temple & Golden Triangle","title_th":"วัดขาว วัดน้ำเงิน และสามเหลี่ยมทองคำ","desc_en":"A day of striking art-temples and river views where Thailand, Laos and Myanmar meet along the mighty Mekong.","desc_th":"หนึ่งวันกับวัดศิลปะสุดตระการตา และวิวแม่น้ำโขง ณ จุดบรรจบของไทย ลาว และเมียนมา","dur_en":"Full day · 10 hrs","dur_th":"เต็มวัน · 10 ชม.","price":"2,200"},{"img":"","c1":"#7A5A17","c2":"#3E2E10","region_en":"Chiang Mai","region_th":"ปาย","title_en":"Doi Inthanon National Park","title_th":"พักผ่อนหุบเขาปาย","desc_en":"Wind up the 762 curves to the laid-back valley town of Pai — hot springs, canyons, waterfalls and slow mornings.","desc_th":"ไต่ 762 โค้งสู่เมืองปายในหุบเขาสุดชิล บ่อน้ำพุร้อน แคนยอน น้ำตก และเช้าที่แสนสบาย","dur_en":"2 days · 1 night","dur_th":"2 วัน · 1 คืน","price":"5,900"},{"img":"","c1":"#3E6B3A","c2":"#1E3A22","region_en":"Mae Hong Son","region_th":"แม่ฮ่องสอน","title_en":"Hill-Tribe Villages & Mountain Sunrise","title_th":"หมู่บ้านชาวเขา และอรุณรุ่งบนภูเขา","desc_en":"Deep into the mountains to meet Karen and Lisu communities, mist-filled valleys and an unforgettable sunrise.","desc_th":"ลึกเข้าไปในขุนเขา พบชุมชนกะเหรี่ยงและลีซู หุบเขาในสายหมอก และอรุณรุ่งที่ไม่มีวันลืม","dur_en":"2 days · 1 night","dur_th":"2 วัน · 1 คืน","price":"6,500"},{"img":"","c1":"#8A3B2E","c2":"#4A1E17","region_en":"Chiang Mai","region_th":"เชียงใหม่","title_en":"Yi Peng Lantern Festival Evening","title_th":"ค่ำคืนเทศกาลยี่เป็ง","desc_en":"Release a lantern into the November night sky at the Yi Peng festival — includes lantern, krathong, dinner and transfers.","desc_th":"ปล่อยโคมลอยสู่ท้องฟ้ายามค่ำคืนเดือนพฤศจิกายนในเทศกาลยี่เป็ง รวมโคม กระทง อาหารเย็น และรถรับส่ง","dur_en":"Seasonal · Nov","dur_th":"ตามฤดูกาล · พ.ย.","price":"2,590"},{"img":"","c1":"#5A3B7A","c2":"#2E1E4A","region_en":"Chiang Mai","region_th":"เชียงใหม่","title_en":"Elephant Sanctuary & Jungle Day","title_th":"วันแห่งช้างและป่าเขา","desc_en":"An ethical sanctuary visit — feed and walk alongside rescued elephants, then cool off at a jungle waterfall.","desc_th":"เยือนปางช้างที่ดูแลอย่างมีจริยธรรม ให้อาหารและเดินเคียงข้างช้างที่ได้รับการช่วยเหลือ แล้วคลายร้อนที่น้ำตกกลางป่า","dur_en":"Full day · 7 hrs","dur_th":"เต็มวัน · 7 ชม.","price":"2,400"}],"gallerySection":{"eyebrow_en":"Gallery","eyebrow_th":"แกลเลอรี","title_en":"Moments from the road","title_th":"ช่วงเวลาระหว่างทาง","sub_en":"A glimpse of the landscapes and people you'll meet.","sub_th":"ภาพบางส่วนของทิวทัศน์และผู้คนที่คุณจะได้พบ"},"gallery":[{"img":"images/img-03.jpg","c1":"#0F6E5C","c2":"#0B3B4E"},{"img":"images/img-04.jpg","c1":"#1C5E8A","c2":"#123B4E"},{"img":"images/img-05.jpg","c1":"#7A5A17","c2":"#3E2E10"},{"img":"images/img-06.jpg","c1":"#3E6B3A","c2":"#1E3A22"},{"img":"images/img-07.jpg","c1":"#8A3B2E","c2":"#4A1E17"},{"img":"images/img-08.jpg","c1":"#5A3B7A","c2":"#2E1E4A"},{"img":"images/img-09.jpg","c1":"#2E6B6B","c2":"#123B3B"},{"img":"images/img-10.jpg","c1":"#8A6A2E","c2":"#4A3810"}],"contact":{"eyebrow_en":"Get in touch","eyebrow_th":"ติดต่อเรา","title_en":"Plan your Northern Thailand trip","title_th":"วางแผนทริปภาคเหนือของคุณ","sub_en":"Tell us your dates and what you'd love to see. We'll reply within 24 hours with a tailored plan.","sub_th":"บอกวันเดินทางและสิ่งที่อยากเห็น เราจะตอบกลับพร้อมแผนการเดินทางเฉพาะคุณภายใน 24 ชั่วโมง","phone":"+66 84-658-2609 / +66 81-816-8957","email":"chipandlotour@gmail.com","line":"","whatsapp":"+66 91 859 3873","addr_en":"1 2-3 ถนน ศรีดอนไชย ตำบลช้างคลาน Muang เชียงใหม่ 50100","addr_th":"11/10 ถ.สุริยวงศ์ อ.เมือง จ.เชียงใหม่ 50100","hours_en":"Open daily · 8:00 – 20:00","hours_th":"เปิดทุกวัน · 8:00 – 20:00","wechat":"Chipandlotour","img":"","c1":"#8A3B2E","c2":"#123B4E","wechat_qr":"images/img-11.png","whatsapp_qr":"images/img-12.png","line_qr":"images/img-13.png"},"footer":{"note_en":"Licensed tour operator based in Chiang Mai, Thailand.","note_th":"ผู้ประกอบการนำเที่ยวที่ได้รับใบอนุญาต ตั้งอยู่ในจังหวัดเชียงใหม่"},"reviewsSection":{"eyebrow_en":"Reviews","eyebrow_th":"รีวิวจากลูกค้า","title_en":"What our travellers say","title_th":"เสียงจากลูกค้าของเรา","sub_en":"Real reviews from our guests on Google Maps.","sub_th":"รีวิวจริงจากลูกค้าบน Google Maps","url":"https://maps.app.goo.gl/E5vkiAKZoJw5pVp38"},"reviews":[{"name":"John Bambi","date":"Jul 2026","rating":5,"text":"Great experience! Always offers trips perfectly tailored to our expectations and tastes, with excellent advice on the top things to see and do. Unbeatable value for money and a truly lovely person. I highly recommend!\n\nSuper expérience ! On nous propose toujours des voyages parfaitement adaptés à nos attentes et à nos goûts, avec d'excellents conseils sur les incontournables à faire et à voir. Le rapport qualité-prix est imbattable et c'est une personne d'une grande gentillesse. Je recommande vivement !"},{"name":"Mindy Lively","date":"Jul 2026","rating":5,"text":"Wonderful and helpful. Very energetic owner has tried all the tours herself so she knows which ones are good. I recommend this service to all my friends."},{"name":"Chu Amy","date":"May 2026","rating":5,"text":"We have a great trip through owner’s arrangement .and reply the questions if any . It’s a highly recommend travel agency when visit Ching Mai."},{"name":"Piotr I.","date":"Jan 2026","rating":5,"text":"I booked a river rafting and waterfall tour from this agency. I had a wonderful time. The agency's staff is very professional and will advise you on the best price from several offers. This travel agency is highly recommended."},{"name":"R TSC","date":"Dec 2025","rating":5,"text":"Fantastic trips at an extra cheap cost, really nice people!"},{"name":"David Asuncion","date":"Nov 2025","rating":5,"text":"Great agency, they are capable to arrange trips for your needs, always on top of everything, they will follow up to check that everything is as it should be. Organize bus tickets as well.\nAll and all Great Agency"},{"name":"Gaminglizard 6","date":"2025","rating":5,"text":"Very friendly and very helpful! She organised our trip to see the elephants just outside Chiang Mai and our lift back to the airport from the same elephant shuttle. We’ll definitely be coming back to this place next time we’re in Chiang mai 😎🤙 …"},{"name":"dani sol","date":"2025","rating":5,"text":"I went on the elephant trip, it was so good! A whole day filled with activities and delicious food! Funny tour guide was so much fun!\nToom is so nice and very helpful.\nThank you!"},{"name":"anida o","date":"2025","rating":5,"text":"I love Chipnlo - she has such a charisma and is genuinely committed that we feel great and have good time! And sure we did - we are hopefully coming back!"},{"name":"池田正太","date":"2025","rating":4,"text":"日本人です。\nここでバイクレンタルしました。 フレンドリーでとても良かったです！"},{"name":"Allen Wang","date":"2024","rating":5,"text":"Good price for the two - one day tours I bought (Doi Inthanon Park... & Elephant Sanctuary ...) with friendly service from the owner.","photos":["images/img-14.jpg","images/img-15.jpg","images/img-16.jpg"]},{"name":"Leyla","date":"2024","rating":5,"text":"סוכנות מדהימה דוברי אנגלית\nסגרנו דרכם טיול חצי יום לפילים smile elephant והיה ממש כיף והמחיר הכי זול שמצאנו בהשוואה לשאר המקומות","photos":["images/img-17.jpg","images/img-18.jpg"]},{"name":"Benjamin","date":"2024","rating":5,"text":"We had an exceptional experience with chip' n lo tour. The lovely lady in charge went above and beyond to assist us, not just answering our myriad of questions with patience but also coming to our rescue when we lost our tickets. Her commitment to customer satisfaction is evident, and I wholeheartedly recommend this business to any traveler seeking a seamless experience. Thank you for making our trip memorable!"},{"name":"Amy-Louise Robertson","date":"2024","rating":5,"text":"I had such a great experience with chip'n lo tours! The wonderful lady helped me book two great tours for my time in Chiang Mai. There was no problem with last minute booking for the next day, and there is lots of choice to choose from!!\n\nThe communication is great from chip'n lo, and I was provided with plenty of information about the tour itself and pick up, etc. It was very easy and convenient for me, all I had to do was say the attractions I was interested in, and chip'n lo sorted everything out! Ideal for when you are in holiday-mode 😁\n\nThe tours themselves are well organised and offer jam-packed schedules of exploring.\n\nI would definitely recommend you use chip'n lo for your tour booking needs ☀️☀️☀️☀️☀️"},{"name":"Nazim Bayram","date":"2024","rating":5,"text":"Haben 3 touren gebucht bei chip'n lo tour: doi inthanon, elephant care und doi suthep. Die Doi Suthep Tour war schön, aber der Reiseleiter konnte nicht viel über die Tempel erzählen. Trotzdem waren alle drei Touren toll und es hat sich …"},{"name":"Krzysztof Kłosowski","date":"2024","rating":5,"text":"Bardzo miła, otwarta i wesoła pani właścicielka, która udzieliła nam wszystkich potrzebnych informacji i doradziła jaką wycieczkę wybrać (po angielsku). Wycieczka była dokładnie taka jak pani opowiedziała. Wszystko się zgadzało. Dostaliśmy …"},{"name":"Kiran Kumari","date":"2024","rating":5,"text":"Very helpful person, arranged a day trip with all information and very reason price. Prices are lesser than online packages and a very friendly tour team. Thanks !"},{"name":"Lena","date":"2024","rating":5,"text":"Wszystko dobrze zorganizowane, świetny przewodnik i dobra cena.\nPolecam!"},{"name":"Francis","date":"2024","rating":5,"text":"fantastic tour guide. very friendly and helpful through the process"},{"name":"L H","date":"2023","rating":5,"text":"I have to give Toom five stars! She is so sweet and helpful. She doesn’t only sell tour tickets, but she cares most for my experience. She always asked me how was the tour and how was the activity after I came back. I had booked quite a few camps and tours from her. I’d definitely recommend her to my friends if they come to Chiangmai."},{"name":"Siva Nageshwara rao CH","date":"2023","rating":5,"text":"We are very thrilled to book the trip with Chip' n lo tour.\nVery nice service by the lady - very cheerful and friendly."},{"name":"Dordini Matteo","date":"2023","rating":5,"text":"Vraiment génial, assume où trouver les meilleurs prix avec des remises. Excellente très bon suivi également pendant le séjour vous pouvez quasiment tout lui demander. 👌 …"}],"moments":[{"img":"","c1":"#3E6B3A","c2":"#1E3A22","cap_en":"Meditation","cap_th":"การทำสมาธิ"},{"img":"","c1":"#8A6A2E","c2":"#4A3810","cap_en":"Sincere laughter","cap_th":"เสียงหัวเราะที่จริงใจ"},{"img":"","c1":"#2E6B6B","c2":"#123B3B","cap_en":"Tranquil green forest & stream","cap_th":"ผืนป่าเขียวขจีและลำธารอันสงบ"}],"services":{"eyebrow_en":"What we offer","eyebrow_th":"บริการของเรา","title_en":"Trips shaped around you","title_th":"ทริปที่ออกแบบมาเพื่อคุณ","sub_en":"Tell us what you have in mind — we'll take care of the rest.","sub_th":"บอกเราว่าคุณอยากได้แบบไหน ที่เหลือเราจัดการให้","cards":[{"title_en":"Customizing","title_th":"ออกแบบทริปเอง","body_en":"Throw in what you have in mind. We'll cook it up in 5 minutes, or until you're pleased. We promise never to leave you thinking alone or lead you into a tourist trap.","body_th":"บอกไอเดียที่คุณมีมาได้เลย เราจะจัดทริปให้ภายใน 5 นาที หรือจนกว่าคุณจะพอใจ เราสัญญาว่าจะไม่ปล่อยให้คุณคิดคนเดียว และจะไม่พาคุณไปติดกับดักนักท่องเที่ยว","cta_en":"Get started","cta_th":"เริ่มเลย","link":"#contact"},{"title_en":"Transportation","title_th":"รถรับส่งพร้อมคนขับ","body_en":"A great choice for free spirits who play it by ear and let the real vibe bring them to places and people. Enjoy your holiday at your own pace — we simply make sure you get there in comfort and safety, with a concierge-like driver.","body_th":"เหมาะสำหรับคนรักอิสระที่อยากเที่ยวแบบไม่ต้องวางแผนมาก ปล่อยให้บรรยากาศพาไปพบสถานที่และผู้คน เที่ยวตามจังหวะของคุณเอง เราดูแลให้คุณเดินทางอย่างสะดวกสบายและปลอดภัย พร้อมคนขับที่ดูแลเหมือนผู้ช่วยส่วนตัว","cta_en":"Learn more","cta_th":"ดูรายละเอียด","link":"#contact"},{"title_en":"Special Interest","title_th":"ทริปตามความสนใจพิเศษ","body_en":"Temples and history, photography, local food, trekking or wellness — tell us your passion and we'll build a trip around it.","body_th":"วัดและประวัติศาสตร์ การถ่ายภาพ อาหารท้องถิ่น เดินป่า หรือสุขภาพ บอกความสนใจของคุณ แล้วเราจะออกแบบทริปให้","cta_en":"Learn more","cta_th":"ดูรายละเอียด","link":"#contact"}]}}</script>
+<div id="app"></div>
+<!-- ============================================================
+     วิดเจ็ตรีวิว Google (Trustindex / Elfsight ฯลฯ)
+     วางโค้ดวิดเจ็ตที่ได้จากเว็บผู้ให้บริการ "ระหว่าง" 2 บรรทัดด้านล่างนี้
+     พอวางแล้ว เว็บจะเอาวิดเจ็ตไปแสดงในส่วนรีวิวแทนการ์ดรีวิวที่พิมพ์ไว้เอง
+     ถ้าเว้นว่างไว้ เว็บจะแสดงการ์ดรีวิวเดิมตามปกติ
+     ============================================================ -->
+<div id="live-reviews" hidden>
+<!-- วางโค้ดวิดเจ็ตตรงนี้ -->
+</div>
+<!-- ============================================================ -->
+
+<script id="app-code">
+(function(){
+  "use strict";
+  function showBanner(msg){ try{ var b=document.getElementById("__err"); if(!b){ b=document.createElement("div"); b.id="__err"; b.style.cssText="position:fixed;left:0;right:0;top:0;z-index:99999;background:#b4281e;color:#fff;font:600 13px/1.45 system-ui,sans-serif;padding:10px 40px 10px 14px;text-align:center"; var x=document.createElement("button"); x.textContent="×"; x.style.cssText="position:absolute;right:8px;top:6px;background:none;border:0;color:#fff;font-size:18px;cursor:pointer"; x.onclick=function(){b.remove();}; (document.body||document.documentElement).appendChild(b); b.appendChild(x);} b.firstChild?(b.insertBefore(document.createTextNode(msg),b.firstChild)):(b.textContent=msg); }catch(_){ } }
+  window.addEventListener("error",function(e){ if(e&&e.error) showBanner("⚠ "+(e.error.message||e.message||"script error")); });
+  window.addEventListener("unhandledrejection",function(e){ var r=e&&e.reason; if(r&&(r.message||typeof r==="string")) showBanner("⚠ "+(r.message||r)); });
+  try{
+  var LS_LANG="lj_lang", ENDS="<\/script>";
+  var data = JSON.parse(document.getElementById("site-data").textContent);
+  var lang = "en";
+  try{ var s=localStorage.getItem(LS_LANG); if(s==="en"||s==="th") lang=s; }catch(e){}
+  var editing=false, canEdit=false, artifactNS=null, editEnteredAt=0;
+
+  // ---------- helpers ----------
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function t(o,k){ if(!o) return ""; var v=o[k+"_"+lang]; return (v==null||v==="")? (o[k+"_en"]||"") : v; }
+  var ICON={
+    lantern:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M8 4h8l-1 3H9L8 4z"/><rect x="7" y="7" width="10" height="11" rx="4"/><path d="M12 18v3"/><path d="M10 21h4"/></svg>',
+    guide:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>',
+    group:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5.5a3 3 0 0 1 0 5.6"/><path d="M18 20a6 6 0 0 0-3-5.2"/></svg>',
+    leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-6 7-9 16-9 0 9-3 16-9 16z"/><path d="M4 20c3-4 6-6 10-7"/></svg>',
+    phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.9a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.9.7a2 2 0 0 1 1.7 2z"/></svg>',
+    mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>',
+    chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg>',
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+    trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>',
+    wechat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.2A6.6 5.6 0 1 0 5 13.4L4 16.5l3.2-1.6a7.5 7.5 0 0 0 2.3.5"/><path d="M20.5 15.1c0-2.7-2.6-4.9-5.8-4.9s-5.8 2.2-5.8 4.9 2.6 4.9 5.8 4.9c.7 0 1.4-.1 2-.3l2.6 1.3-.8-2.4a4.6 4.6 0 0 0 2-3.5z"/><circle cx="7.6" cy="8.6" r=".6" fill="currentColor"/><circle cx="11.6" cy="8.6" r=".6" fill="currentColor"/></svg>',
+    sliders:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>',
+    car:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M3 17v-4l2-5h14l2 5v4"/><path d="M3 13h18"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>',
+    star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+    plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>'
+  };
+  function media(obj, cls){
+    if(obj && obj.img){ return '<img src="'+esc(obj.img)+'" alt="">'; }
+    var c1=(obj&&obj.c1)||"#0F6E5C", c2=(obj&&obj.c2)||"#123B4E";
+    return '<div class="ph" style="--c1:'+esc(c1)+';--c2:'+esc(c2)+'">'+ICON.cam+'</div>';
+  }
+  function imgOverlay(path){
+    return '<label class="imgedit" data-img="'+esc(path)+'"><span>'+ICON.cam+(lang==="th"?"เปลี่ยนรูป":"Change photo")+'</span><input type="file" accept="image/*" hidden></label>';
+  }
+  function ed(path){ return ' data-edit="'+esc(path)+'" '; }
+
+  // ---------- render ----------
+  function render(){
+    var d=data, H=[];
+    // header
+    if(d.contact&&d.contact.email) H.push('<div class="topbar"><div class="wrap"><a href="mailto:'+esc(d.contact.email)+'">'+ICON.mail+esc(d.contact.email)+'</a></div></div>');
+    H.push('<header class="site"><div class="wrap nav">');
+    var hasLogo=!!(d.brand&&d.brand.logo);
+    H.push('<a class="brand" href="#top"><span class="logo'+(hasLogo?' img':'')+'" id="brandlogo" title="'+(lang==="th"?"คลิกเพื่อเปลี่ยนโลโก้":"Click to change logo")+'">'+(hasLogo?'<img src="'+esc(d.brand.logo)+'" alt="'+esc(d.brand.name)+' logo">':ICON.lantern)+'<span class="logo-hint">'+(lang==="th"?"คลิกเปลี่ยนโลโก้":"Change logo")+'</span></span><span'+ed("brand.name")+'>'+esc(d.brand.name)+'</span></a>');
+    if(hasLogo) H.push('<button class="logo-reset" id="logoreset" title="'+(lang==="th"?"ลบโลโก้ กลับไปใช้แบบเดิม":"Remove logo")+'">'+ICON.trash+'</button>');
+    H.push('<nav class="nav-links" id="navlinks">');
+    H.push('<a href="#top">'+(lang==="th"?"หน้าแรก":"Home")+'</a>');
+    H.push('<a href="#about">'+(lang==="th"?"เกี่ยวกับเรา":"About")+'</a>');
+    H.push('<a href="#tours">'+(lang==="th"?"ทัวร์":"Tours")+'</a>');
+    if((d.reviews||[]).length||(d.reviewsSection&&d.reviewsSection.url)) H.push('<a href="#reviews">'+(lang==="th"?"รีวิว":"Reviews")+'</a>');
+    H.push('<a href="#contact">'+(lang==="th"?"ติดต่อ":"Contact")+'</a>');
+    H.push('</nav>');
+    H.push('<div class="nav-right">');
+    H.push('<div class="langtog"><button data-lang="en" class="'+(lang==="en"?"on":"")+'">EN</button><button data-lang="th" class="'+(lang==="th"?"on":"")+'">TH</button></div>');
+    H.push('<a class="btn btn-primary btn-sm hide-sm" href="#contact"'+ed("hero.book")+'>'+esc(t(d.hero,"book")||t(d.hero,"cta2"))+'</a>');
+    H.push('<button class="menu-toggle" id="menubtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>');
+    H.push('</div></div></header>');
+
+    // hero
+    H.push('<section class="hero" id="top"><div class="hero-media">'+media(d.hero)+imgOverlay("hero.img")+'</div>');
+    H.push('<div class="wrap hero-inner">');
+    H.push('<div class="eyebrow"'+ed("hero.eyebrow")+'>'+esc(t(d.hero,"eyebrow"))+'</div>');
+    H.push('<h1'+ed("hero.title")+'>'+esc(t(d.hero,"title"))+'</h1>');
+    H.push('<p class="sub"'+ed("hero.sub")+'>'+esc(t(d.hero,"sub"))+'</p>');
+    if(t(d.hero,"tag")||editing) H.push('<p class="tag"'+ed("hero.tag")+'>'+esc(t(d.hero,"tag"))+'</p>');
+    H.push('<div class="cta-row"><a class="btn btn-primary" href="#tours"'+ed("hero.cta")+'>'+esc(t(d.hero,"cta"))+'</a>');
+    H.push('<a class="btn btn-ghost" href="#contact"'+ed("hero.cta2")+'>'+esc(t(d.hero,"cta2"))+'</a></div>');
+    H.push('</div></section>');
+
+    // moments strip (photos supporting the headline)
+    if(d.moments&&d.moments.length){
+      H.push('<section class="moments"><div class="wrap"><div class="mgrid">');
+      d.moments.forEach(function(m,i){
+        H.push('<div class="mcell">'+media(m)+imgOverlay("moments."+i+".img")+'<span class="mcap"'+ed("moments."+i+".cap")+'>'+esc(t(m,"cap"))+'</span></div>');
+      });
+      H.push('</div></div></section>');
+    }
+
+    // services / core features
+    if(d.services&&d.services.cards){
+      var sv=d.services, sico=[ICON.sliders,ICON.car,ICON.star];
+      H.push('<section class="blk" id="services"><div class="wrap">');
+      H.push('<div class="sec-head"><div class="eyebrow"'+ed("services.eyebrow")+'>'+esc(t(sv,"eyebrow"))+'</div>');
+      H.push('<h2'+ed("services.title")+'>'+esc(t(sv,"title"))+'</h2>');
+      H.push('<p'+ed("services.sub")+'>'+esc(t(sv,"sub"))+'</p></div>');
+      H.push('<div class="fgrid">');
+      sv.cards.forEach(function(c,i){
+        H.push('<article class="fcard"><div class="ico">'+sico[i%3]+'</div>');
+        H.push('<h3'+ed("services.cards."+i+".title")+'>'+esc(t(c,"title"))+'</h3>');
+        H.push('<p'+ed("services.cards."+i+".body")+'>'+esc(t(c,"body"))+'</p>');
+        H.push('<a class="btn btn-ghost btn-sm" href="'+esc(c.link||"#contact")+'"'+ed("services.cards."+i+".cta")+'>'+esc(t(c,"cta"))+'</a></article>');
+      });
+      H.push('</div></div></section>');
+    }
+
+    // about (why us)
+    H.push('<section class="blk" id="about" style="background:var(--surface-2)"><div class="wrap">');
+    H.push('<div class="sec-head"><div class="eyebrow"'+ed("about.eyebrow")+'>'+esc(t(d.about,"eyebrow"))+'</div>');
+    H.push('<h2'+ed("about.title")+'>'+esc(t(d.about,"title"))+'</h2>');
+    H.push('<p'+ed("about.sub")+'>'+esc(t(d.about,"sub"))+'</p></div>');
+    H.push('<div class="points">');
+    var pico=[ICON.chat,ICON.guide,ICON.check];
+    d.about.points.forEach(function(p,i){
+      H.push('<div class="point"><div class="ico">'+pico[i%3]+'</div>');
+      H.push('<h3'+ed("about.points."+i+".title")+'>'+esc(t(p,"title"))+'</h3>');
+      H.push('<p'+ed("about.points."+i+".body")+'>'+esc(t(p,"body"))+'</p></div>');
+    });
+    H.push('</div></div></section>');
+
+    // tours
+    H.push('<section class="blk" id="tours"><div class="wrap">');
+    H.push('<div class="sec-head"><div class="eyebrow"'+ed("toursSection.eyebrow")+'>'+esc(t(d.toursSection,"eyebrow"))+'</div>');
+    H.push('<h2'+ed("toursSection.title")+'>'+esc(t(d.toursSection,"title"))+'</h2>');
+    H.push('<p'+ed("toursSection.sub")+'>'+esc(t(d.toursSection,"sub"))+'</p></div>');
+    H.push('<div class="tours-grid">');
+    d.tours.forEach(function(tr,i){
+      H.push('<article class="tcard" data-ti="'+i+'">');
+      H.push('<button class="card-del" data-del="tours" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>');
+      H.push('<button class="drag-h" type="button" title="'+(lang==="th"?"กดค้างแล้วลากเพื่อย้าย":"Hold and drag to reorder")+'"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>'+(lang==="th"?"ลากย้าย":"Drag")+'</button>');
+      H.push('<div class="media"><span class="region"'+ed("tours."+i+".region")+'>'+esc(t(tr,"region"))+'</span>'+media(tr)+imgOverlay("tours."+i+".img")+'</div>');
+      H.push('<div class="body"><h3'+ed("tours."+i+".title")+'>'+esc(t(tr,"title"))+'</h3>');
+      H.push('<p class="desc"'+ed("tours."+i+".desc")+'>'+esc(t(tr,"desc"))+'</p>');
+      H.push('<div class="meta"><span class="dur">'+ICON.clock+'<span'+ed("tours."+i+".dur")+'>'+esc(t(tr,"dur"))+'</span></span>');
+      H.push('<span class="price">'+(lang==="th"?"เริ่ม ฿":"from ฿")+'<b'+ed("tours."+i+".price")+'>'+esc(tr.price)+'</b></span></div>');
+      H.push('<div class="act"><a class="btn btn-ghost btn-sm" href="#contact">'+(lang==="th"?"สอบถาม / จอง":"Enquire / Book")+'</a></div>');
+      H.push('</div></article>');
+    });
+    H.push('</div>');
+    H.push('<button class="btn btn-ghost addbtn" data-add="tours">'+ICON.plus+(lang==="th"?"เพิ่มทัวร์":"Add a tour")+'</button>');
+    H.push('</div></section>');
+
+    // gallery
+    H.push('<section class="blk" id="gallery"><div class="wrap">');
+    H.push('<div class="sec-head"><div class="eyebrow"'+ed("gallerySection.eyebrow")+'>'+esc(t(d.gallerySection,"eyebrow"))+'</div>');
+    H.push('<h2'+ed("gallerySection.title")+'>'+esc(t(d.gallerySection,"title"))+'</h2>');
+    H.push('<p'+ed("gallerySection.sub")+'>'+esc(t(d.gallerySection,"sub"))+'</p></div>');
+    H.push('<div class="gallery">');
+    d.gallery.forEach(function(g,i){
+      H.push('<div class="gcell"><button class="card-del" data-del="gallery" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+media(g)+imgOverlay("gallery."+i+".img")+'</div>');
+    });
+    H.push('</div>');
+    H.push('<button class="btn btn-ghost addbtn" data-add="gallery">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add a photo")+'</button>');
+    H.push('</div></section>');
+
+    // reviews
+    var rs=d.reviewsSection||{}, rl=d.reviews||[];
+    if(rl.length||editing||rs.url){
+      H.push('<section class="blk" id="reviews" style="background:var(--surface-2)"><div class="wrap">');
+      H.push('<div class="rv-top"><div class="sec-head"><div class="eyebrow"'+ed("reviewsSection.eyebrow")+'>'+esc(t(rs,"eyebrow"))+'</div>');
+      H.push('<h2'+ed("reviewsSection.title")+'>'+esc(t(rs,"title"))+'</h2>');
+      H.push('<p'+ed("reviewsSection.sub")+'>'+esc(t(rs,"sub"))+'</p></div>');
+      if(rl.length>1) H.push('<div class="rv-nav"><button data-rv="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><button data-rv="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button></div>');
+      H.push('</div>');
+      if(!rl.length) H.push('<div class="rv-empty">'+(lang==="th"?"ยังไม่มีรีวิว — กด “เพิ่มรีวิว” แล้วคัดลอกรีวิวจริงจาก Google Maps มาวาง (ส่วนนี้จะซ่อนจากผู้ชมจนกว่าจะมีรีวิว)":"No reviews yet — click “Add review” and paste real reviews from Google Maps (hidden from visitors until you add one).")+'</div>');
+      H.push('<div id="rv-live-slot"></div>');
+      H.push('<div class="rv-track" id="rvtrack">');
+      rl.forEach(function(r,i){
+        var n=Math.max(0,Math.min(5,+r.rating||5)), st="";
+        for(var k=1;k<=5;k++) st+='<span data-star="'+i+'" data-v="'+k+'" class="'+(k<=n?"":"off")+'">★</span>';
+        var ini=(r.name||"?").trim().charAt(0).toUpperCase();
+        H.push('<article class="rv-card"><button class="card-del" data-del="reviews" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>');
+        H.push('<div class="rv-head"><div class="rv-av">'+esc(ini)+'</div><div><div class="rv-name"'+ed("reviews."+i+".name")+'>'+esc(r.name)+'</div><div class="rv-date"'+ed("reviews."+i+".date")+'>'+esc(r.date)+'</div></div></div>');
+        H.push('<div class="rv-stars" aria-label="'+n+' / 5">'+st+'</div>');
+        H.push('<p class="rv-text" dir="auto"'+ed("reviews."+i+".text")+'>'+esc(r.text)+'</p><button class="rv-toggle" type="button">'+(lang==="th"?"อ่านต่อ":"Read more")+'</button>');
+        var ph=r.photos||[];
+        if(ph.length||editing){
+          var PH='<div class="rv-photos">', shown=editing?ph.length:Math.min(3,ph.length);
+          for(var q=0;q<shown;q++){
+            var extra=(!editing&&q===2&&ph.length>3)?'<span class="more">+'+(ph.length-3)+'</span>':'';
+            PH+='<div class="rv-ph" data-rvph="'+i+'" data-k="'+q+'"><img src="'+esc(ph[q])+'" alt="">'+extra+'<button class="x" data-rvphdel="'+i+'" data-k="'+q+'" title="Delete">'+ICON.trash+'</button></div>';
+          }
+          PH+='<button class="rv-phadd" data-rvphadd="'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photo")+'</button></div>';
+          H.push(PH);
+        }
+        H.push('<div class="rv-src">'+(lang==="th"?"รีวิวบน":"Review on")+' <b>Google</b></div></article>');
+      });
+      H.push('</div>');
+      H.push('<div class="rv-more">');
+      H.push('<button class="btn btn-primary btn-sm rv-write" type="button" id="rvwrite">'+ICON.star+(lang==="th"?"เขียนรีวิว":"Write a review")+'</button>');
+      if(rs.url) H.push('<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="'+esc(rs.url)+'">'+(lang==="th"?"ดูรีวิวทั้งหมดบน Google Maps":"See all reviews on Google Maps")+'</a>');
+      H.push('<button class="btn btn-ghost addbtn" style="margin-top:0" data-add="reviews">'+ICON.plus+(lang==="th"?"เพิ่มรีวิว":"Add review")+'</button>');
+      H.push('<div class="rv-url">'+(lang==="th"?"ลิงก์หน้า Google Maps ของร้าน: ":"Google Maps link: ")+'<span'+ed("reviewsSection.url")+'>'+esc(rs.url||"")+'</span></div>');
+      H.push('</div></div></section>');
+    }
+
+    // contact
+    var c=d.contact;
+    H.push('<section class="blk" id="contact" style="background:var(--surface-2)"><div class="wrap">');
+    H.push('<div class="sec-head"><div class="eyebrow"'+ed("contact.eyebrow")+'>'+esc(t(c,"eyebrow"))+'</div>');
+    H.push('<h2'+ed("contact.title")+'>'+esc(t(c,"title"))+'</h2>');
+    H.push('<p'+ed("contact.sub")+'>'+esc(t(c,"sub"))+'</p></div>');
+    H.push('<div class="contact-grid"><div class="clist">');
+    H.push(crow(ICON.phone,(lang==="th"?"โทรศัพท์":"Phone"),'<a href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'"><span'+ed("contact.phone")+'>'+esc(c.phone)+'</span></a>'));
+    H.push(crow(ICON.mail,"Email",'<a href="mailto:'+esc(c.email)+'"><span'+ed("contact.email")+'>'+esc(c.email)+'</span></a>'));
+    H.push(crow(ICON.chat,"LINE",'<span'+ed("contact.line")+'>'+esc(c.line)+'</span>',"line_qr"));
+    H.push(crow(ICON.chat,"WhatsApp",'<span'+ed("contact.whatsapp")+'>'+esc(c.whatsapp)+'</span>',"whatsapp_qr"));
+    H.push(crow(ICON.wechat,"WeChat",'<span'+ed("contact.wechat")+'>'+esc(c.wechat||"")+'</span>',"wechat_qr"));
+    H.push(crow(ICON.pin,(lang==="th"?"ที่อยู่":"Address"),'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t(c,"addr"))+'"><span'+ed("contact.addr")+'>'+esc(t(c,"addr"))+'</span></a>'));
+    H.push(crow(ICON.clock,(lang==="th"?"เวลาทำการ":"Hours"),'<span'+ed("contact.hours")+'>'+esc(t(c,"hours"))+'</span>'));
+    H.push('</div>');
+    H.push('<div class="contact-cta"><h3>'+(lang==="th"?"พร้อมออกเดินทางแล้วหรือยัง?":"Ready to go?")+'</h3><p>'+(lang==="th"?"ทักหาเราได้ทุกช่องทาง เราพร้อมช่วยวางแผนทริปในฝันของคุณ":"Reach us on any channel — we're happy to plan your perfect trip.")+'</p>');
+    H.push('<a class="btn btn-primary" href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'">'+ICON.phone+' '+(lang==="th"?"โทรเลย":"Call now")+'</a>');
+    H.push('<a class="btn btn-ghost" href="mailto:'+esc(c.email)+'">'+ICON.mail+' '+(lang==="th"?"ส่งอีเมล":"Email us")+'</a></div>');
+    H.push('</div></div></section>');
+
+    // footer
+    H.push('<footer class="site"><div class="wrap frow"><div><strong style="font-family:var(--serif);color:var(--ink)">'+esc(d.brand.name)+'</strong> · <span'+ed("footer.note")+'>'+esc(t(d.footer,"note"))+'</span></div>');
+    H.push('<div>© '+(new Date().getFullYear())+' '+esc(d.brand.name)+'</div></div></footer>');
+
+    var html=H.join("");
+    var lw=document.getElementById("live-reviews"); if(lw && lw.parentNode!==document.body) document.body.appendChild(lw);
+    document.getElementById("app").innerHTML=html;
+    var slot=document.getElementById("rv-live-slot"), rvs=document.getElementById("reviews");
+    if(lw && slot && rvs && lw.querySelector("*") && !editing){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); }
+    try{ bind(); applyEditing(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); }
+  }
+  function crow(ico,lbl,val,qrKey){
+    var q="";
+    if(qrKey){
+      var src=data.contact[qrKey];
+      if(src) q='<div class="qr" data-qr="'+qrKey+'" data-cap="'+esc(lbl)+'"><img src="'+esc(src)+'" alt="'+esc(lbl)+' QR code"><button class="qr-del" data-qrdel="'+qrKey+'" title="'+(lang==="th"?"ลบ QR":"Remove QR")+'">'+ICON.trash+'</button><span class="qr-hint">'+(lang==="th"?"เปลี่ยน QR":"Change QR")+'</span></div>';
+      else q='<button class="qr-add" data-qr="'+qrKey+'">'+ICON.plus+(lang==="th"?"เพิ่ม QR":"Add QR")+'</button>';
+    }
+    return '<div class="crow"><div class="ico">'+ico+'</div><div class="cbody"><div class="lbl">'+esc(lbl)+'</div><div class="val">'+val+'</div>'+(q?'<div class="qr-wrap">'+q+'</div>':'')+'</div></div>';
+  }
+
+  // ---------- data path get/set ----------
+  function ref(path){
+    var parts=path.split("."), o=data;
+    for(var i=0;i<parts.length-1;i++){ var k=parts[i]; k=(/^\d+$/.test(k))?+k:k; o=o[k]; }
+    var last=parts[parts.length-1]; last=(/^\d+$/.test(last))?+last:last;
+    return {obj:o,key:last};
+  }
+  function setText(path,val){ var r=ref(path); r.obj[r.key+"_"+lang]=val; }
+  function setPlain(path,val){ var r=ref(path); r.obj[r.key]=val; }
+
+  // ---------- bind events ----------
+  function bind(){
+    // language
+    Array.prototype.forEach.call(document.querySelectorAll(".langtog button"),function(b){
+      b.onclick=function(){ if(editing) syncEdits(); lang=b.getAttribute("data-lang"); try{localStorage.setItem(LS_LANG,lang);}catch(e){} render(); };
+    });
+    var mb=document.getElementById("menubtn");
+    if(mb) mb.onclick=function(){ document.getElementById("navlinks").classList.toggle("open"); };
+    Array.prototype.forEach.call(document.querySelectorAll("#navlinks a"),function(a){ a.onclick=function(){ document.getElementById("navlinks").classList.remove("open"); }; });
+
+    // image uploads
+    Array.prototype.forEach.call(document.querySelectorAll(".imgedit"),function(lab){
+      var inp=lab.querySelector("input");
+      inp.onchange=function(){ if(inp.files&&inp.files[0]) handleImg(lab.getAttribute("data-img"),inp.files[0]); };
+    });
+    // reviews: "read more" only where text is clamped
+    Array.prototype.forEach.call(document.querySelectorAll(".rv-card"),function(card){
+      var tx=card.querySelector(".rv-text"), bt=card.querySelector(".rv-toggle");
+      if(!tx||!bt) return;
+      if(tx.scrollHeight>tx.clientHeight+2) bt.classList.add("show");
+      bt.onclick=function(){ var o=card.classList.toggle("open"); bt.textContent=o?(lang==="th"?"ย่อ":"Show less"):(lang==="th"?"อ่านต่อ":"Read more"); };
+    });
+    // tours: hold the handle and drag to reorder (mouse + touch)
+    Array.prototype.forEach.call(document.querySelectorAll(".tcard .drag-h"),function(h){
+      h.addEventListener("pointerdown",function(e){
+        if(!editing) return;
+        e.preventDefault();
+        syncEdits();
+        var card=h.closest(".tcard"), grid=card.parentNode;
+        card.classList.add("dragging"); document.body.classList.add("drag-active");
+        
+        function move(ev){
+          card.style.pointerEvents="none";
+          var el=document.elementFromPoint(ev.clientX,ev.clientY);
+          card.style.pointerEvents="";
+          var over=el&&el.closest?el.closest(".tcard"):null;
+          if(over&&over!==card&&over.parentNode===grid){
+            var r=over.getBoundingClientRect();
+            var after=(ev.clientX>r.left+r.width/2)||(ev.clientY>r.bottom-r.height*0.25);
+            grid.insertBefore(card, after?over.nextSibling:over);
+          }
+          if(ev.clientY<70) window.scrollBy(0,-18); else if(ev.clientY>window.innerHeight-90) window.scrollBy(0,18);
+        }
+        function up(){
+          window.removeEventListener("pointermove",move); window.removeEventListener("pointerup",up); window.removeEventListener("pointercancel",up);
+          document.body.classList.remove("drag-active"); card.classList.remove("dragging");
+          var order=Array.prototype.map.call(grid.querySelectorAll(".tcard"),function(c){ return +c.getAttribute("data-ti"); });
+          var changed=order.some(function(v,k){ return v!==k; });
+          if(changed){ data.tours=order.map(function(k){ return data.tours[k]; }); render(); toast(lang==="th"?"ย้ายแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }
+        }
+        window.addEventListener("pointermove",move); window.addEventListener("pointerup",up); window.addEventListener("pointercancel",up);
+      });
+    });
+    // visitor "write a review" form -> email to the owner, or post on Google
+    var rw=document.getElementById("rvwrite");
+    if(rw) rw.onclick=function(){ openReviewForm(); };
+    // review photos: view (lightbox) / add / delete
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rvph]"),function(el){
+      el.onclick=function(e){ if(e.target.closest(".x")||editing) return; openLB(data.reviews[+el.getAttribute("data-rvph")].photos, +el.getAttribute("data-k")); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rvphdel]"),function(b){
+      b.onclick=function(e){ e.stopPropagation(); syncEdits(); data.reviews[+b.getAttribute("data-rvphdel")].photos.splice(+b.getAttribute("data-k"),1); render(); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rvphadd]"),function(b){
+      b.onclick=function(){ var i=+b.getAttribute("data-rvphadd"); pickFile(function(f){ compress(f,1200,0.8).then(function(uri){ syncEdits(); var r=data.reviews[i]; r.photos=r.photos||[]; r.photos.push(uri); render(); }).catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); }); }); };
+    });
+    // reviews: arrows + star rating in edit mode
+    Array.prototype.forEach.call(document.querySelectorAll("[data-rv]"),function(b){
+      b.onclick=function(){ var tr=document.getElementById("rvtrack"); if(!tr) return; var c=tr.querySelector(".rv-card"); var w=c?c.getBoundingClientRect().width+18:320; tr.scrollBy({left:w*(+b.getAttribute("data-rv")),behavior:"smooth"}); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-star]"),function(sp){
+      sp.onclick=function(){ if(!editing) return; syncEdits(); data.reviews[+sp.getAttribute("data-star")].rating=+sp.getAttribute("data-v"); render(); };
+    });
+    // QR codes: edit mode = upload/replace; view mode = enlarge
+    Array.prototype.forEach.call(document.querySelectorAll("[data-qr]"),function(el){
+      el.addEventListener("click",function(e){
+        if(e.target.closest&&e.target.closest(".qr-del")) return;
+        var key=el.getAttribute("data-qr");
+        if(!editing){
+          if(!data.contact[key]) return;
+          var v=document.createElement("div"); v.className="qr-view";
+          v.innerHTML='<div class="box"><img src="'+esc(data.contact[key])+'" alt=""><div class="cap">'+esc(el.getAttribute("data-cap")||"")+'</div></div>';
+          v.onclick=function(){ v.remove(); }; document.body.appendChild(v); return;
+        }
+        e.preventDefault();
+        pickFile(function(f){
+          compressLogo(f,800).then(function(uri){ syncEdits(); data.contact[key]=uri; render(); toast(lang==="th"?"ใส่ QR แล้ว อย่าลืมกดบันทึก":"QR added — remember to save"); })
+          .catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); });
+        });
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-qrdel]"),function(b){
+      b.onclick=function(e){ e.stopPropagation(); syncEdits(); data.contact[b.getAttribute("data-qrdel")]=""; render(); };
+    });
+    // logo upload (click the logo in edit mode)
+    var lg=document.getElementById("brandlogo");
+    if(lg) lg.addEventListener("click",function(e){
+      if(!editing) return;
+      e.preventDefault(); e.stopPropagation();
+      var inp=document.getElementById("logo-input");
+      if(!inp){ inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.id="logo-input"; inp.hidden=true; document.body.appendChild(inp);
+        inp.onchange=function(){ var f=inp.files&&inp.files[0]; inp.value=""; if(!f) return;
+          compressLogo(f).then(function(uri){ syncEdits(); data.brand.logo=uri; render(); toast(lang==="th"?"เปลี่ยนโลโก้แล้ว อย่าลืมกดบันทึก":"Logo updated — remember to save"); })
+          .catch(function(){ toast(lang==="th"?"อัปโหลดโลโก้ไม่สำเร็จ":"Could not load logo"); });
+        };
+      }
+      inp.click();
+    });
+    var lr=document.getElementById("logoreset");
+    if(lr) lr.onclick=function(){ syncEdits(); data.brand.logo=""; render(); };
+    // delete card
+    Array.prototype.forEach.call(document.querySelectorAll(".card-del"),function(b){
+      b.onclick=function(){ syncEdits(); var arr=b.getAttribute("data-del"), i=+b.getAttribute("data-i"); data[arr].splice(i,1); render(); };
+    });
+    // add
+    Array.prototype.forEach.call(document.querySelectorAll("[data-add]"),function(b){
+      b.onclick=function(){ syncEdits(); var which=b.getAttribute("data-add");
+        if(which==="tours") data.tours.push({img:"",c1:"#0F6E5C",c2:"#123B4E",region_en:"Region",region_th:"พื้นที่",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"0"});
+        else if(which==="reviews"){ data.reviews=data.reviews||[]; data.reviews.push({name:(lang==="th"?"ชื่อผู้รีวิว":"Reviewer name"),date:(lang==="th"?"วันที่":"Date"),rating:5,text:(lang==="th"?"วางข้อความรีวิวจาก Google Maps ที่นี่":"Paste the review text from Google Maps here")}); }
+        else data.gallery.push({img:"",c1:"#2E6B6B",c2:"#123B3B"});
+        render();
+      };
+    });
+  }
+
+  // ---------- editing ----------
+  function applyEditing(){
+    document.body.classList.toggle("editing",editing);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
+      if(editing){ el.setAttribute("contenteditable","true"); el.setAttribute("spellcheck","false"); }
+      else el.removeAttribute("contenteditable");
+    });
+  }
+  function syncEdits(){
+    if(!editing) return;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
+      var path=el.getAttribute("data-edit");
+      var val=el.textContent.replace(/ /g," ").trim();
+      if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||/^reviews\./.test(path)||/\.price$/.test(path)){
+        setPlain(path,val);
+      } else {
+        setText(path,val);
+      }
+    });
+  }
+  function handleImg(path,file){
+    compress(file,path.indexOf("hero")===0?2000:1400,0.82).then(function(uri){
+      syncEdits(); setPlain(path,uri); render();
+    }).catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); });
+  }
+  function openReviewForm(){
+    var TH=lang==="th", rating=5, c=data.contact||{}, rs=data.reviewsSection||{};
+    var v=document.createElement("div"); v.className="qr-view";
+    v.innerHTML='<div class="rw-box" role="dialog" aria-modal="true"><button class="rw-close" type="button" aria-label="Close">×</button>'
+      +'<h3>'+(TH?"เขียนรีวิวถึงเรา":"Write us a review")+'</h3>'
+      +'<p class="hint">'+(TH?"ขอบคุณที่เที่ยวกับเรา! รีวิวของคุณจะแสดงบนเว็บไซต์หลังจากทีมงานตรวจสอบแล้ว":"Thank you for travelling with us! Your review will appear on our website once our team has checked it.")+'</p>'
+      +'<label for="rw-name">'+(TH?"ชื่อของคุณ":"Your name")+'</label><input id="rw-name" maxlength="80" autocomplete="name">'
+      +'<label>'+(TH?"ให้คะแนน":"Your rating")+'</label><div class="rw-stars" id="rw-stars"></div>'
+      +'<label for="rw-text">'+(TH?"รีวิวของคุณ":"Your review")+'</label><textarea id="rw-text" maxlength="3000" placeholder="'+(TH?"เล่าประสบการณ์ทริปของคุณ…":"Tell us about your trip…")+'"></textarea>'
+      +'<div class="rw-err" id="rw-err"></div>'
+      +'<div class="rw-actions">'
+      +(c.email?'<button class="btn btn-primary" type="button" id="rw-send">'+ICON.mail+(TH?"ส่งรีวิวทางอีเมล":"Send review by email")+'</button>':'')
+      +(rs.url?'<a class="btn btn-ghost" target="_blank" rel="noopener" href="'+esc(rs.url)+'" id="rw-google">'+(TH?"หรือรีวิวบน Google Maps":"Or review us on Google Maps")+'</a>':'')
+      +'</div></div>';
+    function stars(){ var h=""; for(var k=1;k<=5;k++) h+='<button type="button" data-v="'+k+'" class="'+(k<=rating?"on":"")+'" aria-label="'+k+' star">★</button>'; v.querySelector("#rw-stars").innerHTML=h; }
+    stars();
+    v.addEventListener("click",function(e){
+      var tg=e.target;
+      if(tg===v||tg.classList.contains("rw-close")){ v.remove(); return; }
+      var sb=tg.closest?tg.closest("#rw-stars button"):null;
+      if(sb){ rating=+sb.getAttribute("data-v"); stars(); return; }
+      if(tg.closest&&tg.closest("#rw-send")){
+        var name=v.querySelector("#rw-name").value.trim(), text=v.querySelector("#rw-text").value.trim(), err=v.querySelector("#rw-err");
+        if(!name||!text){ err.textContent=TH?"กรุณากรอกชื่อและรีวิว":"Please add your name and review."; return; }
+        var subj=(TH?"รีวิวจากเว็บไซต์ – ":"Website review – ")+name;
+        var body=(TH?"ชื่อ: ":"Name: ")+name+"\n"+(TH?"คะแนน: ":"Rating: ")+rating+"/5 "+"★★★★★".slice(0,rating)+"\n\n"+text;
+        window.location.href="mailto:"+encodeURIComponent(c.email)+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
+        err.style.color="var(--primary)"; err.textContent=TH?"กำลังเปิดแอปอีเมลของคุณ… กดส่งในอีเมลเพื่อยืนยัน":"Opening your email app… press Send there to submit.";
+      }
+    });
+    document.body.appendChild(v);
+    setTimeout(function(){ var n=v.querySelector("#rw-name"); if(n) n.focus(); },30);
+  }
+  function openLB(list,k){
+    if(!list||!list.length) return;
+    var v=document.createElement("div"); v.className="qr-view";
+    function show(){ v.innerHTML='<div class="box photo"><img src="'+esc(list[k])+'" alt=""></div>'+(list.length>1?'<button class="lb-nav lb-prev" aria-label="Previous">‹</button><button class="lb-nav lb-next" aria-label="Next">›</button>':''); }
+    show();
+    v.onclick=function(e){ var t=e.target;
+      if(t.classList.contains("lb-prev")){ k=(k-1+list.length)%list.length; show(); return; }
+      if(t.classList.contains("lb-next")){ k=(k+1)%list.length; show(); return; }
+      v.remove(); };
+    document.body.appendChild(v);
+  }
+  function pickFile(cb){
+    var inp=document.getElementById("qr-input");
+    if(!inp){ inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.id="qr-input"; inp.hidden=true; document.body.appendChild(inp); }
+    inp.onchange=function(){ var f=inp.files&&inp.files[0]; inp.value=""; if(f) cb(f); };
+    inp.click();
+  }
+  function compressLogo(file,maxDim){
+    var MAX=maxDim||480;
+    return new Promise(function(res,rej){
+      var img=new Image(), url=URL.createObjectURL(file);
+      img.onload=function(){ URL.revokeObjectURL(url);
+        var w=img.naturalWidth||480,h=img.naturalHeight||480,m=Math.max(w,h);
+        if(m>MAX){ var sc=MAX/m; w=Math.round(w*sc); h=Math.round(h*sc); }
+        var cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+        cv.getContext("2d").drawImage(img,0,0,w,h);
+        try{ res(cv.toDataURL("image/png")); }catch(e){ rej(e); }
+      };
+      img.onerror=rej; img.src=url;
+    });
+  }
+  function compress(file,maxDim,q){
+    return new Promise(function(res,rej){
+      var img=new Image(), url=URL.createObjectURL(file);
+      img.onload=function(){ URL.revokeObjectURL(url);
+        var w=img.naturalWidth,h=img.naturalHeight,m=Math.max(w,h);
+        if(m>maxDim){ var sc=maxDim/m; w=Math.round(w*sc); h=Math.round(h*sc); }
+        var cv=document.createElement("canvas"); cv.width=w; cv.height=h;
+        cv.getContext("2d").drawImage(img,0,0,w,h);
+        try{ res(cv.toDataURL("image/jpeg",q)); }catch(e){ rej(e); }
+      };
+      img.onerror=rej; img.src=url;
+    });
+  }
+
+  // ---------- admin bar ----------
+  function buildAdminBar(){
+    var bar=document.createElement("div"); bar.id="adminbar";
+    bar.innerHTML='<div class="ab-msg" id="ab-msg"></div><div class="ab-btns" id="ab-btns"></div>';
+    document.body.appendChild(bar);
+    renderAdminBar();
+  }
+  function renderAdminBar(){
+    var msg=document.getElementById("ab-msg"), btns=document.getElementById("ab-btns");
+    if(!editing){
+      msg.innerHTML=(lang==="th"?"คุณเข้าสู่ระบบในฐานะผู้ดูแลเว็บไซต์":"You're signed in as the site admin")+' <small>'+(lang==="th"?"— แตะแก้ไขเพื่อเปลี่ยนข้อความ รูปภาพ และโลโก้":"— tap Edit to change text, photos & logo")+'</small>';
+      btns.innerHTML='<button class="btn btn-primary btn-sm" id="ab-edit">'+(lang==="th"?"แก้ไขเว็บไซต์":"Edit site")+'</button>';
+      document.getElementById("ab-edit").onclick=function(){ try{ editing=true; editEnteredAt=Date.now(); render(); renderAdminBar(); toast(lang==="th"?"โหมดแก้ไข: แตะข้อความหรือรูปเพื่อเปลี่ยน":"Edit mode: tap any text or photo to change it"); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
+    } else {
+      msg.innerHTML='<strong>'+(lang==="th"?"โหมดแก้ไข":"Editing")+'</strong> <small>'+(lang==="th"?"— แตะข้อความ/รูป · สลับ EN·TH เพื่อแก้อีกภาษา":"— tap text/photos · switch EN·TH to edit each language")+'</small>';
+      btns.innerHTML='<button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
+      document.getElementById("ab-cancel").onclick=function(){ if(confirm(lang==="th"?"ยกเลิกการเปลี่ยนแปลงที่ยังไม่บันทึก?":"Discard unsaved changes?")) location.reload(); };
+      document.getElementById("ab-save").onclick=save;
+    }
+  }
+
+  // ---------- publish ----------
+  function escJson(s){ return s.replace(/</g,"\\u003c"); }
+  function escAttr(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/"/g,"&quot;"); }
+  function escHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function buildDoc(){
+    // Reconstruct our own tags from textContent + only the attributes we control.
+    // Reading outerHTML would copy runtime-injected attributes (e.g. a CSP nonce)
+    // that become stale on reload and silently block the script -> blank page.
+    var styleEl=document.getElementById("app-style");
+    var codeEl=document.getElementById("app-code");
+    var fontsEl=document.getElementById("app-fonts");
+    var fontsHref=fontsEl?fontsEl.getAttribute("href"):"";
+    var fonts='<link id="app-fonts" rel="stylesheet" href="'+escAttr(fontsHref)+'">';
+    var style='<style id="app-style">'+(styleEl?styleEl.textContent:"")+"<\/style>";
+    var code='<script id="app-code">'+(codeEl?codeEl.textContent:"")+ENDS;
+    var title=escHtml((data.brand&&data.brand.name)||"Website");
+    var json=escJson(JSON.stringify(data));
+    return "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+      +"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
+      +"<title>"+title+"<\/title>\n"
+      +fonts+"\n"+style+"\n</head>\n<body>\n"
+      +'<script id="site-data" type="application/json">'+json+ENDS+"\n"
+      +"<div id=\"app\"></div>\n"+code+"\n</body>\n</html>";
+  }
+  function save(){
+    if(Date.now()-editEnteredAt < 700){ return; } // ignore accidental double-click / rapid re-trigger
+    syncEdits();
+    var bar=document.getElementById("adminbar"); bar.classList.add("busy");
+    document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังบันทึก...":"Saving...");
+    var html;
+    try{ html=buildDoc(); }catch(e){ bar.classList.remove("busy"); toast("Build error"); renderAdminBar(); return; }
+    (artifactNS?Promise.resolve(artifactNS):claude.use("artifact")).then(function(ns){
+      artifactNS=ns;
+      if(!ns){ bar.classList.remove("busy"); toast(lang==="th"?"บันทึกไม่ได้: ไม่มีสิทธิ์เผยแพร่":"Can't save: publishing unavailable"); renderAdminBar(); return; }
+      return ns.publish(html).then(function(){
+        // re-render in place so content is correct even if the runtime does not reload
+        editing=false;
+        bar.classList.remove("busy");
+        try{ render(); }catch(e){}
+        renderAdminBar();
+        toast(lang==="th"?"บันทึกแล้ว!":"Saved!");
+      }).catch(function(err){
+        bar.classList.remove("busy");
+        var code=err&&err.code;
+        if(code==="conflict"){ toast(lang==="th"?"มีการแก้ไขซ้อน กำลังโหลดใหม่":"Someone else edited — reloading"); }
+        else if(code==="not_writer"||code==="not_granted"){ toast(lang==="th"?"คุณไม่มีสิทธิ์แก้ไขหน้านี้":"You don't have edit access"); editing=false; applyEditing(); }
+        else if(code==="too_large"){ toast(lang==="th"?"ไฟล์ใหญ่เกินไป ลองลดจำนวน/ขนาดรูป":"Too large — use fewer/smaller photos"); }
+        else { toast((lang==="th"?"บันทึกไม่สำเร็จ: ":"Save failed: ")+(code||"error")); }
+        renderAdminBar();
+      });
+    });
+  }
+
+  // ---------- toast ----------
+  var toEl,toT;
+  function toast(msg){
+    if(!toEl){ toEl=document.createElement("div"); toEl.className="toast"; document.body.appendChild(toEl); }
+    toEl.textContent=msg; toEl.classList.add("show");
+    clearTimeout(toT); toT=setTimeout(function(){ toEl.classList.remove("show"); },3200);
+  }
+
+  // ---------- init ----------
+  // While editing, tapping a link that wraps an editable field (tel:/mailto:/maps,
+  // or in-page #anchors) must NOT navigate — that navigation blanks the frame.
+  document.addEventListener("click", function(e){
+    if(!editing) return;
+    var a = (e.target && e.target.closest) ? e.target.closest("a") : null;
+    if(a){ e.preventDefault(); }
+  }, true);
+  render();
+  try{
+    if(window.claude && typeof claude.use==="function"){
+      claude.use("user").then(function(u){
+        if(!u) return;
+        return u.canEdit().then(function(ok){
+          canEdit=!!ok;
+          if(canEdit) buildAdminBar();
+        });
+      }).catch(function(){});
+    }
+  }catch(e){}
+  }catch(fatal){ showBanner("⚠ "+(fatal&&fatal.message||fatal)); }
+})();
+</script>
+</body>
+</html>

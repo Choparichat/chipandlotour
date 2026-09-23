@@ -255,6 +255,20 @@
   .contact-cta{overflow:hidden}
   .crow .cbody{flex:1;min-width:0}
   .qr-wrap{margin-top:12px;display:flex}
+  .cgrp-2{display:grid;grid-template-columns:1fr 1fr;column-gap:22px}
+  .cgrp .crow:last-child{border-bottom:1px solid var(--border)}
+  .cgrp-title{margin:22px 0 10px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+  .chat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+  .chat-grid .crow{flex-direction:column;align-items:center;text-align:center;gap:8px;padding:14px 10px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+  .chat-grid .crow:last-child{border-bottom:1px solid var(--border)}
+  .chat-grid .crow .ico{width:34px;height:34px;border-radius:10px}
+  .chat-grid .crow .ico svg{width:17px;height:17px}
+  .chat-grid .crow .cbody{width:100%;display:flex;flex-direction:column;align-items:center;flex:1}
+  .chat-grid .crow .val{font-size:.88rem}
+  .chat-grid .qr-wrap{margin-top:auto;padding-top:10px;justify-content:center}
+  .chat-grid .qr,.chat-grid .qr-add{width:112px;height:112px}
+  .chat-grid .map-q{text-align:left}
+  @media (max-width:560px){ .cgrp-2{grid-template-columns:1fr} .chat-grid{gap:8px} .chat-grid .crow{padding:12px 6px} .chat-grid .qr,.chat-grid .qr-add{width:92px;height:92px} .chat-grid .crow .val{font-size:.7rem;letter-spacing:-.01em} .chat-grid .crow{padding:12px 4px} .chat-grid .crow .val a.ext::after{content:""} }
   .qr{flex:none;position:relative;width:150px;height:150px;border-radius:10px;border:1px solid var(--border);background:#fff;padding:5px;cursor:zoom-in}
   .qr img{width:100%;height:100%;object-fit:contain}
   .qr-add{display:none;flex:none;width:150px;height:150px;border-radius:10px;border:1.5px dashed color-mix(in srgb,var(--primary) 60%,transparent);background:transparent;color:var(--primary);font:600 .78rem var(--sans);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px}
@@ -612,15 +626,21 @@
     H.push('<h2'+ed("contact.title")+'>'+esc(t(c,"title"))+'</h2>');
     H.push('<p'+ed("contact.sub")+'>'+esc(t(c,"sub"))+'</p></div>');
     H.push('<div class="contact-grid"><div class="clist">');
+    H.push('<div class="cgrp">');
     H.push(crow(ICON.phone,(lang==="th"?"โทรศัพท์":"Phone"),'<a href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'"><span'+ed("contact.phone")+'>'+esc(c.phone)+'</span></a>'));
     H.push(crow(ICON.mail,"Email",'<a href="mailto:'+esc(c.email)+'"><span'+ed("contact.email")+'>'+esc(c.email)+'</span></a>'));
+    H.push('</div>');
     var wa=waLink(c.whatsapp), ln=lineLink(c);
+    H.push('<div class="cgrp-title">'+(lang==="th"?"แชทกับเรา":"Chat with us")+'</div><div class="chat-grid">');
     H.push(crow(ICON.chat,"WhatsApp",(wa?'<a class="ext" target="_blank" rel="noopener" href="'+esc(wa)+'">':'')+'<span'+ed("contact.whatsapp")+'>'+esc(c.whatsapp)+'</span>'+(wa?'</a>':''),"whatsapp_qr"));
     H.push(crow(ICON.wechat,"WeChat",((c.wechat&&!editing)?'<a class="ext wc-copy" href="#" data-copy="'+esc(c.wechat)+'" title="'+(lang==="th"?"กดเพื่อคัดลอก ID":"Click to copy ID")+'">':'')+'<span'+ed("contact.wechat")+'>'+esc(c.wechat||"")+'</span>'+((c.wechat&&!editing)?'</a>':''),"wechat_qr"));
     H.push(crow(ICON.chat,"LINE",(ln?'<a class="ext" target="_blank" rel="noopener" href="'+esc(ln)+'">':'')+'<span'+ed("contact.line")+'>'+esc(c.line||"")+'</span>'+(ln?'</a>':'')
       +'<div class="map-q">'+(lang==="th"?"ลิงก์ LINE / OpenChat (ถ้ามี จะใช้ลิงก์นี้แทน): ":"LINE / OpenChat link (optional, used instead of the ID): ")+'<span'+ed("contact.line_link")+'>'+esc(c.line_link||"")+'</span></div>',"line_qr"));
+    H.push('</div>');
+    H.push('<div class="cgrp cgrp-2">');
     H.push(crow(ICON.clock,(lang==="th"?"เวลาทำการ":"Hours"),'<span'+ed("contact.hours")+'>'+esc(t(c,"hours"))+'</span>'));
     H.push(crow(ICON.pin,(lang==="th"?"ที่อยู่":"Address"),'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t(c,"addr"))+'"><span'+ed("contact.addr")+'>'+esc(t(c,"addr"))+'</span></a>'));
+    H.push('</div>');
     H.push('</div>');
     H.push('<div class="contact-cta"><h3>'+(lang==="th"?"พร้อมออกเดินทางแล้วหรือยัง?":"Ready to go?")+'</h3><p>'+(lang==="th"?"ทักหาเราได้ทุกช่องทาง เราพร้อมช่วยวางแผนทริปในฝันของคุณ":"Reach us on any channel — we're happy to plan your perfect trip.")+'</p>');
     H.push('<a class="btn btn-primary" href="tel:'+esc((c.phone||"").replace(/\s/g,""))+'">'+ICON.phone+' '+(lang==="th"?"โทรเลย":"Call now")+'</a>');

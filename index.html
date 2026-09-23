@@ -1,7 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#151210">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chip' n Lo Tour</title>
 <meta name="description" content="“Saw that, done those” is such a common cliché among frequent fliers. But what if this turns out to be one of the most meaningful trips you've ever taken — where learning and experiencing open your eyes to a new vision that enriches your quality of life?">
@@ -26,7 +28,7 @@
     --radius:16px; --maxw:1120px;
     --serif:"Fraunces","Noto Serif Thai",Georgia,serif;
     --sans:"Figtree","Noto Sans Thai",system-ui,-apple-system,sans-serif;
-    color-scheme:light dark;
+    color-scheme:dark;
   }
   :root:not([data-theme="light"]){}
   @media (prefers-color-scheme: dark){
@@ -913,7 +915,7 @@
     var ttl=escAttr((data.brand&&data.brand.name)||"Website"), icon=(data.brand&&data.brand.logo)||"";
     var meta='<meta name="description" content="'+desc+'">\n<meta property="og:type" content="website">\n<meta property="og:title" content="'+ttl+'">\n<meta property="og:description" content="'+desc+'">\n'+(icon?'<link rel="icon" href="'+escAttr(icon)+'">\n':'');
     var live='<!-- วิดเจ็ตรีวิว Google: วางโค้ดวิดเจ็ตไว้ใน div ด้านล่างนี้ -->\n<div id="live-reviews" hidden>'+LIVE_SRC+'</div>\n';
-    return "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+    return "<!doctype html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n<meta charset=\"utf-8\">\n"
       +"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
       +"<title>"+title+"<\/title>\n"+meta
       +fonts+"\n"+style+"\n</head>\n<body>\n"

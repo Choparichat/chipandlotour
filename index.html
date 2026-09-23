@@ -255,6 +255,18 @@
   .contact-cta{overflow:hidden}
   .crow .cbody{flex:1;min-width:0}
   .qr-wrap{margin-top:12px;display:flex}
+  .soc-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+  .soc{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--ink);text-decoration:none;font-weight:600;font-size:.9rem}
+  .soc svg{width:18px;height:18px;color:#1877F2;flex:none}
+  .soc:hover{border-color:#1877F2}
+  .soc-foot{display:flex;gap:8px;order:3;width:100%;justify-content:center;flex-wrap:wrap}
+  .soc-foot .soc{padding:6px 12px;font-size:.8rem;background:transparent}
+  .soc-foot [data-socedit]{display:none}
+  .vid-grid{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+  .vid{width:300px;max-width:100%;display:flex;flex-direction:column;gap:10px}
+  .vid iframe{width:100%;aspect-ratio:9/16;border:0;border-radius:16px;background:#000;box-shadow:var(--shadow)}
+  .vid-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);text-decoration:none;font-weight:600;font-size:.88rem}
+  .vid-link svg{width:16px;height:16px;color:#1877F2}
   .cgrp-2{display:grid;grid-template-columns:1fr 1fr;column-gap:22px}
   .cgrp .crow:last-child{border-bottom:1px solid var(--border)}
   .cgrp-title{margin:22px 0 10px;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -423,6 +435,8 @@
   function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
   function t(o,k){ if(!o) return ""; var v=o[k+"_"+lang]; return (v==null||v==="")? (o[k+"_en"]||"") : v; }
   var ICON={
+    fb:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>',
+    play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
     bike:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17" r="3"/><circle cx="18.5" cy="17" r="3"/><path d="M8.5 17h6l3-6h-4l-2-4H9"/><path d="M14 7h3l1.5 4"/><path d="M5.5 17l3-6h5"/></svg>',
     lantern:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="M8 4h8l-1 3H9L8 4z"/><rect x="7" y="7" width="10" height="11" rx="4"/><path d="M12 18v3"/><path d="M10 21h4"/></svg>',
     guide:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>',
@@ -575,6 +589,16 @@
     H.push('<button class="btn btn-ghost addbtn" data-add="gallery">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add a photo")+'</button>');
     H.push('</div></section>');
 
+    // videos
+    var vids=(d.videos||[]).filter(Boolean);
+    if(vids.length||editing){
+      H.push('<section class="blk" id="videos"><div class="wrap"><div class="sec-head"><div class="eyebrow">'+(lang==="th"?"วิดีโอ":"Videos")+'</div><h2>'+(lang==="th"?"ดูบรรยากาศทริปของเรา":"See our trips in action")+'</h2></div>');
+      H.push('<div class="vid-grid">');
+      vids.forEach(function(u){ H.push('<div class="vid"><iframe src="'+esc(fbEmbed(u))+'" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen title="Facebook video"></iframe><a class="vid-link" target="_blank" rel="noopener" href="'+esc(u)+'">'+ICON.fb+(lang==="th"?"ดูบน Facebook":"Watch on Facebook")+'</a></div>'); });
+      H.push('</div>');
+      if(editing) H.push('<div style="margin-top:16px"><button class="btn btn-ghost btn-sm" type="button" data-socedit>'+(lang==="th"?"แก้ลิงก์โซเชียล & วิดีโอ":"Edit social links & videos")+'</button></div>');
+      H.push('</div></section>');
+    }
     // reviews
     var rs=d.reviewsSection||{}, rl=d.reviews||[];
     if(rl.length||editing||rs.url){
@@ -637,6 +661,7 @@
     H.push(crow(ICON.chat,"LINE",(ln?'<a class="ext" target="_blank" rel="noopener" href="'+esc(ln)+'">':'')+((!editing&&!c.line&&ln)?(/\/ti\/g2\//.test(ln)?(lang==="th"?"เข้าร่วม OpenChat":"Join our OpenChat"):(lang==="th"?"แชทใน LINE":"Chat on LINE")):'<span'+ed("contact.line")+'>'+esc(c.line||"")+'</span>')+(ln?'</a>':'')
       +'<div class="map-q">'+(lang==="th"?"ลิงก์ LINE / OpenChat (ถ้ามี จะใช้ลิงก์นี้แทน): ":"LINE / OpenChat link (optional, used instead of the ID): ")+'<span'+ed("contact.line_link")+'>'+esc(c.line_link||"")+'</span></div>',"line_qr"));
     H.push('</div>');
+    var sr=socialRow("soc-row"); if(sr) H.push('<div class="cgrp-title">'+(lang==="th"?"ติดตามเรา":"Follow us")+'</div>'+sr);
     H.push('<div class="cgrp cgrp-2">');
     H.push(crow(ICON.clock,(lang==="th"?"เวลาทำการ":"Hours"),'<span'+ed("contact.hours")+'>'+esc(t(c,"hours"))+'</span>'));
     H.push(crow(ICON.pin,(lang==="th"?"ที่อยู่":"Address"),'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t(c,"addr"))+'"><span'+ed("contact.addr")+'>'+esc(t(c,"addr"))+'</span></a>'));
@@ -657,7 +682,7 @@
     H.push('</div></section>');
 
     // footer
-    H.push('<footer class="site"><div class="wrap frow"><div><strong style="font-family:var(--serif);color:var(--ink)">'+esc(d.brand.name)+'</strong> · <span'+ed("footer.note")+'>'+esc(t(d.footer,"note"))+'</span></div>');
+    H.push('<footer class="site"><div class="wrap frow">'+socialRow("soc-foot")+'<div><strong style="font-family:var(--serif);color:var(--ink)">'+esc(d.brand.name)+'</strong> · <span'+ed("footer.note")+'>'+esc(t(d.footer,"note"))+'</span></div>');
     H.push('<div>© '+(new Date().getFullYear())+' '+esc(d.brand.name)+'</div></div></footer>');
 
     var html=H.join("");
@@ -677,6 +702,39 @@
     var v=String(c.line||"").trim(); if(!v) return "";
     if(/^https?:\/\//i.test(v)) return v;
     return "https://line.me/R/ti/p/"+(v.charAt(0)==="@"?encodeURIComponent(v):"~"+encodeURIComponent(v));
+  }
+  function socialIcon(u){ return ICON.fb; }
+  function socialRow(cls){
+    var sl=(data.social||[]).filter(function(x){ return x&&x.url; });
+    if(!sl.length&&!editing) return "";
+    var h='<div class="'+cls+'">';
+    sl.forEach(function(x){ h+='<a class="soc" target="_blank" rel="noopener" href="'+esc(x.url)+'">'+socialIcon(x.url)+'<span>'+esc(x.name||"Facebook")+'</span></a>'; });
+    if(editing) h+='<button class="btn btn-ghost btn-sm" type="button" data-socedit>'+(lang==="th"?"แก้ลิงก์โซเชียล & วิดีโอ":"Edit social links & videos")+'</button>';
+    return h+'</div>';
+  }
+  function fbEmbed(u){ return "https://www.facebook.com/plugins/video.php?href="+encodeURIComponent(u)+"&show_text=false&width=320&height=568&t=0"; }
+  function openSocialForm(){
+    var th=lang==="th", w=document.createElement("div");
+    w.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.55);display:flex;align-items:center;justify-content:center;padding:16px";
+    var ta="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:13px ui-monospace,monospace;background:#fff;color:#241F19;-webkit-text-fill-color:#241F19;margin:4px 0 12px";
+    w.innerHTML='<div style="background:var(--surface);color:var(--ink);border-radius:16px;max-width:600px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
+      +'<h3 style="margin:0 0 10px;font-family:var(--serif)">'+(th?"ลิงก์โซเชียล & วิดีโอ":"Social links & videos")+'</h3>'
+      +'<label style="font-size:.85rem;font-weight:600">'+(th?"เพจ / โซเชียล — บรรทัดละ 1 เพจ ในรูปแบบ  ชื่อ | ลิงก์":"Pages — one per line as  Name | link")+'</label>'
+      +'<textarea id="so-links" rows="4" style="'+ta+'"></textarea>'
+      +'<label style="font-size:.85rem;font-weight:600">'+(th?"วิดีโอ Facebook (Reel / Video) — บรรทัดละ 1 ลิงก์":"Facebook videos (reels) — one link per line")+'</label>'
+      +'<textarea id="so-videos" rows="4" style="'+ta+'"></textarea>'
+      +'<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" id="so-cancel" type="button">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" id="so-ok" type="button">'+(th?"ตกลง":"OK")+'</button></div></div>';
+    document.body.appendChild(w);
+    document.getElementById("so-links").value=(data.social||[]).map(function(x){ return (x.name||"")+" | "+(x.url||""); }).join("\n");
+    document.getElementById("so-videos").value=(data.videos||[]).join("\n");
+    document.getElementById("so-cancel").onclick=function(){ w.remove(); };
+    document.getElementById("so-ok").onclick=function(){
+      var clean=function(u){ u=u.trim(); if(!/^https?:\/\//i.test(u)) return ""; return u.replace(/[?#].*$/,function(q){ return /\/reel\/|\/videos?\//.test(u)?"":(/profile\.php/.test(u)?q:""); }); };
+      syncEdits();
+      data.social=document.getElementById("so-links").value.split("\n").map(function(l){ var p=l.split("|"); var url=clean(p.length>1?p.slice(1).join("|"):p[0]); var name=p.length>1?p[0].trim():""; return url?{name:name||"Facebook",url:url}:null; }).filter(Boolean);
+      data.videos=document.getElementById("so-videos").value.split("\n").map(clean).filter(Boolean);
+      w.remove(); render(); toast(th?"อัปเดตแล้ว อย่าลืมกดบันทึก":"Updated — remember to save");
+    };
   }
   function catsFor(arr){ return arr==="activities"?ACT_CATS:TOUR_CATS; }
   function catOf(arr,it){ var cs=catsFor(arr); for(var k=0;k<cs.length;k++) if(cs[k][0]===it.cat) return cs[k]; return cs[0]; }
@@ -808,6 +866,7 @@
     // visitor "write a review" form -> email to the owner, or post on Google
     var rwd=document.getElementById("rvwidget"); if(rwd) rwd.onclick=openWidgetForm;
     var mpe=document.getElementById("mapembed"); if(mpe) mpe.onclick=openMapEmbedForm;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-socedit]"),function(b){ b.onclick=openSocialForm; });
     Array.prototype.forEach.call(document.querySelectorAll(".wc-copy"),function(a){ a.onclick=function(e){ e.preventDefault(); if(editing) return;
       var id=a.getAttribute("data-copy"), th=lang==="th";
       var done=function(){ toast(th?"คัดลอก WeChat ID แล้ว — เปิด WeChat → เพิ่มเพื่อน → วาง ID หรือสแกน QR":"WeChat ID copied — open WeChat → Add contacts → paste, or scan the QR"); };
@@ -1305,7 +1364,11 @@
     if(!data.activitiesSection) data.activitiesSection={eyebrow_en:"Activities",eyebrow_th:"กิจกรรม",title_en:"Things to do in Chiang Mai",title_th:"กิจกรรมเที่ยวเชียงใหม่",sub_en:"Adventure, nature, culture and more — book any activity on its own or add it to your trip.",sub_th:"ผจญภัย ธรรมชาติ วัฒนธรรม และอีกมากมาย จองแยกหรือเพิ่มเข้าไปในทริปของคุณได้"};
     if(!data.activities) data.activities=[{"cat": "culture", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Muay Thai boxing night", "title_th": "ดูชกมวยไทย", "desc_en": "Ringside seats for an exciting evening of live Muay Thai boxing.", "desc_th": "นั่งชมมวยไทยสดริมเวที บรรยากาศเร้าใจยามค่ำคืน", "dur_en": "Evening", "dur_th": "ช่วงค่ำ", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "adventure", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Shooting range", "title_th": "ยิงปืน", "desc_en": "Try target shooting with a professional instructor at a certified range.", "desc_th": "ลองยิงปืนเป้านิ่งกับครูฝึกมืออาชีพ ในสนามยิงปืนที่ได้มาตรฐาน", "dur_en": "1–2 hours", "dur_th": "1–2 ชั่วโมง", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "adventure", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Tandem skydiving", "title_th": "กระโดดร่มจากเครื่องบิน", "desc_en": "Jump from a plane strapped to an experienced instructor — the ultimate thrill.", "desc_th": "กระโดดร่มจากเครื่องบินพร้อมครูฝึกผู้เชี่ยวชาญ สุดยอดความตื่นเต้น", "dur_en": "Half day", "dur_th": "ครึ่งวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "adventure", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Hot air balloon ride", "title_th": "นั่งบอลลูน", "desc_en": "Float over rice fields and mountains at sunrise.", "desc_th": "ล่องบอลลูนชมทุ่งนาและภูเขายามพระอาทิตย์ขึ้น", "dur_en": "Early morning", "dur_th": "เช้าตรู่", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "adventure", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Zipline in the jungle", "title_th": "ซิปไลน์", "desc_en": "Fly through the rainforest canopy on a series of ziplines and sky bridges.", "desc_th": "โหนสลิงผ่านยอดไม้ในป่าฝน พร้อมสะพานลอยฟ้า", "dur_en": "Half day", "dur_th": "ครึ่งวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "adventure", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "ATV off-road ride", "title_th": "ขี่ ATV", "desc_en": "Ride an ATV along muddy mountain trails and countryside villages.", "desc_th": "ขี่ ATV ลุยเส้นทางภูเขาและหมู่บ้านชนบท", "dur_en": "2–3 hours", "dur_th": "2–3 ชั่วโมง", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "water", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "White water rafting", "title_th": "ล่องแก่ง", "desc_en": "Paddle through exciting rapids with experienced river guides.", "desc_th": "ล่องแก่งผ่านแก่งน้ำเชี่ยว พร้อมไกด์ผู้ชำนาญ", "dur_en": "Full day", "dur_th": "เต็มวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "water", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Bamboo rafting", "title_th": "ล่องแพไม้ไผ่", "desc_en": "A relaxing bamboo raft ride down a calm river through the forest.", "desc_th": "ล่องแพไม้ไผ่ชิลๆ ไปตามลำน้ำกลางป่า", "dur_en": "1–2 hours", "dur_th": "1–2 ชั่วโมง", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "water", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Ping River cruise", "title_th": "ล่องเรือแม่น้ำปิง (River Cruise)", "desc_en": "Cruise along the Ping River and see Chiang Mai from the water.", "desc_th": "ล่องเรือชมวิวเมืองเชียงใหม่ริมแม่น้ำปิง", "dur_en": "1–2 hours", "dur_th": "1–2 ชั่วโมง", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "water", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Grand Canyon Chiang Mai", "title_th": "แกรนด์แคนยอน เชียงใหม่", "desc_en": "Swim, jump and float at the famous water park in an old quarry lake.", "desc_th": "เล่นน้ำ กระโดดน้ำ และสนุกกับสวนน้ำในบ่อหินเก่าชื่อดัง", "dur_en": "Half day", "dur_th": "ครึ่งวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "culture", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Thai cooking class", "title_th": "เรียนทำอาหารไทย", "desc_en": "Shop at a local market and cook classic Thai dishes with a friendly chef.", "desc_th": "เดินตลาดท้องถิ่นแล้วลงมือทำอาหารไทยกับเชฟ", "dur_en": "Half day", "dur_th": "ครึ่งวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "culture", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Doi Suthep & Hmong village", "title_th": "ดอยสุเทพ + หมู่บ้านม้ง", "desc_en": "Visit the golden temple on the mountain and a Hmong hill-tribe village.", "desc_th": "ไหว้พระธาตุดอยสุเทพ แล้วแวะชมหมู่บ้านชาวม้งดอยปุย", "dur_en": "Half day", "dur_th": "ครึ่งวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "culture", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Doi Suthep & Wat Pha Lat", "title_th": "ดอยสุเทพ + วัดผาลาด", "desc_en": "Walk the Monk's Trail to the hidden jungle temple, then up to Doi Suthep.", "desc_th": "เดินเส้นทางสายบุญสู่วัดผาลาดกลางป่า แล้วขึ้นไหว้พระธาตุดอยสุเทพ", "dur_en": "Half day", "dur_th": "ครึ่งวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "nature", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Doi Inthanon with trekking", "title_th": "ดอยอินทนนท์ (รวมเดินป่า)", "desc_en": "Thailand's highest peak, royal pagodas, waterfalls and a nature trail trek.", "desc_th": "ยอดดอยที่สูงที่สุดในไทย พระมหาธาตุ น้ำตก และเดินป่าศึกษาธรรมชาติ", "dur_en": "Full day", "dur_th": "เต็มวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "nature", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Doi Inthanon (no trekking)", "title_th": "ดอยอินทนนท์ (ไม่เดินป่า)", "desc_en": "All the highlights of Doi Inthanon at an easy pace — no hiking needed.", "desc_th": "เที่ยวจุดไฮไลต์ของดอยอินทนนท์แบบสบายๆ ไม่ต้องเดินป่า", "dur_en": "Full day", "dur_th": "เต็มวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "nature", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Ethical elephant care (no riding)", "title_th": "เลี้ยงช้างแบบอนุรักษ์ (ไม่ขี่)", "desc_en": "Feed, walk with and bathe rescued elephants at an ethical sanctuary — no riding.", "desc_th": "ให้อาหาร เดินเล่น และอาบน้ำช้างในปางช้างแบบอนุรักษ์ ไม่มีการขี่ช้าง", "dur_en": "Half / full day", "dur_th": "ครึ่งวัน / เต็มวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "nature", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Jungle trekking", "title_th": "เดินป่า", "desc_en": "A guided day hike through forest trails, waterfalls and hill-tribe villages.", "desc_th": "เดินป่าแบบไปกลับพร้อมไกด์ ผ่านน้ำตกและหมู่บ้านชาวเขา", "dur_en": "Full day", "dur_th": "เต็มวัน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}, {"cat": "nature", "region_en": "Chiang Mai", "region_th": "เชียงใหม่", "title_en": "Overnight jungle trek", "title_th": "เดินป่าค้างคืน", "desc_en": "Trek deep into the mountains and stay overnight in a hill-tribe village.", "desc_th": "เดินป่าลึกเข้าไปในเขา และพักค้างคืนที่หมู่บ้านชาวเขา", "dur_en": "2 days 1 night", "dur_th": "2 วัน 1 คืน", "price": "", "img": "", "c1": "#1F5E55", "c2": "#0E2E2A", "photos": []}];
   }
-  function boot(){ ensureRental(); ensureActivities(); render(); mountWidget(); }
+  function ensureSocial(){
+    if(!data.social) data.social=[{name:"Chip n Lo Tour",url:"https://www.facebook.com/Chipnlotour2"},{name:"Cool Travel Chiang Mai",url:"https://www.facebook.com/cooltravelchiangmai"}];
+    if(!data.videos) data.videos=["https://www.facebook.com/reel/412715754573121"];
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureSocial(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

@@ -600,7 +600,7 @@
         H.push('<p class="desc"'+ed("bikes."+i+".desc")+'>'+esc(t(bk,"desc"))+'</p>');
         if(editing){ var PH='<div class="iph">'; bph.forEach(function(src,k){ PH+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="bikes:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; }); H.push(PH+'<button class="iph-add" type="button" data-iphadd="bikes:'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div>'); }
         H.push('<div class="meta"><span class="dur">'+ICON.bike+'<span'+ed("bikes."+i+".spec")+'>'+esc(t(bk,"spec")||(lang==="th"?"ค่าเช่า":"Rental"))+'</span></span>'
-          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(lang==="th"?" / วัน":" / day")+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
+          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(lang==="th"?" / 24 ชม.":" / 24 Hours")+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
         H.push('<div class="act"><a class="btn btn-primary btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"จองรถคันนี้":"Book this bike")+'</a></div>');
         H.push('</div></article>');
       });

@@ -1489,7 +1489,34 @@
       type_en:"Department of Tourism · Inbound tour license",type_th:"กรมการท่องเที่ยว · ประเภทนำเที่ยวจากต่างประเทศ",
       valid_en:"Valid until 28 January 2027",valid_th:"ใช้ได้ถึง 28 มกราคม 2570",img:LICENSE_IMG};
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureIntlTours(){
+    if(data._intlSeeded) return;
+    data.tours=data.tours||[];
+    if(!data.tours.some(function(tr){ return tr.cat==="intl"; })){
+      data.tours.push(
+        {cat:"intl",img:"",photos:[],c1:"#B7791F",c2:"#5B2A0E",price:"",
+         region_en:"Laos",region_th:"ลาว",
+         title_en:"Luang Prabang — Laos' UNESCO heritage town",title_th:"หลวงพระบาง เมืองมรดกโลก สปป.ลาว",
+         desc_en:"Join the dawn alms-giving procession, swim in the turquoise pools of Kuang Si Falls, climb Mount Phousi for sunset and browse the famous night market.",
+         desc_th:"ร่วมตักบาตรข้าวเหนียวยามเช้า เล่นน้ำตกกวางซีสีฟ้าเทอร์ควอยซ์ ขึ้นพูสีชมพระอาทิตย์ตก และเดินตลาดมืดหลวงพระบาง",
+         dur_en:"3 days 2 nights",dur_th:"3 วัน 2 คืน"},
+        {cat:"intl",img:"",photos:[],c1:"#0E7C86",c2:"#12324A",price:"",
+         region_en:"Vietnam",region_th:"เวียดนาม",
+         title_en:"Hanoi, Ha Long Bay & Ninh Binh",title_th:"ฮานอย อ่าวฮาลอง นิงห์บิงห์",
+         desc_en:"Explore Hanoi's Old Quarter, cruise among the limestone islands of Ha Long Bay, and take a sampan boat through the caves and rice fields of Trang An, Ninh Binh.",
+         desc_th:"เดินเล่นย่านเมืองเก่าฮานอย ล่องเรือชมเกาะหินปูนอ่าวฮาลอง และนั่งเรือพายลอดถ้ำท่ามกลางทุ่งนาที่จ่างอาน นิงห์บิงห์",
+         dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน"},
+        {cat:"intl",img:"",photos:[],c1:"#8A5A2B",c2:"#2A1A10",price:"",
+         region_en:"Cambodia",region_th:"กัมพูชา",
+         title_en:"Siem Reap — Angkor Wat sunrise",title_th:"เสียมเรียบ ชมพระอาทิตย์ขึ้นที่นครวัด",
+         desc_en:"Watch the sunrise over Angkor Wat, explore the smiling faces of Bayon and the jungle-wrapped Ta Prohm, then unwind on Pub Street in the evening.",
+         desc_th:"ชมพระอาทิตย์ขึ้นหลังปราสาทนครวัด เที่ยวปราสาทบายนหน้ายิ้ม และปราสาทตาพรหมที่มีรากไม้ใหญ่ปกคลุม ปิดท้ายด้วยถนนผับสตรีทยามค่ำ",
+         dur_en:"3 days 2 nights",dur_th:"3 วัน 2 คืน"}
+      );
+    }
+    data._intlSeeded=true;
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

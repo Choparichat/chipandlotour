@@ -1311,13 +1311,14 @@
     w.innerHTML='<form style="background:var(--surface);color:var(--ink);border-radius:16px;max-width:380px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3)">'
       +'<h3 style="margin:0 0 6px;font-family:var(--serif)">'+(th?"เข้าสู่ระบบหลังบ้าน":"Admin sign-in")+'</h3>'
       +'<p style="margin:0 0 14px;color:var(--muted);font-size:.9rem">'+(th?"ใส่รหัสผ่านเพื่อแก้ไขเว็บไซต์ (เครื่องนี้จะจำไว้ 30 วัน)":"Enter the password to edit the site (remembered on this device for 30 days)")+'</p>'
-      +'<label style="font-size:.85rem;font-weight:600" for="pw-pass">'+(th?"รหัสผ่าน":"Password")+'</label><input id="pw-pass" type="password" autocomplete="current-password" style="'+inp+'">'
+      +'<label style="font-size:.85rem;font-weight:600" for="pw-pass">'+(th?"รหัสผ่าน":"Password")+'</label><div style="position:relative"><input id="pw-pass" type="password" autocomplete="current-password" style="'+inp+';padding-right:92px"><button type="button" id="pw-eye" style="position:absolute;right:6px;top:10px;height:34px;padding:0 10px;border:0;border-radius:8px;background:#EDE7DD;color:#241F19;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer">'+(th?"แสดง":"Show")+'</button></div>'
       +'<div id="pw-err" style="color:#e0675c;font-size:.85rem;min-height:1.2em;margin-bottom:8px"></div>'
       +'<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" id="pw-cancel" type="button">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" id="pw-ok" type="submit">'+(th?"เข้าสู่ระบบ":"Sign in")+'</button></div></form>';
     document.body.appendChild(w);
     var f=w.querySelector("form"), ip=document.getElementById("pw-pass"), er=document.getElementById("pw-err"), ok=document.getElementById("pw-ok");
     setTimeout(function(){ ip.focus(); },50);
     document.getElementById("pw-cancel").onclick=function(){ w.remove(); };
+    document.getElementById("pw-eye").onclick=function(){ var show=ip.type==="password"; ip.type=show?"text":"password"; this.textContent=show?(th?"ซ่อน":"Hide"):(th?"แสดง":"Show"); ip.focus(); };
     f.onsubmit=function(ev){
       ev.preventDefault(); var pass=ip.value; if(!pass){ er.textContent=th?"กรุณาใส่รหัสผ่าน":"Enter the password"; return; }
       er.textContent=th?"กำลังตรวจสอบ...":"Checking..."; ok.disabled=true;

@@ -826,7 +826,12 @@
   }
   function catsFor(arr){ return arr==="activities"?ACT_CATS:TOUR_CATS; }
   function catOf(arr,it){ var cs=catsFor(arr); for(var k=0;k<cs.length;k++) if(cs[k][0]===it.cat) return cs[k]; return cs[0]; }
+  function thaiOnly(arr,it){ return arr==="tours"&&it&&it.cat==="intl"; }
   function itemCard(arr,i,it){
+    if(!thaiOnly(arr,it)) return itemCard0(arr,i,it);
+    var lg=lang; lang="th"; try{ return itemCard0(arr,i,it).replace('<article class="tcard"','<article lang="th" class="tcard"'); } finally{ lang=lg; }
+  }
+  function itemCard0(arr,i,it){
     var cat=catOf(arr,it), ph=(it.photos||[]).filter(Boolean), nph=ph.length+(it.img?1:0);
     var wab=waLink(data.contact&&data.contact.whatsapp), title=t(it,"title");
     var href=wab?wab+"?text="+encodeURIComponent((lang==="th"?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+title):"#contact";
@@ -862,7 +867,7 @@
     if(full){
       var cnt=function(c){ return list.filter(function(it){ return catOf(arr,it)[0]===c; }).length; };
       H.push('<div class="chips"><button type="button" class="chip'+(cur==="all"?' on':'')+'" data-fcat="'+arr+':all">'+(lang==="th"?"ทั้งหมด":"All")+' <span>'+list.length+'</span></button>');
-      cs.forEach(function(c){ var n=cnt(c[0]); if(!n&&!editing) return; H.push('<button type="button" class="chip'+(cur===c[0]?' on':'')+'" data-fcat="'+arr+':'+c[0]+'">'+esc(lang==="th"?c[1]:c[2])+' <span>'+n+'</span></button>'); });
+      cs.forEach(function(c){ var n=cnt(c[0]); if(!n&&!editing) return; H.push('<button type="button" class="chip'+(cur===c[0]?' on':'')+'" data-fcat="'+arr+':'+c[0]+'">'+esc((lang==="th"||(arr==="tours"&&c[0]==="intl"))?c[1]:c[2])+' <span>'+n+'</span></button>'); });
       H.push('</div>');
       if(cur!=="all") idx=idx.filter(function(i){ return catOf(arr,list[i])[0]===cur; });
     } else idx=idx.slice(0,3);
@@ -893,7 +898,7 @@
     var last=parts[parts.length-1]; last=(/^\d+$/.test(last))?+last:last;
     return {obj:o,key:last};
   }
-  function setText(path,val){ var r=ref(path); r.obj[r.key+"_"+lang]=val; }
+  function setText(path,val){ var r=ref(path), m=path.match(/^tours\.(\d+)\./), lg=(m&&data.tours&&thaiOnly("tours",data.tours[+m[1]]))?"th":lang; r.obj[r.key+"_"+lg]=val; }
   function setPlain(path,val){ var r=ref(path); r.obj[r.key]=val; }
 
   // ---------- bind events ----------

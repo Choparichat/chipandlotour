@@ -1561,7 +1561,20 @@
     }
     data._intlSeeded=true;
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureMacau(){
+    if(data._macauAdded) return;
+    data.tours=data.tours||[];
+    if(!data.tours.some(function(tr){ return /มาเก๊า/.test(tr.title_th||""); })){
+      data.tours.push({cat:"intl",img:"",photos:[],c1:"#B3261E",c2:"#3A0F0C",price:"5,999",
+        region_th:"มาเก๊า · จูไห่",region_en:"Macau · Zhuhai",
+        title_th:"มาเก๊า จูไห่ โปรชิลชิล ครบทุกแลนด์มาร์ค",title_en:"Macau & Zhuhai — all the landmarks",
+        desc_th:"เที่ยว 2 เมืองในทริปเดียว ชมซากโบสถ์เซนต์ปอล ศาลเจ้านาจา และเจ้าแม่กวนอิมริมทะเลที่มาเก๊า ถ่ายรูปโรงละครหอยมุกที่จูไห่ ช้อปตลาดใต้ดินกงเป่ย และเดินเล่นเดอะเวเนเชียน อิ่มกับเมนูเป๋าฮื้อซีฟู้ดและไวน์แดง พักโรงแรม 4 ดาว · เดินทาง ก.ย. – ธ.ค. 2569",
+        desc_en:"Two cities in one trip: the Ruins of St. Paul's, Na Tcha Temple and the Kun Iam statue in Macau, Zhuhai's shell-shaped Grand Theatre, Gongbei underground market and The Venetian. Abalone seafood dinner with red wine, 4-star hotels. Departures Sep – Dec 2026.",
+        dur_th:"3 วัน 2 คืน",dur_en:"3 days 2 nights"});
+    }
+    data._macauAdded=true;
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

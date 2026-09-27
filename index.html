@@ -385,7 +385,8 @@
   .drag-h svg{width:16px;height:16px}
   body.editing .drag-h{display:inline-flex}
   .catlbl{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--primary-ink,var(--primary))}
-  .catbtn{align-self:flex-start;border:1px dashed var(--primary);background:transparent;color:var(--primary-ink,var(--primary));border-radius:8px;padding:4px 10px;font:600 .8rem/1.2 inherit;cursor:pointer}
+  .catbtn{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--primary);background:transparent;color:var(--primary-ink,var(--primary));border-radius:8px;padding:3px 6px 3px 10px;font:600 .8rem/1.2 inherit}
+  .catbtn select{font:600 .82rem/1.2 inherit;color:#241F19;-webkit-text-fill-color:#241F19;background:#fff;border:1px solid var(--border);border-radius:6px;padding:3px 6px;cursor:pointer}
   .price.ask{font-family:inherit;font-size:.9rem;color:var(--muted)}
   .tcard .media[data-open]{cursor:zoom-in} body.editing .tcard .media[data-open]{cursor:default}
   .phcount{position:absolute;right:12px;bottom:12px;z-index:2;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);color:#fff;font-size:.78rem;font-weight:600;padding:.35em .7em;border-radius:999px}
@@ -841,7 +842,9 @@
     h+='<div class="media" data-open="'+arr+':'+i+'"><span class="region"'+ed(arr+"."+i+".region")+'>'+esc(t(it,"region"))+'</span>'+media(it)+imgOverlay(arr+"."+i+".img")
       +((nph>1&&!editing)?'<span class="phcount">'+ICON.cam+nph+'</span>':'')+'</div>';
     h+='<div class="body">';
-    if(editing) h+='<button class="catbtn" type="button" data-cat="'+arr+':'+i+'">'+(lang==="th"?"หมวด: ":"Category: ")+(lang==="th"?cat[1]:cat[2])+' ⟳</button>';
+    if(editing){ h+='<label class="catbtn">'+(lang==="th"?"หมวด:":"Category:")+' <select data-catsel="'+arr+':'+i+'">';
+      catsFor(arr).forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===cat[0]?' selected':'')+'>'+esc(lang==="th"?c[1]:c[2])+'</option>'; });
+      h+='</select></label>'; }
     else h+='<span class="catlbl">'+esc(lang==="th"?cat[1]:cat[2])+'</span>';
     h+='<h3'+ed(arr+"."+i+".title")+'>'+esc(title)+'</h3>';
     h+='<p class="desc"'+ed(arr+"."+i+".desc")+'>'+esc(t(it,"desc"))+'</p>';
@@ -1033,10 +1036,12 @@
     });
     // tours / activities: filter chips, category, lightbox, photos
     Array.prototype.forEach.call(document.querySelectorAll("[data-fcat]"),function(b){ b.onclick=function(){ syncEdits(); var v=b.getAttribute("data-fcat").split(":"); if(v[0]==="tours") tourCat=v[1]; else actCat=v[1]; render(); }; });
-    Array.prototype.forEach.call(document.querySelectorAll("[data-cat]"),function(b){ b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); syncEdits();
-      var v=b.getAttribute("data-cat").split(":"), it=data[v[0]][+v[1]], cs=catsFor(v[0]), cur=catOf(v[0],it)[0], k=0;
-      for(var q=0;q<cs.length;q++) if(cs[q][0]===cur) k=q; it.cat=cs[(k+1)%cs.length][0];
-      if(v[0]==="tours"&&tourCat!=="all") tourCat=it.cat; if(v[0]==="activities"&&actCat!=="all") actCat=it.cat; render(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-catsel]"),function(sel){
+      sel.onclick=function(e){ e.stopPropagation(); };
+      sel.onchange=function(){ syncEdits();
+        var v=sel.getAttribute("data-catsel").split(":"), it=data[v[0]][+v[1]]; it.cat=sel.value;
+        if(v[0]==="tours"&&tourCat!=="all") tourCat=it.cat; if(v[0]==="activities"&&actCat!=="all") actCat=it.cat; render();
+        toast(lang==="th"?"ย้ายหมวดแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Category changed — tap “Save & publish”"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-open]"),function(m){ m.onclick=function(e){ if(editing||e.target.closest("label,button")) return;
       var v=m.getAttribute("data-open").split(":"), it=data[v[0]][+v[1]]; var list=[it.img].concat(it.photos||[]).filter(Boolean); if(list.length) openLB(list,0); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphdel]"),function(b){ b.onclick=function(e){ e.stopPropagation(); syncEdits(); var v=b.getAttribute("data-iphdel").split(":"); data[v[0]][+v[1]].photos.splice(+v[2],1); render(); }; });
@@ -1574,7 +1579,39 @@
     }
     data._macauAdded=true;
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureIntl2(){
+    if(data._intl2Added) return;
+    data.tours=data.tours||[];
+    var add=[
+      {cat:"intl",img:"",photos:[],c1:"#0E8A9A",c2:"#0B2F45",price:"19,888",
+       region_th:"ญี่ปุ่น · โอกินาว่า",region_en:"Japan · Okinawa",
+       title_th:"โอกินาว่าชิลจัด ทะเลชัดมาก",title_en:"Okinawa — chill island escape",
+       desc_th:"เที่ยวเกาะโอกินาว่าทะเลสีฟ้าใส ชมวิวผามันซาโมะ ตื่นตากับพิพิธภัณฑ์สัตว์น้ำชุราอูมิ และเยือนปราสาทชูริ พักโรงแรม 3 ดาว · เดินทาง ต.ค. – พ.ย. 2569",
+       desc_en:"Okinawa's clear blue sea: Cape Manzamo, Churaumi Aquarium and Shuri Castle. 3-star hotels. Departures Oct – Nov 2026.",
+       dur_th:"4 วัน 3 คืน",dur_en:"4 days 3 nights"},
+      {cat:"intl",img:"",photos:[],c1:"#C0392B",c2:"#2C1A3A",price:"",
+       region_th:"ญี่ปุ่น · โตเกียว",region_en:"Japan · Tokyo",
+       title_th:"โตเกียว ฟูจิ คามาคุระ เอโนชิมะ",title_en:"Tokyo, Fuji, Kamakura & Enoshima",
+       desc_th:"เกาะเอโนชิมะ พระใหญ่ไดบุตสึแห่งคามาคุระ หมู่บ้านน้ำใสโอชิโนะฮักไก วัดอาซากุสะ ช้อปชินจูกุ ชิบูย่า อะเมโยโกะ ตลาดปลาซึกิจิ และห้าง Diver City พร้อมวันอิสระ 1 วัน พักโรงแรม 3 ดาว",
+       desc_en:"Enoshima, the Great Buddha of Kamakura, Oshino Hakkai, Asakusa, shopping in Shinjuku, Shibuya, Ameyoko and Tsukiji, plus one free day. 3-star hotels.",
+       dur_th:"5 วัน 3 คืน",dur_en:"5 days 3 nights"},
+      {cat:"intl",img:"",photos:[],c1:"#D4A017",c2:"#5A1E0E",price:"1,599",
+       region_th:"ฮ่องกง",region_en:"Hong Kong",
+       title_th:"ฮ่องกง ขอพรเสริมดวง 1 วัน",title_en:"Hong Kong blessings day trip",
+       desc_th:"ไหว้พระขอพรครบ 3 จุดดังในวันเดียว เจ้าแม่กวนอิมหาดรีพัลส์เบย์ วัดเจ้าแม่กวนอิมฮองฮำ และวัดแชกงหมุนกังหันเสริมดวง ออกเดินทางทุกเสาร์ – อาทิตย์ · ก.ย. – ธ.ค. 2569",
+       desc_en:"Three famous shrines in one day: Kwun Yum at Repulse Bay, Hung Hom Kwun Yum Temple and Che Kung Temple. Every Saturday & Sunday, Sep – Dec 2026.",
+       dur_th:"1 วัน",dur_en:"1 day"},
+      {cat:"intl",img:"",photos:[],c1:"#1A9E8F",c2:"#0D3B3A",price:"6,888",
+       region_th:"เวียดนาม · ฟูก๊วก",region_en:"Vietnam · Phu Quoc",
+       title_th:"ฟูก๊วก สวรรค์ริมทะเลเวียดนาม",title_en:"Phu Quoc — Vietnam's island paradise",
+       desc_th:"นั่งกระเช้าข้ามทะเลฮอนทม สนุกกับสวนน้ำและสวนสนุก Sun World Hon Thom เดินถ่ายรูปเมืองเมดิเตอร์เรเนียน และอิ่มกับเมนูกุ้งมังกร พักโรงแรม 3 ดาว · เดินทาง ต.ค. – ธ.ค. 2569",
+       desc_en:"Hon Thom sea cable car, Sun World Hon Thom water & theme park, Mediterranean Town and a lobster dinner. 3-star hotels. Departures Oct – Dec 2026.",
+       dur_th:"3 วัน 2 คืน",dur_en:"3 days 2 nights"}
+    ];
+    add.forEach(function(n){ if(!data.tours.some(function(tr){ return tr.title_th===n.title_th; })) data.tours.push(n); });
+    data._intl2Added=true;
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

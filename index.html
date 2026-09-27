@@ -1188,9 +1188,9 @@
       };
       var subCover=function(sid,s){ if(s&&s.img) return s; var L=ix.filter(function(i){ return inSub(i,sid); }); for(var q=0;q<L.length;q++) if(data.tours[L[q]].img) return {img:data.tours[L[q]].img}; return {c1:d.c1,c2:d.c2}; };
       H+='<div class="dgrid">';
-      H+=gcard(base+"/all",destCover(d),allLbl,ix.length,null," gall");
+      H+=gcard(base+"/all",d.allImg?{img:d.allImg}:destCover(d),allLbl,ix.length,"destinations."+k+".allImg"," gall");
       subs.forEach(function(s,q){ var n=sc(s.id); if(!n&&!editing) return; H+=gcard(base+"/"+encodeURIComponent(s.id),subCover(s.id,s),subName(d,s.id),n,"destinations."+k+".subs."+q+".img"); });
-      if(nOther) H+=gcard(base+"/other",subCover("other"),othLbl,nOther,null);
+      if(nOther||editing&&d.otherImg) H+=gcard(base+"/other",d.otherImg?{img:d.otherImg}:subCover("other"),othLbl,nOther,"destinations."+k+".otherImg");
       H+='</div>';
       if(editing) H+='<p class="td-hint" style="margin-top:14px">'+(th?"เปลี่ยนรูปปกของแต่ละหมวดได้ที่ปุ่ม “เปลี่ยนรูป” · เพิ่ม/แก้ชื่อหมวดได้ที่ปุ่ม “หมวดโปรแกรม” ในหน้า Tours":"Change each group's cover with “Change photo” · add or rename groups with the “Program groups” button on the Tours page")+'</p>';
       H+='<button class="btn btn-ghost addbtn" data-add="tours">'+ICON.plus+(th?"เพิ่มโปรแกรมทัวร์":"Add a tour program")+'</button>';

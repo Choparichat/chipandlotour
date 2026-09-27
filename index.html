@@ -571,6 +571,11 @@
   .deals-page{background:linear-gradient(180deg,color-mix(in srgb,#1E88E5 10%,var(--bg)),var(--bg) 60%)}
   @media (max-width:1000px){ .dgrid4{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:760px){ .dgrid4{grid-template-columns:repeat(2,1fr);gap:14px} .dbanner{grid-template-columns:1fr;background:radial-gradient(120% 140% at 85% 110%,rgba(255,110,20,.55),transparent 55%),linear-gradient(160deg,#2b2b2e,#151517)} .db-l{text-align:center;padding-bottom:0} .dp-now{font-size:1.6rem} .dp-title{font-size:.9rem} .dp-off{width:50px;height:50px;top:32px;right:6px} .dp-off b{font-size:.78rem} .dp-off small{font-size:.5rem} .dp-code,.dp-dur{font-size:.62rem} .dp-btn{font-size:.8rem;padding:.35em .9em} }
+  .grp-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:40px 0 18px;border-bottom:1px solid var(--border);padding-bottom:10px}
+  .grp-row.first{margin-top:0}
+  .grp-row .grp-title{margin:0}
+  .grp-more{color:var(--primary-ink);text-decoration:none;font-weight:600;font-size:.92rem;white-space:nowrap}
+  .grp-more:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -1122,11 +1127,16 @@
   function destGrid(list){ var H='<div class="dgrid">'; list.forEach(function(k){ H+=destCard(dests()[k],k); }); return H+'</div>'; }
   function homeTours(){
     var sec=data.toursSection||{}, L=dests(), th=lang==="th";
-    var ix=L.map(function(_,k){ return k; }).sort(function(a,b){ return (L[a].cat==="intl")-(L[b].cat==="intl")||a-b; }).slice(0,6);
     var H='<section class="blk" id="tours"><div class="wrap"><div class="sec-head"><div class="eyebrow"'+ed("toursSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div>';
     H+='<h2'+ed("toursSection.title")+'>'+esc(t(sec,"title"))+'</h2><p'+ed("toursSection.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
-    H+=destGrid(ix);
-    H+='<div class="seeall"><a class="btn btn-primary" href="#/tours" data-nav>'+(th?"ดูทัวร์ทั้งหมด":"See all tours")+' ('+(data.tours||[]).length+') →</a></div>';
+    TOUR_CATS.forEach(function(c,n){
+      var ix=L.map(function(_,k){ return k; }).filter(function(k){ return L[k].cat===c[0]; });
+      if(!ix.length) return;
+      var nt=(data.tours||[]).filter(function(tr){ var d=tourDest(tr); return d&&d.cat===c[0]; }).length;
+      H+='<div class="grp-row'+(n===0?' first':'')+'"><h3 class="grp-title">'+esc((th||c[0]==="intl")?c[1]:c[2])+'</h3>';
+      H+='<a class="grp-more" href="#/tours" data-nav data-tc="'+c[0]+'">'+(th?"ดูทั้งหมด":"See all")+' ('+nt+') →</a></div>';
+      H+=destGrid(ix.slice(0,6));
+    });
     return H+'</div></section>';
   }
   function toursPage(){
@@ -1600,6 +1610,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-pdfadd]"),function(b){ b.onclick=function(){ var i=+b.getAttribute("data-pdfadd"); pickPdf(function(u){ syncEdits(); data.tours[i].pdf=u; render(); toast(lang==="th"?"แนบไฟล์แล้ว อย่าลืมกดบันทึก":"PDF attached — remember to save"); }); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-pdfdel]"),function(b){ b.onclick=function(){ syncEdits(); data.tours[+b.getAttribute("data-pdfdel")].pdf=""; render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-promo]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-promo").split(":"); openPromoForm(v[0],+v[1]); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tc]"),function(a){ a.addEventListener("click",function(){ tourCat=a.getAttribute("data-tc"); if(view==="tours") render(); }); });
     var da=document.getElementById("dealadd"); if(da) da.onclick=function(){ openPromoForm(); };
     Array.prototype.forEach.call(document.querySelectorAll("[data-dp]"),function(el){ el.onclick=function(e){ if(editing||e.target.closest("label,button")) return; var h=el.getAttribute("data-dp"); if(h.charAt(0)==="#") location.hash=h; else window.open(h,"_blank","noopener"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-posterdel]"),function(b){ b.onclick=function(){ syncEdits(); var v=b.getAttribute("data-posterdel").split(":"); data[v[0]][+v[1]].poster=""; render(); }; });

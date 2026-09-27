@@ -579,6 +579,9 @@
 
   button,input,select,textarea{font-family:inherit}
   .tours-grid.sorted .drag-h{display:none!important}
+  .gcard.gall .dmedia::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.35))}
+  .chip-back{background:transparent;border-style:dashed}
+  .chips-sm + .dgrid{margin-top:26px}
 </style>
 </head>
 <body>
@@ -608,17 +611,17 @@
   try{ var s=localStorage.getItem(LS_LANG); if(s==="en"||s==="th") lang=s; }catch(e){}
   var editing=false, canEdit=false, artifactNS=null, editEnteredAt=0;
   var view="home", tourCat="all", actCat="all";
-  var route={v:"home"}, destSub="all";
+  var route={v:"home"}, destSub="";
   function parseRoute(){ var h=location.hash||"", m;
     if((m=h.match(/^#\/tour\/([^\/?#]+)/))) return {v:"tour",id:decodeURIComponent(m[1])};
-    if((m=h.match(/^#\/tours\/([^\/?#]+)/))) return {v:"dest",id:decodeURIComponent(m[1])};
+    if((m=h.match(/^#\/tours\/([^\/?#]+)(?:\/([^\/?#]+))?/))) return {v:"dest",id:decodeURIComponent(m[1]),sub:m[2]?decodeURIComponent(m[2]):""};
     if(h.indexOf("#/tours")===0) return {v:"tours"};
     if(h.indexOf("#/activities")===0) return {v:"activities"};
     if(h.indexOf("#/deals")===0) return {v:"deals"};
     if(h.indexOf("#/tickets")===0) return {v:"tickets"};
     if(h.indexOf("#/top5")===0) return {v:"top5"};
     return {v:"home"}; }
-  function getView(){ route=parseRoute(); return route.v; }
+  function getView(){ route=parseRoute(); destSub=route.sub||""; return route.v; }
   view=getView();
   var TOUR_CATS=[["thai","ทัวร์ในประเทศ","Thailand tours"],["intl","ทัวร์ต่างประเทศ","International tours"]];
   var ACT_CATS=[["adventure","ผจญภัย","Adventure"],["nature","ธรรมชาติ & เดินป่า","Nature & trekking"],["culture","วัฒนธรรม & ประสบการณ์","Culture & experiences"],["water","กิจกรรมทางน้ำ","On the water"],["tickets","ซื้อตั๋ว","Buy tickets"]];
@@ -1172,13 +1175,34 @@
     H+='<div class="chips chips-sm">';
     dests().filter(function(x){ return x.cat===d.cat; }).forEach(function(x){ H+='<a class="chip'+(x.id===d.id?' on':'')+'" href="#/tours/'+encodeURIComponent(x.id)+'" data-nav>'+esc(dname(x))+' <span>'+toursOf(x.id).length+'</span></a>'; });
     H+='</div>';
-    var subs=d.subs||[];
-    if(subs.length){
-      var sc=function(sid){ return ix.filter(function(i){ return data.tours[i].sub===sid; }).length; };
-      H+='<div class="chips"><button type="button" class="chip'+(destSub==="all"?' on':'')+'" data-dsub="all">'+(intl?(th?"ทุกเมือง":"All cities"):(th?"ทุกโปรแกรม":"All programs"))+' <span>'+ix.length+'</span></button>';
-      subs.forEach(function(s){ var n=sc(s.id); if(!n&&!editing) return; H+='<button type="button" class="chip'+(destSub===s.id?' on':'')+'" data-dsub="'+esc(s.id)+'">'+esc(subName(d,s.id))+' <span>'+n+'</span></button>'; });
+    var subs=d.subs||[], base="#/tours/"+encodeURIComponent(d.id);
+    var inSub=function(i,sid){ var tr=data.tours[i]; if(sid==="other") return !tr.sub||!subs.some(function(s){ return s.id===tr.sub; }); return tr.sub===sid; };
+    var sc=function(sid){ return ix.filter(function(i){ return inSub(i,sid); }).length; }, nOther=sc("other");
+    var allLbl=intl?(th?"ทุกเมือง":"All cities"):(th?"ทุกโปรแกรม":"All programs"), othLbl=intl?(th?"เมืองอื่น ๆ":"Other cities"):(th?"โปรแกรมอื่น ๆ":"Other programs");
+    if(subs.length&&!destSub){
+      var gcard=function(href,cover,name,n,imgPath,extraCls){
+        var h='<article class="dcard gcard'+(extraCls||'')+'" data-href="'+esc(href)+'"><div class="dmedia">'+media(cover)+(imgPath?imgOverlay(imgPath):'')+'</div>';
+        h+='<div class="dcap"><h3>'+esc(name)+'</h3><span class="dcount">'+n+' '+(th?"โปรแกรม":(n===1?"program":"programs"))+'</span></div>';
+        if(editing) h+='<div class="dedit"><a class="btn btn-primary btn-sm" data-nav href="'+esc(href)+'">'+(th?"เปิดดู →":"Open →")+'</a></div>';
+        return h+'</article>';
+      };
+      var subCover=function(sid,s){ if(s&&s.img) return s; var L=ix.filter(function(i){ return inSub(i,sid); }); for(var q=0;q<L.length;q++) if(data.tours[L[q]].img) return {img:data.tours[L[q]].img}; return {c1:d.c1,c2:d.c2}; };
+      H+='<div class="dgrid">';
+      H+=gcard(base+"/all",destCover(d),allLbl,ix.length,null," gall");
+      subs.forEach(function(s,q){ var n=sc(s.id); if(!n&&!editing) return; H+=gcard(base+"/"+encodeURIComponent(s.id),subCover(s.id,s),subName(d,s.id),n,"destinations."+k+".subs."+q+".img"); });
+      if(nOther) H+=gcard(base+"/other",subCover("other"),othLbl,nOther,null);
       H+='</div>';
-      if(destSub!=="all") ix=ix.filter(function(i){ return data.tours[i].sub===destSub; });
+      if(editing) H+='<p class="td-hint" style="margin-top:14px">'+(th?"เปลี่ยนรูปปกของแต่ละหมวดได้ที่ปุ่ม “เปลี่ยนรูป” · เพิ่ม/แก้ชื่อหมวดได้ที่ปุ่ม “หมวดโปรแกรม” ในหน้า Tours":"Change each group's cover with “Change photo” · add or rename groups with the “Program groups” button on the Tours page")+'</p>';
+      H+='<button class="btn btn-ghost addbtn" data-add="tours">'+ICON.plus+(th?"เพิ่มโปรแกรมทัวร์":"Add a tour program")+'</button>';
+      return H+'</div></section>';
+    }
+    if(subs.length){
+      H+='<div class="chips"><a class="chip chip-back" href="'+esc(base)+'" data-nav>← '+(th?"ภาพรวม":"Overview")+'</a>';
+      H+='<a class="chip'+(destSub==="all"?' on':'')+'" href="'+esc(base+"/all")+'" data-nav>'+allLbl+' <span>'+ix.length+'</span></a>';
+      subs.forEach(function(s){ var n=sc(s.id); if(!n&&!editing) return; H+='<a class="chip'+(destSub===s.id?' on':'')+'" href="'+esc(base+"/"+encodeURIComponent(s.id))+'" data-nav>'+esc(subName(d,s.id))+' <span>'+n+'</span></a>'; });
+      if(nOther) H+='<a class="chip'+(destSub==="other"?' on':'')+'" href="'+esc(base+"/other")+'" data-nav>'+othLbl+' <span>'+nOther+'</span></a>';
+      H+='</div>';
+      if(destSub&&destSub!=="all") ix=ix.filter(function(i){ return inSub(i,destSub); });
     }
     var so=function(tr){ if(!tr.sub) return 0; for(var q=0;q<subs.length;q++) if(subs[q].id===tr.sub) return q+1; return subs.length+1; };
     var pfx=function(tr){ return String(tr.code||"").trim().toUpperCase().replace(/[-\s]*\d+[A-Z]?$/,""); }, prank={};
@@ -1611,6 +1635,7 @@
     Array.prototype.forEach.call(document.querySelectorAll(".dcard[data-dest]"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a,select,input")) return; location.hash="#/tours/"+encodeURIComponent(c.getAttribute("data-dest")); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-dcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var d=dests()[+sel.getAttribute("data-dcat")]; d.cat=sel.value;
       (data.tours||[]).forEach(function(tr){ if(tr.dest===d.id) tr.cat=d.cat; }); render(); toast(lang==="th"?"ย้ายหมวดแล้ว อย่าลืมกดบันทึก":"Category changed — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll(".dcard[data-href]"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a,select,input")) return; location.hash=c.getAttribute("data-href"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-dsubs]"),function(b){ b.onclick=function(){ openSubsForm(+b.getAttribute("data-dsubs")); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-dsub]"),function(b){ b.onclick=function(){ syncEdits(); destSub=b.getAttribute("data-dsub"); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tcat")]; it.cat=sel.value;
@@ -1654,7 +1679,7 @@
         else if(which==="tours_intl_legacy") data.tours.push({cat:"intl",img:"",c1:"#123B4E",c2:"#0B2330",region_en:"Country",region_th:"ประเทศ",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน",price:""});
         else if(which==="bikes") data.bikes.push({name:"New bike",price:"300",desc_en:"Describe this bike...",desc_th:"รายละเอียดรถ...",img:"",c1:"#2E6B6B",c2:"#123B3B"});
         else if(which==="tours"){ var dd=(view==="dest"&&destById(route.id))||dests().filter(function(x){ return x.cat===(tourCat==="intl"?"intl":"thai"); })[0]||{};
-          data.tours.push({id:newId("t"),cat:dd.cat||"thai",dest:dd.id||"",sub:(view==="dest"&&destSub!=="all")?destSub:"",code:"",img:"",photos:[],c1:"#0F6E5C",c2:"#123B4E",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"",_trAll:true}); }
+          data.tours.push({id:newId("t"),cat:dd.cat||"thai",dest:dd.id||"",sub:(view==="dest"&&destSub&&destSub!=="all"&&destSub!=="other")?destSub:"",code:"",img:"",photos:[],c1:"#0F6E5C",c2:"#123B4E",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"",_trAll:true}); }
         else if(which==="reviews"){ data.reviews=data.reviews||[]; data.reviews.push({name:(lang==="th"?"ชื่อผู้รีวิว":"Reviewer name"),date:(lang==="th"?"วันที่":"Date"),rating:5,text:(lang==="th"?"วางข้อความรีวิวจาก Google Maps ที่นี่":"Paste the review text from Google Maps here")}); }
         else data.gallery.push({img:"",c1:"#2E6B6B",c2:"#123B3B"});
         render();
@@ -2083,11 +2108,11 @@
   }
   var navTick=false;
   window.addEventListener("scroll",function(){ if(navTick) return; navTick=true; requestAnimationFrame(function(){ navTick=false; updateNavActive(); }); },{passive:true});
-  var routeKey=route.v+":"+(route.id||"");
+  var routeKey=route.v+":"+(route.id||"")+":"+(route.sub||"");
   window.addEventListener("hashchange",function(){
     if(editing){ try{ syncEdits(); }catch(e){} }
-    var nv=getView(), h=location.hash||"", nk=route.v+":"+(route.id||"");
-    if(nk!==routeKey){ if(route.v==="dest"&&routeKey!==nk) destSub="all"; routeKey=nk; view=nv; render(); }
+    var nv=getView(), h=location.hash||"", nk=route.v+":"+(route.id||"")+":"+(route.sub||"");
+    if(nk!==routeKey){ routeKey=nk; view=nv; render(); if(nv==="dest") window.scrollTo(0,0); }
     if(nv==="home" && h.length>1 && h.charAt(1)!=="/"){ var el=document.getElementById(h.slice(1)); if(el) setTimeout(function(){ el.scrollIntoView(); },0); }
     else if(nv!=="home") window.scrollTo(0,0);
   });

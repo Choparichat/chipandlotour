@@ -519,7 +519,7 @@
   .mbox label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 5px}
   .mbox input,.mbox select{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;background:#fff;color:#241F19;-webkit-text-fill-color:#241F19;color-scheme:light}
   .mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .sfrow{grid-template-columns:1fr 1fr auto;margin-bottom:8px;align-items:center}
+  .sfmv{display:flex;gap:4px}.sfmv .btn[disabled]{opacity:.3;pointer-events:none}.sfrow{grid-template-columns:1fr 1fr auto auto;margin-bottom:8px;align-items:center}
   .merr{color:#FF7B6E;font-size:.86rem;min-height:1.2em;margin-top:8px}
   .mbtns{display:flex;gap:8px;align-items:center;margin-top:14px}
   @media (max-width:860px){ .dgrid{grid-template-columns:repeat(2,1fr);gap:18px} .tdet{grid-template-columns:1fr;gap:24px} .dcap h3{font-size:1.15rem} }
@@ -1443,16 +1443,17 @@
       toast(th?"ตั้งโปรแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Deal set — tap “Save & publish”"); };
   }
   function openSubsForm(k){
-    syncEdits(); var th=lang==="th", d=dests()[k], rows=(d.subs||[]).map(function(s){ return {id:s.id,name_th:s.name_th||"",name_en:s.name_en||""}; });
+    syncEdits(); var th=lang==="th", d=dests()[k], rows=(d.subs||[]).map(function(s){ return {id:s.id,name_th:s.name_th||"",name_en:s.name_en||"",img:s.img||""}; });
     var intl=d.cat==="intl";
     var w=modalShell('<h3>'+(intl?(th?"เมืองย่อยของ ":"Cities in "):(th?"หมวดโปรแกรมของ ":"Program groups in "))+esc(dname(d))+'</h3><p class="mhint">'+(intl?(th?"ใช้แยกทัวร์ในประเทศนี้ตามเมือง เช่น ญี่ปุ่น → โตเกียว, ฮอกไกโด":"Used to split this destination's tours by city, e.g. Japan → Tokyo, Hokkaido"):(th?"ใช้แยกทัวร์ในจังหวัดนี้เป็นหมวด เช่น เชียงใหม่ → โปรแกรมช้าง, โปรแกรมดอยอินทนนท์":"Used to group this province's tours, e.g. Chiang Mai → Elephant programs, Doi Inthanon programs"))+'</p><div id="sf-rows"></div><button class="btn btn-ghost btn-sm" type="button" id="sf-add">'+ICON.plus+(intl?(th?"เพิ่มเมือง":"Add a city"):(th?"เพิ่มหมวดโปรแกรม":"Add a group"))+'</button><div class="mbtns"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="sf-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="sf-ok">'+(th?"ตกลง":"OK")+'</button></div>',true);
-    function draw(){ w.querySelector("#sf-rows").innerHTML=rows.map(function(r,j){ return '<div class="mrow sfrow"><input data-j="'+j+'" data-f="name_th" placeholder="ชื่อไทย" value="'+esc(r.name_th)+'"><input data-j="'+j+'" data-f="name_en" placeholder="English name" value="'+esc(r.name_en)+'"><button class="btn btn-ghost btn-sm" type="button" data-rm="'+j+'">'+ICON.trash+'</button></div>'; }).join("")||'<p class="mhint">'+(th?"ยังไม่มีเมืองย่อย":"No cities yet")+'</p>'; }
+    function draw(){ w.querySelector("#sf-rows").innerHTML=rows.map(function(r,j){ return '<div class="mrow sfrow"><input data-j="'+j+'" data-f="name_th" placeholder="ชื่อไทย" value="'+esc(r.name_th)+'"><input data-j="'+j+'" data-f="name_en" placeholder="English name" value="'+esc(r.name_en)+'"><span class="sfmv"><button class="btn btn-ghost btn-sm" type="button" data-mv="'+j+',-1" title="'+(th?"เลื่อนขึ้น":"Move up")+'"'+(j?'':' disabled')+'>↑</button><button class="btn btn-ghost btn-sm" type="button" data-mv="'+j+',1" title="'+(th?"เลื่อนลง":"Move down")+'"'+(j<rows.length-1?'':' disabled')+'>↓</button></span><button class="btn btn-ghost btn-sm" type="button" data-rm="'+j+'">'+ICON.trash+'</button></div>'; }).join("")||'<p class="mhint">'+(th?"ยังไม่มีเมืองย่อย":"No cities yet")+'</p>'; }
     function read(){ Array.prototype.forEach.call(w.querySelectorAll("#sf-rows input"),function(inp){ rows[+inp.getAttribute("data-j")][inp.getAttribute("data-f")]=inp.value.trim(); }); }
     draw();
-    w.onclick=function(e){ var tg=e.target; if(tg===w){ w.remove(); return; } var rm=tg.closest&&tg.closest("[data-rm]"); if(rm){ read(); rows.splice(+rm.getAttribute("data-rm"),1); draw(); } };
+    w.onclick=function(e){ var tg=e.target; if(tg===w){ w.remove(); return; } var rm=tg.closest&&tg.closest("[data-rm]"); if(rm){ read(); rows.splice(+rm.getAttribute("data-rm"),1); draw(); return; }
+      var mv=tg.closest&&tg.closest("[data-mv]"); if(mv){ read(); var a=mv.getAttribute("data-mv").split(","), j=+a[0], t=j+(+a[1]); if(t<0||t>=rows.length) return; var x=rows[j]; rows[j]=rows[t]; rows[t]=x; draw(); } };
     w.querySelector("#sf-add").onclick=function(){ read(); rows.push({id:"",name_th:"",name_en:""}); draw(); var ins=w.querySelectorAll("#sf-rows input"); if(ins.length) ins[ins.length-2].focus(); };
     w.querySelector("#sf-cancel").onclick=function(){ w.remove(); };
-    w.querySelector("#sf-ok").onclick=function(){ read(); d.subs=rows.filter(function(r){ return r.name_th||r.name_en; }).map(function(r){ return {id:r.id||newId("c"),name_th:r.name_th||r.name_en,name_en:r.name_en||r.name_th}; });
+    w.querySelector("#sf-ok").onclick=function(){ read(); d.subs=rows.filter(function(r){ return r.name_th||r.name_en; }).map(function(r){ var o={id:r.id||newId("c"),name_th:r.name_th||r.name_en,name_en:r.name_en||r.name_th}; if(r.img) o.img=r.img; return o; });
       var ok={}; d.subs.forEach(function(s){ ok[s.id]=1; }); (data.tours||[]).forEach(function(tr){ if(tr.dest===d.id&&tr.sub&&!ok[tr.sub]) tr.sub=""; });
       w.remove(); render(); toast(th?"อัปเดตเมืองแล้ว อย่าลืมกดบันทึก":"Cities updated — remember to save"); };
   }
@@ -2352,7 +2353,15 @@
     add.forEach(function(n){ if(!T.some(function(tr){ return tr.title_en===n.title_en; })) T.push(n); });
     data._cmProgSeeded=true;
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureCMFestival(){
+    if(data._cmFestSeeded) return; data._cmFestSeeded=true;
+    var cm=destById("chiangmai"); if(!cm) return; cm.subs=cm.subs||[];
+    if(!cm.subs.some(function(s){ return s.id==="festival"; })) cm.subs.unshift({id:"festival",name_th:"เทศกาลที่ไม่ควรพลาด",name_en:"Festivals you shouldn't miss"});
+    var ok={}; cm.subs.forEach(function(s){ ok[s.id]=1; });
+    (data.tours||[]).forEach(function(tr){ if(tr.dest!=="chiangmai"||(tr.sub&&ok[tr.sub])) return; var x=(tr.title_en||"")+" "+(tr.title_th||"");
+      if(/yi ?peng|lantern|loy ?krathong|ยี่เป็ง|ลอยกระทง|โคมลอย/i.test(x)) tr.sub="festival"; });
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

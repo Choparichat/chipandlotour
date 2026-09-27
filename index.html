@@ -1052,7 +1052,7 @@
     dests().filter(function(x){ return x.cat===cat; }).forEach(function(x){ h+='<option value="'+esc(x.id)+'"'+(d&&x.id===d.id?' selected':'')+'>'+esc(dname(x))+'</option>'; });
     h+='</select></label>';
     if(d&&d.subs&&d.subs.length){
-      h+='<label class="catbtn">'+(th?"เมือง:":"City:")+' <select data-tsub="'+i+'"><option value="">'+(th?"— ไม่ระบุ —":"— none —")+'</option>';
+      h+='<label class="catbtn">'+(cat==="intl"?(th?"เมือง:":"City:"):(th?"โปรแกรม:":"Program:"))+' <select data-tsub="'+i+'"><option value="">'+(th?"— ไม่ระบุ —":"— none —")+'</option>';
       d.subs.forEach(function(s){ h+='<option value="'+esc(s.id)+'"'+(it.sub===s.id?' selected':'')+'>'+esc(subName(d,s.id))+'</option>'; });
       h+='</select></label>';
     }
@@ -1067,7 +1067,7 @@
     if(editing){
       h+='<div class="dedit"><label class="catbtn">'+(th?"หมวด:":"Category:")+' <select data-dcat="'+k+'">';
       TOUR_CATS.forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===d.cat?' selected':'')+'>'+esc(th?c[1]:c[2])+'</option>'; });
-      h+='</select></label><button class="btn btn-ghost btn-sm" type="button" data-dsubs="'+k+'">'+(th?"เมืองย่อย":"Cities")+' ('+((d.subs||[]).length)+')</button>';
+      h+='</select></label><button class="btn btn-ghost btn-sm" type="button" data-dsubs="'+k+'">'+(intl?(th?"เมืองย่อย":"Cities"):(th?"หมวดโปรแกรม":"Program groups"))+' ('+((d.subs||[]).length)+')</button>';
       h+='<a class="btn btn-primary btn-sm" data-nav href="#/tours/'+encodeURIComponent(d.id)+'">'+(th?"เปิดดูทัวร์ →":"Open →")+'</a></div>';
     }
     return h+'</article>';
@@ -1115,7 +1115,7 @@
     var subs=d.subs||[];
     if(subs.length){
       var sc=function(sid){ return ix.filter(function(i){ return data.tours[i].sub===sid; }).length; };
-      H+='<div class="chips"><button type="button" class="chip'+(destSub==="all"?' on':'')+'" data-dsub="all">'+(th?"ทุกเมือง":"All cities")+' <span>'+ix.length+'</span></button>';
+      H+='<div class="chips"><button type="button" class="chip'+(destSub==="all"?' on':'')+'" data-dsub="all">'+(intl?(th?"ทุกเมือง":"All cities"):(th?"ทุกโปรแกรม":"All programs"))+' <span>'+ix.length+'</span></button>';
       subs.forEach(function(s){ var n=sc(s.id); if(!n&&!editing) return; H+='<button type="button" class="chip'+(destSub===s.id?' on':'')+'" data-dsub="'+esc(s.id)+'">'+esc(subName(d,s.id))+' <span>'+n+'</span></button>'; });
       H+='</div>';
       if(destSub!=="all") ix=ix.filter(function(i){ return data.tours[i].sub===destSub; });
@@ -1177,7 +1177,7 @@
     if(t(it,"desc")||editing) H+='<h2>'+(th?"รายละเอียดทัวร์":"About this tour")+'</h2><p class="td-desc"'+ed(P+"desc")+'>'+esc(t(it,"desc"))+'</p>';
     if(t(it,"itin")||editing) H+='<h2>'+(th?"โปรแกรมการเดินทาง":"Itinerary")+'</h2>'+(editing?'<p class="td-hint">'+(th?"พิมพ์ได้หลายบรรทัด เช่น วันที่ 1 … / วันที่ 2 …":"Multiple lines allowed, e.g. Day 1 … / Day 2 …")+'</p>':'')+'<div class="td-itin"'+ed(P+"itin")+'>'+esc(t(it,"itin"))+'</div>';
     H+='</div>';
-    var rel=(d?toursOf(d.id):[]).filter(function(j){ return j!==i; }).slice(0,3);
+    var rel=(d?toursOf(d.id):[]).filter(function(j){ return j!==i; }).sort(function(a,b){ return (data.tours[b].sub===it.sub)-(data.tours[a].sub===it.sub)||a-b; }).slice(0,3);
     if(rel.length&&!editing){ H+='<h2 class="grp-title">'+(th?"โปรแกรมอื่นใน":"More in")+' '+esc(dname(d))+'</h2><div class="tours-grid">'; rel.forEach(function(j){ H+=itemCard("tours",j,data.tours[j]); }); H+='</div>'; }
     return H+'</div></section>';
   }
@@ -1308,7 +1308,8 @@
   }
   function openSubsForm(k){
     syncEdits(); var th=lang==="th", d=dests()[k], rows=(d.subs||[]).map(function(s){ return {id:s.id,name_th:s.name_th||"",name_en:s.name_en||""}; });
-    var w=modalShell('<h3>'+(th?"เมืองย่อยของ ":"Cities in ")+esc(dname(d))+'</h3><p class="mhint">'+(th?"ใช้แยกทัวร์ในประเทศนี้ตามเมือง เช่น ญี่ปุ่น → โตเกียว, ฮอกไกโด":"Used to split this destination's tours by city, e.g. Japan → Tokyo, Hokkaido")+'</p><div id="sf-rows"></div><button class="btn btn-ghost btn-sm" type="button" id="sf-add">'+ICON.plus+(th?"เพิ่มเมือง":"Add a city")+'</button><div class="mbtns"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="sf-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="sf-ok">'+(th?"ตกลง":"OK")+'</button></div>',true);
+    var intl=d.cat==="intl";
+    var w=modalShell('<h3>'+(intl?(th?"เมืองย่อยของ ":"Cities in "):(th?"หมวดโปรแกรมของ ":"Program groups in "))+esc(dname(d))+'</h3><p class="mhint">'+(intl?(th?"ใช้แยกทัวร์ในประเทศนี้ตามเมือง เช่น ญี่ปุ่น → โตเกียว, ฮอกไกโด":"Used to split this destination's tours by city, e.g. Japan → Tokyo, Hokkaido"):(th?"ใช้แยกทัวร์ในจังหวัดนี้เป็นหมวด เช่น เชียงใหม่ → โปรแกรมช้าง, โปรแกรมดอยอินทนนท์":"Used to group this province's tours, e.g. Chiang Mai → Elephant programs, Doi Inthanon programs"))+'</p><div id="sf-rows"></div><button class="btn btn-ghost btn-sm" type="button" id="sf-add">'+ICON.plus+(intl?(th?"เพิ่มเมือง":"Add a city"):(th?"เพิ่มหมวดโปรแกรม":"Add a group"))+'</button><div class="mbtns"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="sf-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="sf-ok">'+(th?"ตกลง":"OK")+'</button></div>',true);
     function draw(){ w.querySelector("#sf-rows").innerHTML=rows.map(function(r,j){ return '<div class="mrow sfrow"><input data-j="'+j+'" data-f="name_th" placeholder="ชื่อไทย" value="'+esc(r.name_th)+'"><input data-j="'+j+'" data-f="name_en" placeholder="English name" value="'+esc(r.name_en)+'"><button class="btn btn-ghost btn-sm" type="button" data-rm="'+j+'">'+ICON.trash+'</button></div>'; }).join("")||'<p class="mhint">'+(th?"ยังไม่มีเมืองย่อย":"No cities yet")+'</p>'; }
     function read(){ Array.prototype.forEach.call(w.querySelectorAll("#sf-rows input"),function(inp){ rows[+inp.getAttribute("data-j")][inp.getAttribute("data-f")]=inp.value.trim(); }); }
     draw();
@@ -2144,7 +2145,72 @@
       data._ticketsSeeded=true;
     }
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureCMPrograms(){
+    if(data._cmProgSeeded) return;
+    var cm=destById("chiangmai"); if(!cm){ data._cmProgSeeded=true; return; }
+    cm.subs=cm.subs||[];
+    if(!cm.subs.some(function(s){ return s.id==="elephant"; })) cm.subs.push({id:"elephant",name_th:"โปรแกรมช้าง",name_en:"Elephant programs"});
+    if(!cm.subs.some(function(s){ return s.id==="inthanon"; })) cm.subs.push({id:"inthanon",name_th:"โปรแกรมดอยอินทนนท์",name_en:"Doi Inthanon programs"});
+    var T=data.tours=data.tours||[];
+    T.forEach(function(tr){ if(tr.dest!=="chiangmai"||tr.sub) return; var x=(tr.title_en||"")+" "+(tr.title_th||"");
+      if(/elephant|ช้าง/i.test(x)) tr.sub="elephant"; else if(/inthanon|อินทนนท์/i.test(x)) tr.sub="inthanon"; });
+    var inc_en="Included: round-trip hotel transfer, insurance, lunch, all entrance fees, English-speaking guide, 1 bottle of drinking water.";
+    var inc_th="รวมในราคา: รถรับ–ส่งโรงแรม ประกันการเดินทาง อาหารกลางวัน ค่าเข้าชมทุกจุด ไกด์พูดภาษาอังกฤษ น้ำดื่ม 1 ขวด";
+    var mk=function(o){ o.id=newId("t"); o.cat="thai"; o.dest="chiangmai"; o.code=""; o.img=""; o.photos=[]; o._trAll=true; return o; };
+    var add=[
+      mk({sub:"elephant",c1:"#5E7A2E",c2:"#223012",price:"1,600",
+        title_en:"Half-day Elephant Care",title_th:"ดูแลช้างครึ่งวัน (Elephant Care)",
+        desc_en:"Spend a hands-on half day caring for elephants: prepare their food, feed them, walk with them on the farm, give them a mud spa and bathe them in the river.",
+        desc_th:"ใช้เวลาครึ่งวันดูแลช้างอย่างใกล้ชิด เตรียมอาหารและป้อนช้าง เดินเล่นกับช้างในฟาร์ม ทำสปาโคลนและอาบน้ำให้ช้างในแม่น้ำ",
+        dur_en:"Half day",dur_th:"ครึ่งวัน",
+        hl_en:"Feed the elephants · Mud spa · Bathe the elephants · Lunch or dinner",hl_th:"เตรียมอาหาร & ป้อนช้าง · สปาโคลน · อาบน้ำช้าง · อาหาร 1 มื้อ",
+        itin_en:"• Pick-up from your hotel and drive to the centre\n• Change into the uniform provided\n• Introduction to the elephants\n• Prepare food and feed the elephants (sugarcane, grass, banana, pumpkin — depending on the day)\n• Walk with the elephants on the farm and take photos\n• Mud spa for the elephants\n• Bathe the elephants\n• Say goodbye to the mahouts and elephants\n• Shower, then lunch or dinner\n• Drive back to the city\n\nIncluded: hotel shuttle, tour guide, uniform, insurance, one meal, drinking water, seasonal fruit, bananas or sugarcane for the elephants.\nBring: a change of clothes, insect repellent (non-toxic), hat, sunscreen, shoes you don't mind getting wet.",
+        itin_th:"• รับจากโรงแรม เดินทางไปศูนย์ดูแลช้าง\n• เปลี่ยนเป็นชุดที่ทางศูนย์เตรียมไว้ให้\n• ฟังแนะนำการดูแลช้าง\n• เตรียมอาหารและป้อนช้าง (อ้อย หญ้า กล้วย ฟักทอง แล้วแต่วัน)\n• เดินเล่นกับช้างในฟาร์ม ถ่ายรูป\n• ทำสปาโคลนให้ช้าง\n• อาบน้ำช้าง\n• บอกลาควาญช้างและช้าง\n• อาบน้ำ แล้วทานอาหารกลางวันหรืออาหารเย็น\n• เดินทางกลับเข้าเมือง\n\nรวมในราคา: รถรับ–ส่งโรงแรม ไกด์ ชุดสำหรับทำกิจกรรม ประกัน อาหาร 1 มื้อ น้ำดื่ม ผลไม้ตามฤดูกาล กล้วยหรืออ้อยสำหรับป้อนช้าง\nสิ่งที่ควรเตรียม: เสื้อผ้าสำรอง ยากันยุง หมวก ครีมกันแดด รองเท้าที่เปียกน้ำได้"}),
+      mk({sub:"elephant",c1:"#2E7D6B",c2:"#12302A",price:"1,800",
+        title_en:"Elephant + Bamboo Rafting + Waterfall (full day)",title_th:"ช้างครึ่งวัน + ล่องแพไม้ไผ่ + น้ำตก",
+        desc_en:"Morning with the elephants — make herbal medicine balls, feed and walk with them, then bathe together. After a Thai lunch, float down the river on a bamboo raft and cool off at a jungle waterfall. Adults 1,800 THB · Kids 3–9 years 1,600 THB.",
+        desc_th:"ช่วงเช้าเรียนรู้ชีวิตช้าง ปั้นลูกสมุนไพรให้ช้าง ป้อนอาหาร เดินเล่น และอาบน้ำกับช้าง ทานอาหารไทย แล้วช่วงบ่ายล่องแพไม้ไผ่และเล่นน้ำตก ผู้ใหญ่ 1,800 บาท · เด็ก 3–9 ปี 1,600 บาท",
+        dur_en:"Full day · pick-up 8:00–8:30 · back 16:00–16:30",dur_th:"เต็มวัน · รับ 8:00–8:30 น. · ส่ง 16:00–16:30 น.",
+        hl_en:"Elephant care · Herbal ball making · Bamboo rafting · Waterfall",hl_th:"ดูแลช้าง · ปั้นลูกสมุนไพรให้ช้าง · ล่องแพไม้ไผ่ · เล่นน้ำตก",
+        itin_en:"Morning\n• Introduction to the Thai elephant's way of life\n• Make herbal medicine balls for the elephants\n• Meet, feed and play with the elephants\n• Walk with the elephants in their natural environment\n• Elephant bathing\n• Traditional Thai lunch (food, fruit, coffee and tea)\n\nAfternoon\n• Bamboo rafting\n• Waterfall\n\nIncluded: medical insurance, transportation, food for the elephants, Thai lunch, drinking water.\nBring: towel, sunscreen, swimsuit, change of clothes, sandals, personal medicine, insect repellent, camera (optional).",
+        itin_th:"ช่วงเช้า\n• เรียนรู้วิถีชีวิตช้างไทย\n• ปั้นลูกสมุนไพรให้ช้าง\n• ป้อนอาหารและเล่นกับช้าง\n• เดินเล่นกับช้างในธรรมชาติ\n• อาบน้ำช้าง\n• ทานอาหารไทย (อาหาร ผลไม้ กาแฟ ชา)\n\nช่วงบ่าย\n• ล่องแพไม้ไผ่\n• เล่นน้ำตก\n\nรวมในราคา: ประกันการเดินทาง รถรับ–ส่ง อาหารสำหรับช้าง อาหารไทย น้ำดื่ม\nสิ่งที่ควรเตรียม: ผ้าเช็ดตัว ครีมกันแดด ชุดว่ายน้ำ เสื้อผ้าสำรอง รองเท้าแตะ ยาประจำตัว ยากันยุง กล้อง"}),
+      mk({sub:"elephant",c1:"#6B4E2E",c2:"#2A1D10",price:"2,100",
+        title_en:"Elephant Sanctuary + Doi Inthanon Trekking (no riding)",title_th:"ช้างครึ่งวัน + ดอยอินทนนท์ (เดินป่า · ไม่ขี่ช้าง)",
+        desc_en:"Mud spa and river bathing with the elephants in the morning, then up to the highest point in Thailand, the King and Queen pagodas and a 2-hour jungle walk to Pha Dok Siew waterfall, rice terraces and a Karen coffee village.",
+        desc_th:"ช่วงเช้าทำสปาโคลนและอาบน้ำช้างในแม่น้ำ แล้วขึ้นยอดดอยอินทนนท์ จุดสูงสุดของประเทศไทย ชมพระมหาธาตุนภเมทนีดลฯ และเดินป่าประมาณ 2 ชั่วโมงไปน้ำตกผาดอกเสี้ยว นาขั้นบันได และหมู่บ้านกาแฟชาวกะเหรี่ยง",
+        dur_en:"Full day · pick-up 7:00–7:30 · back 19:30",dur_th:"เต็มวัน · รับ 7:00–7:30 น. · กลับ 19:30 น.",
+        hl_en:"Elephant mud spa & bathing · Highest spot of Thailand · King & Queen pagodas · Pha Dok Siew trail · Fresh coffee",hl_th:"สปาโคลน & อาบน้ำช้าง · จุดสูงสุดแดนสยาม · พระมหาธาตุฯ · เส้นทางผาดอกเสี้ยว · กาแฟสดจากไร่",
+        itin_en:"• Pick-up at your hotel 7:00–7:30\n• Drive about 1 hour to the elephant jungle family\n• Mud spa with the elephants, then bathe them in the river\n• Photos with the elephants\n• Lunch at a local restaurant\n• Drive up to the highest spot in Thailand (2,565 m)\n• Visit the King's and Queen's pagodas\n• About 2 hours of jungle walking to Pha Dok Siew waterfall, past rice terraces, flower and coffee plantations and the Karen hilltribe village\n• Tour the coffee plantation, roast the beans and brew fresh coffee\n• Return to your hotel\n\n"+inc_en+"\nBring: sport shoes, sunscreen, swimsuit, towel, mosquito spray.",
+        itin_th:"• รับที่โรงแรม 7:00–7:30 น.\n• เดินทางประมาณ 1 ชั่วโมงไปปางช้าง\n• ทำสปาโคลนกับช้าง แล้วอาบน้ำช้างในแม่น้ำ\n• ถ่ายรูปกับช้าง\n• ทานอาหารกลางวันที่ร้านท้องถิ่น\n• ขึ้นยอดดอยอินทนนท์ จุดสูงสุดแดนสยาม (2,565 เมตร)\n• ชมพระมหาธาตุนภเมทนีดลและนภพลภูมิสิริ\n• เดินป่าประมาณ 2 ชั่วโมงไปน้ำตกผาดอกเสี้ยว ผ่านนาขั้นบันได ไร่ดอกไม้ ไร่กาแฟ และหมู่บ้านกะเหรี่ยง\n• ชมไร่กาแฟ คั่วเมล็ด และชงกาแฟสด\n• เดินทางกลับโรงแรม\n\n"+inc_th+"\nสิ่งที่ควรเตรียม: รองเท้ากีฬา ครีมกันแดด ชุดว่ายน้ำ ผ้าเช็ดตัว ยากันยุง"}),
+      mk({sub:"inthanon",c1:"#2E5E8A",c2:"#122A3E",price:"1,500",
+        title_en:"Doi Inthanon & Pha Dok Siew Nature Trail",title_th:"ดอยอินทนนท์ + เดินป่าเส้นทางผาดอกเสี้ยว",
+        desc_en:"The highest spot in Thailand and the King and Queen pagodas, the Hmong market, then a 2-hour mountain trail through Karen villages with coffee tasting, finishing at Wachirathan waterfall.",
+        desc_th:"ขึ้นจุดสูงสุดแดนสยาม ชมพระมหาธาตุฯ แวะตลาดม้ง แล้วเดินป่าเส้นทางผาดอกเสี้ยวประมาณ 2 ชั่วโมง ผ่านหมู่บ้านกะเหรี่ยง ชิมกาแฟ ปิดท้ายที่น้ำตกวชิรธาร",
+        dur_en:"Full day · pick-up 7:00–7:30 · back 18:00",dur_th:"เต็มวัน · รับ 7:00–7:30 น. · กลับ 18:00 น.",
+        hl_en:"Highest spot of Thailand · King & Queen pagodas · Hmong market · Pha Dok Siew trail · Wachirathan waterfall",hl_th:"จุดสูงสุดแดนสยาม · พระมหาธาตุฯ · ตลาดม้ง · เส้นทางผาดอกเสี้ยว · น้ำตกวชิรธาร",
+        itin_en:"• Visit the highest spot in Thailand\n• Visit the King & Queen pagodas\n• Hmong hilltribe market\n• Thai lunch with delicious local food\n• About 2 hours of walking on a mountain trail through the jungle\n• See how the Karen hilltribe live, with coffee tasting from the grower\n• Visit the beautiful Wachirathan waterfall\n• Return to your hotel\n\n"+inc_en+"\nBring: sport shoes, sunscreen, swimsuit, towel, mosquito spray.",
+        itin_th:"• ขึ้นจุดสูงสุดแดนสยาม\n• ชมพระมหาธาตุนภเมทนีดลและนภพลภูมิสิริ\n• แวะตลาดชาวเขาม้ง\n• ทานอาหารกลางวันอาหารไทยท้องถิ่น\n• เดินป่าเส้นทางภูเขาประมาณ 2 ชั่วโมง\n• เยี่ยมหมู่บ้านกะเหรี่ยง ชิมกาแฟจากผู้ปลูก\n• ชมน้ำตกวชิรธาร\n• เดินทางกลับโรงแรม\n\n"+inc_th+"\nสิ่งที่ควรเตรียม: รองเท้ากีฬา ครีมกันแดด ชุดว่ายน้ำ ผ้าเช็ดตัว ยากันยุง"}),
+      mk({sub:"inthanon",c1:"#4A6FA5",c2:"#1A2A40",price:"1,500",
+        title_en:"Doi Inthanon & Kew Mae Pan Nature Trail (Nov–May)",title_th:"ดอยอินทนนท์ + เดินป่ากิ่วแม่ปาน (พ.ย. – พ.ค.)",
+        desc_en:"Thailand's highest peak (2,565 m), the King and Queen pagodas and a 2-hour hike on the famous Kew Mae Pan ridge trail with sea-of-mist views. Kew Mae Pan is open 1 November – 31 May.",
+        desc_th:"ขึ้นยอดดอยอินทนนท์ (2,565 เมตร) ชมพระมหาธาตุฯ และเดินป่าเส้นทางกิ่วแม่ปานประมาณ 2 ชั่วโมง ชมทะเลหมอก เส้นทางเปิด 1 พฤศจิกายน – 31 พฤษภาคม",
+        dur_en:"Full day · pick-up 7:00–7:30 · back 18:00",dur_th:"เต็มวัน · รับ 7:00–7:30 น. · กลับ 18:00 น.",
+        hl_en:"Highest peak of Thailand · King & Queen pagodas · Kew Mae Pan trail · Hmong market · Wachirathan waterfall",hl_th:"ยอดดอยอินทนนท์ · พระมหาธาตุฯ · เส้นทางกิ่วแม่ปาน · ตลาดม้ง · น้ำตกวชิรธาร",
+        itin_en:"• The highest peak in Thailand (2,565 m above sea level)\n• Visit the King & Queen pagodas\n• Hike about 2 hours on the Kew Mae Pan nature trail\n• Hmong hilltribe market\n• Thai lunch with delicious local food\n• See how the Karen hilltribe live, with coffee tasting from the grower\n• Visit Wachirathan waterfall\n• Return to your hotel\n\nKew Mae Pan trail season: 1 November – 31 May\n"+inc_en+"\nBring: sport shoes, sunscreen, mosquito spray.",
+        itin_th:"• ขึ้นยอดดอยอินทนนท์ จุดสูงสุดของประเทศไทย (2,565 เมตร)\n• ชมพระมหาธาตุนภเมทนีดลและนภพลภูมิสิริ\n• เดินป่าเส้นทางกิ่วแม่ปานประมาณ 2 ชั่วโมง\n• แวะตลาดชาวเขาม้ง\n• ทานอาหารกลางวันอาหารไทยท้องถิ่น\n• เยี่ยมหมู่บ้านกะเหรี่ยง ชิมกาแฟจากผู้ปลูก\n• ชมน้ำตกวชิรธาร\n• เดินทางกลับโรงแรม\n\nเส้นทางกิ่วแม่ปานเปิด: 1 พฤศจิกายน – 31 พฤษภาคม\n"+inc_th+"\nสิ่งที่ควรเตรียม: รองเท้ากีฬา ครีมกันแดด ยากันยุง"}),
+      mk({sub:"inthanon",c1:"#B7791F",c2:"#4A2A0A",price:"1,500",
+        title_en:"Doi Inthanon National Park One-Day Tour",title_th:"ดอยอินทนนท์ 1 วัน (เส้นทางอ่างกา · น้ำตกแม่กลาง)",
+        desc_en:"A relaxed day on Doi Inthanon: the summit and Ang Ka boardwalk, the King and Queen pagodas, Hmong market, a Karen coffee village and two waterfalls — Mae Klang and Wachirathan.",
+        desc_th:"เที่ยวดอยอินทนนท์แบบสบาย ๆ ขึ้นยอดดอยและเดินเส้นทางอ่างกา ชมพระมหาธาตุฯ ตลาดม้ง หมู่บ้านกาแฟกะเหรี่ยง และน้ำตก 2 แห่ง คือน้ำตกแม่กลางและน้ำตกวชิรธาร",
+        dur_en:"Full day · pick-up 8:00–8:30 · back 17:30",dur_th:"เต็มวัน · รับ 8:00–8:30 น. · กลับ 17:30 น.",
+        hl_en:"Summit & Ang Ka trail · King & Queen pagodas · Hmong market · Karen coffee village · Mae Klang & Wachirathan waterfalls",hl_th:"ยอดดอย & เส้นทางอ่างกา · พระมหาธาตุฯ · ตลาดม้ง · หมู่บ้านกาแฟกะเหรี่ยง · น้ำตกแม่กลาง & วชิรธาร",
+        itin_en:"• Pick-up at your hotel 8:00–8:30\n• Visit the summit of Doi Inthanon, the highest spot in Thailand (2,565 m)\n• Walk the Ang Ka nature trail through lush green forest\n• Visit the King's and Queen's pagodas\n• Hmong village market\n• Lunch at a local restaurant\n• Visit the White Karen hilltribe village, famous for its coffee\n• Visit Mae Klang waterfall\n• Visit Wachirathan waterfall\n• Return to Chiang Mai and drop-off at your hotel\n\n"+inc_en+"\nBring: sport shoes, sunscreen, mosquito spray.",
+        itin_th:"• รับที่โรงแรม 8:00–8:30 น.\n• ขึ้นยอดดอยอินทนนท์ จุดสูงสุดของประเทศไทย (2,565 เมตร)\n• เดินชมเส้นทางธรรมชาติอ่างกา ป่าเขียวชอุ่ม\n• ชมพระมหาธาตุนภเมทนีดลและนภพลภูมิสิริ\n• แวะตลาดหมู่บ้านม้ง\n• ทานอาหารกลางวันที่ร้านท้องถิ่น\n• เยี่ยมหมู่บ้านกะเหรี่ยง แหล่งปลูกกาแฟ\n• ชมน้ำตกแม่กลาง\n• ชมน้ำตกวชิรธาร\n• เดินทางกลับเชียงใหม่ ส่งที่โรงแรม\n\n"+inc_th+"\nสิ่งที่ควรเตรียม: รองเท้ากีฬา ครีมกันแดด ยากันยุง"})
+    ];
+    add.forEach(function(n){ if(!T.some(function(tr){ return tr.title_en===n.title_en; })) T.push(n); });
+    data._cmProgSeeded=true;
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

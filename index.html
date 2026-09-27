@@ -2394,7 +2394,44 @@
       if(/^1\/2 day elephant sanctuary/i.test(en)) t.title_th="ช้างครึ่งวัน ปางช้างแบบอนุรักษ์";
     }
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureIntl3(){
+    if(data._intl3Added) return; data._intl3Added=true;
+    var T=data.tours=data.tours||[];
+    var cn=destById("china"); if(cn){ cn.subs=cn.subs||[]; if(!cn.subs.some(function(s){ return s.id==="shenzhen"; })) cn.subs.push({id:"shenzhen",name_th:"ฮ่องกง · เซินเจิ้น",name_en:"Hong Kong · Shenzhen"}); }
+    var has=function(re){ return T.some(function(x){ return re.test(x.title_th||""); }); };
+    var mk=function(o){ o.id=newId("t"); o.cat="intl"; o.code=o.code||""; o.img=""; o.photos=[]; return o; };
+    if(!has(/เซินเจิ้น.*โปรสุดคุ้ม|โปรสุดคุ้มฮ่องกง/)) T.push(mk({dest:"china",sub:"shenzhen",c1:"#B3261E",c2:"#3A0F0C",price:"6,999",stars:"4",
+      region_th:"ฮ่องกง · เซินเจิ้น",region_en:"Hong Kong · Shenzhen",
+      title_th:"ฮ่องกง เซินเจิ้น โปรสุดคุ้ม",title_en:"Hong Kong & Shenzhen value trip",
+      desc_th:"เที่ยว 2 เมืองในทริปเดียว ไหว้เจ้าแม่กวนอิมฮองฮำ ชมโรงละครหอยไข่มุก สถานีรถไฟกั่งเสียเป่ย แล้วช้อปจุใจที่ตลาดตงเหมิน นานธาน และถนนคนเดินฝูหัวหลี่ พักโรงแรม 4 ดาว · เดินทาง ต.ค. – ธ.ค. 2569 (ราคาขึ้นกับวันเดินทาง 6,999 – 9,199 บาท)",
+      desc_en:"Two cities in one trip: Hung Hom Kwun Yum Temple, the Pearl-shell theatre, Gangxia North station, and shopping at Dongmen market, Nanshan and Fuhuali walking street. 4-star hotels. Departures Oct – Dec 2026.",
+      dur_th:"4 วัน 3 คืน",dur_en:"4 days 3 nights",
+      hl_th:"เจ้าแม่กวนอิมฮองฮำ · โรงละครหอยไข่มุก · สถานีกั่งเสียเป่ย · ตลาดตงเหมิน · ถนนคนเดินฝูหัวหลี่",hl_en:"Hung Hom Kwun Yum · Pearl-shell theatre · Gangxia North · Dongmen market · Fuhuali street"}));
+    if(!has(/แพ้เสียงในหัว/)) T.push(mk({dest:"taiwan",sub:"taipei",c1:"#1F6FB2",c2:"#0E2A44",price:"12,999",promo_price:"9,999",promo_start:"",promo_end:"2026-10-01",stars:"3",
+      region_th:"ไต้หวัน · ไทเป",region_en:"Taiwan · Taipei",
+      title_th:"ไต้หวัน แพ้เสียงในหัว",title_en:"Taiwan highlights",
+      desc_th:"เที่ยวไต้หวันครบไฮไลต์ หมู่บ้านโบราณจิ่วเฟิ่น อุทยานเกาะเหอผิง ท่าเรือสีรุ้ง (บูราโนไต้หวัน) และวัดเทียนโฮ่ว บินไทยเวียตเจ็ท พักโรงแรม 3 ดาว · เดินทาง ต.ค. 2569",
+      desc_en:"Taiwan highlights: Jiufen old street, Heping Island Park, Rainbow Wharf and Tianhou Temple. Thai Vietjet, 3-star hotels. Departs Oct 2026.",
+      dur_th:"4 วัน 2 คืน",dur_en:"4 days 2 nights",
+      hl_th:"หมู่บ้านโบราณจิ่วเฟิ่น · อุทยานเกาะเหอผิง · ท่าเรือสีรุ้ง · วัดเทียนโฮ่ว",hl_en:"Jiufen · Heping Island · Rainbow Wharf · Tianhou Temple",
+      itin_th:"วันที่ 1\n• ออกเดินทางจากสนามบินสุวรรณภูมิ (สายการบินไทยเวียตเจ็ท)\n\nวันที่ 2\n• ถึงสนามบินเถาหยวน · วัดเทียนโฮ่ว\n• ร้านพายสับปะรด · อนุสรณ์สถานเจียงไคเชก\n• วัดหลงซาน · ตลาดกลางคืน\n\nวันที่ 3\n• ร้านเจอร์เมเนียม · ร้านดิวตี้ฟรี\n• หมู่บ้านโบราณจิ่วเฟิ่น\n• อุทยานเกาะเหอผิง · ท่าเรือสีรุ้ง\n• ย่านซีเหมินติง\n\nวันที่ 4\n• ร้านเครื่องสำอาง · ถ่ายรูปตึกไทเป 101 (ด้านนอก)\n• MITSUI OUTLET\n• เดินทางกลับกรุงเทพฯ\n\n* โปรแกรมอาจปรับเปลี่ยนตามความเหมาะสม"}));
+    if(!has(/กวนอิมพันมือ/)) T.push(mk({dest:"taiwan",sub:"taipei",c1:"#2E5E8A",c2:"#122A3E",price:"14,999",promo_price:"9,999",promo_start:"",promo_end:"2026-10-02",stars:"4",
+      region_th:"ไต้หวัน · ไทเป",region_en:"Taiwan · Taipei",
+      title_th:"ไต้หวัน ไทเป กวนอิมพันมือ เกาะเหอผิง",title_en:"Taipei, Thousand-hand Guanyin & Heping Island",
+      desc_th:"สักการะเจ้าแม่กวนอิมพันมือ วัดหลงซาน ชมอนุสรณ์สถานเจียงไคเชค ตึกไทเป 101 หมู่บ้านโบราณจิ่วเฟิน อุทยานเกาะเหอผิง ช้อปซีเหมินติงและ MITSUI OUTLET บินไทยเวียตเจ็ท พักโรงแรม 4 ดาว · เดินทาง ต.ค. 2569",
+      desc_en:"Thousand-hand Guanyin, Longshan Temple, Chiang Kai-shek Memorial, Taipei 101, Jiufen, Heping Island, Ximending and Mitsui Outlet. Thai Vietjet, 4-star hotels. Departures Oct 2026.",
+      dur_th:"4 วัน 2 คืน",dur_en:"4 days 2 nights",
+      hl_th:"เจ้าแม่กวนอิมพันมือ · ตึกไทเป 101 · จิ่วเฟิน · เกาะเหอผิง · ซีเหมินติง · MITSUI OUTLET",hl_en:"Thousand-hand Guanyin · Taipei 101 · Jiufen · Heping Island · Ximending · Mitsui Outlet",
+      itin_th:"วันที่ 1\n• ออกเดินทางจากสนามบินสุวรรณภูมิ (สายการบินไทยเวียตเจ็ท)\n\nวันที่ 2\n• ถึงไต้หวัน · วัดกวนอิมหยวนเต้า (เจ้าแม่กวนอิมพันมือ)\n• อนุสรณ์สถานเจียงไคเชค · ร้านพายสับปะรด\n\nวันที่ 3\n• ร้านเครื่องสำอาง · หมู่บ้านโบราณจิ่วเฟิน\n• อุทยานเกาะเหอผิง (รวมค่าเข้าชม) · หมู่บ้านประมงเจิ้งปิน\n• หมู่บ้านเก่าซื่อซื่อหนานชุน · ตึกไทเป 101\n\nวันที่ 4\n• วัดหลงซาน · ถนนหวาซี · ซีเหมินติง\n• MITSUI OUTLET\n• เดินทางกลับกรุงเทพฯ\n\nไม่รวม: บัตรขึ้นชั้น 89 ตึกไทเป 101\n* โปรแกรมอาจปรับเปลี่ยนตามความเหมาะสม"}));
+    if(!has(/จอยกรุ๊ป|one day trip/i)) T.push(mk({dest:"hongkong",sub:"",c1:"#D4A017",c2:"#5A1E0E",price:"1,988",
+      region_th:"ฮ่องกง",region_en:"Hong Kong",
+      title_th:"ฮ่องกง จอยกรุ๊ป 1 วัน (ไหว้พระ 3 วัดดัง)",title_en:"Hong Kong join-group day trip",
+      desc_th:"ทัวร์จอยกรุ๊ปในฮ่องกง 1 วัน ไหว้พระขอพรเจ้าแม่กวนอิมรีพัลส์เบย์ วัดเจ้าแม่กวนอิมฮองฮำ และวัดแชกงหมิว ออกเดินทางได้ทุกวัน ก.ย. – ธ.ค. 2569 (ไม่รวมตั๋วเครื่องบิน)",
+      desc_en:"Join-group day tour in Hong Kong: Kwun Yum at Repulse Bay, Hung Hom Kwun Yum Temple and Che Kung Temple. Departs daily Sep – Dec 2026 (flights not included).",
+      dur_th:"1 วัน",dur_en:"1 day",
+      hl_th:"เจ้าแม่กวนอิมรีพัลส์เบย์ · วัดเจ้าแม่กวนอิมฮองฮำ · วัดแชกงหมิว",hl_en:"Repulse Bay Kwun Yum · Hung Hom Kwun Yum · Che Kung Temple"}));
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

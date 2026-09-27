@@ -524,6 +524,53 @@
   .mbtns{display:flex;gap:8px;align-items:center;margin-top:14px}
   @media (max-width:860px){ .dgrid{grid-template-columns:repeat(2,1fr);gap:18px} .tdet{grid-template-columns:1fr;gap:24px} .dcap h3{font-size:1.15rem} }
   @media (max-width:480px){ .dgrid{gap:14px} .dcap h3{font-size:1.02rem} .td-off{width:78px;height:78px} .td-off b{font-size:1.15rem} .act2{grid-template-columns:1fr} }
+  /* ===== hot deals (poster style) ===== */
+  .dp-h1{font-family:var(--sans);font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);margin:0 0 14px}
+  .dbanner{position:relative;overflow:hidden;border-radius:6px;min-height:clamp(150px,24vw,280px);display:grid;grid-template-columns:1fr 1.25fr;align-items:center;
+    background:radial-gradient(120% 140% at 85% 110%,rgba(255,110,20,.55),transparent 55%),radial-gradient(90% 120% at 100% 0%,rgba(255,60,20,.35),transparent 60%),linear-gradient(115deg,#2b2b2e 0 42%,#e9e9ec 42% 43.2%,#151517 43.2%);box-shadow:var(--shadow)}
+  .dbanner.has-img{display:block;min-height:0;background:#111}
+  .dbanner.has-img>img{width:100%;height:auto;display:block}
+  .db-l{padding:18px 5% 18px 6%;position:relative;z-index:2}
+  .db-sale{font-family:var(--sans);font-weight:900;font-style:italic;font-size:clamp(2rem,6vw,4.4rem);line-height:.95;color:#FF5A1F;text-shadow:0 3px 0 #7a1a00,0 6px 18px rgba(0,0,0,.5);letter-spacing:-.02em}
+  .db-off{margin-top:10px;font-weight:800;font-size:clamp(1rem,2.6vw,2rem);color:#fff;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+  .db-r{padding:18px 6% 18px 4%;text-align:center;position:relative;z-index:2}
+  .db-brand{font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;font-size:clamp(.8rem,1.8vw,1.35rem);opacity:.92}
+  .db-fire{font-weight:900;font-size:clamp(2.4rem,8vw,6rem);line-height:1.05;background:linear-gradient(180deg,#FFE7A3 0%,#FFB13B 38%,#FF5A1F 70%,#B31E00 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 10px rgba(255,90,20,.55));padding:.05em 0}
+  .db-sub{display:inline-block;margin-top:8px;background:linear-gradient(90deg,#C0260A,#FF6A1F);color:#fff;font-weight:800;font-size:clamp(.78rem,1.7vw,1.15rem);padding:.35em 1em;transform:skewX(-10deg);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+  .db-sparks{position:absolute;inset:0;z-index:1;pointer-events:none;background-image:radial-gradient(2px 2px at 70% 30%,#FFB13B,transparent),radial-gradient(1.5px 1.5px at 82% 62%,#FF7A2F,transparent),radial-gradient(2px 2px at 92% 18%,#FFD27A,transparent),radial-gradient(1.5px 1.5px at 60% 80%,#FF7A2F,transparent),radial-gradient(2px 2px at 88% 84%,#FFB13B,transparent),radial-gradient(1.5px 1.5px at 55% 15%,#FFD27A,transparent)}
+  .dbanner .imgedit{z-index:5}
+  .db-rm{position:absolute;left:10px;bottom:10px;z-index:6;background:rgba(0,0,0,.6)}
+  body.editing .dbanner [data-edit]{background:rgba(0,0,0,.25)}
+  .dgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:26px}
+  .dcardp{background:#fff;padding:8px 8px 12px;border-radius:4px;box-shadow:0 8px 26px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;gap:10px;color:#1b1b1b}
+  .dcardp.is-off{opacity:.6}
+  .dp{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;border-radius:3px;background:#222;cursor:pointer}
+  body.editing .dp{cursor:default}
+  .dp-poster{width:100%;height:100%;object-fit:cover;display:block}
+  .dp-img{position:absolute;inset:0}.dp-img>img,.dp-img>.ph{width:100%;height:100%;object-fit:cover}
+  .dp-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,0) 28%,rgba(0,0,0,.15) 50%,rgba(0,0,0,.85) 100%)}
+  .dp-top{position:absolute;left:8px;right:8px;top:8px;display:flex;justify-content:space-between;gap:6px;z-index:2}
+  .dp-code,.dp-dur{background:rgba(255,255,255,.92);color:#123;font-weight:800;font-size:.72rem;padding:.25em .6em;border-radius:4px}
+  .dp-dur{background:#E5372B;color:#fff}
+  .dp-off{position:absolute;right:10px;top:38px;z-index:2;width:74px;height:74px;border-radius:999px;background:#E5372B;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;transform:rotate(-8deg);box-shadow:0 6px 16px rgba(0,0,0,.4);border:2px solid #fff}
+  .dp-off b{font-size:1.05rem} .dp-off small{font-size:.62rem;font-weight:800}
+  .dp-bot{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:12px;color:#fff}
+  .dp-title{font-weight:800;font-size:1.05rem;line-height:1.25;text-shadow:0 2px 8px rgba(0,0,0,.7);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .dp-date{display:inline-block;margin-top:6px;background:#fff;color:#1b1b1b;font-weight:700;font-size:.72rem;padding:.2em .6em;border-radius:999px}
+  .dp-price{display:flex;align-items:baseline;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .dp-was{font-size:.78rem;text-decoration:line-through;opacity:.85}
+  .dp-now{font-weight:900;font-size:2.1rem;line-height:1;color:#FFD23F;text-shadow:0 3px 0 #9a1b00,0 4px 12px rgba(0,0,0,.6)}
+  .dp-unit{font-size:.78rem;font-weight:700}
+  .dp-btn{display:inline-block;background:#1E3C72;color:#fff;text-decoration:none;font-weight:700;font-size:.92rem;padding:.35em 1.2em;border-radius:999px;box-shadow:0 3px 0 #0f2247}
+  .dp-btn b{color:#FFB13B;font-weight:800}
+  .dp-btn:hover{filter:brightness(1.15)}
+  .dp-left{font-size:.78rem;font-weight:700;color:#C0260A}
+  .dp-state{position:absolute;left:8px;right:8px;bottom:8px;z-index:4;background:rgba(0,0,0,.75);color:#FFB13B;font-weight:700;font-size:.75rem;padding:.35em .6em;border-radius:6px;text-align:center}
+  .dp .imgedit{top:auto;bottom:40px;right:8px}
+  .dp-edit{display:flex;gap:6px;flex-wrap:wrap;justify-content:center} .dp-edit .btn{color:#1b1b1b;border-color:#ccc}
+  .deals-page{background:linear-gradient(180deg,color-mix(in srgb,#1E88E5 10%,var(--bg)),var(--bg) 60%)}
+  @media (max-width:1000px){ .dgrid4{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:760px){ .dgrid4{grid-template-columns:repeat(2,1fr);gap:14px} .dbanner{grid-template-columns:1fr;background:radial-gradient(120% 140% at 85% 110%,rgba(255,110,20,.55),transparent 55%),linear-gradient(160deg,#2b2b2e,#151517)} .db-l{text-align:center;padding-bottom:0} .dp-now{font-size:1.6rem} .dp-title{font-size:.9rem} .dp-off{width:50px;height:50px;top:32px;right:6px} .dp-off b{font-size:.78rem} .dp-off small{font-size:.5rem} .dp-code,.dp-dur{font-size:.62rem} .dp-btn{font-size:.8rem;padding:.35em .9em} }
 </style>
 </head>
 <body>
@@ -1188,20 +1235,63 @@
     out.sort(function(a,b){ return rank[a.s]-rank[b.s]||((daysLeft(a.it)==null?999:daysLeft(a.it))-(daysLeft(b.it)==null?999:daysLeft(b.it))); });
     return out;
   }
+  function dealBanner(){
+    var sec=data.dealsSection||{}, th=lang==="th";
+    var H='<div class="dbanner'+(sec.banner?' has-img':'')+'">';
+    if(sec.banner) H+='<img src="'+esc(sec.banner)+'" alt="">';
+    else H+='<div class="db-l"><div class="db-sale"'+ed("dealsSection.b1")+'>'+esc(t(sec,"b1"))+'</div><div class="db-off"'+ed("dealsSection.b2")+'>'+esc(t(sec,"b2"))+'</div></div>'
+      +'<div class="db-r"><div class="db-brand">'+esc((data.brand&&data.brand.name)||"")+'</div><div class="db-fire"'+ed("dealsSection.b3")+'>'+esc(t(sec,"b3"))+'</div><div class="db-sub"'+ed("dealsSection.b4")+'>'+esc(t(sec,"b4"))+'</div></div><div class="db-sparks"></div>';
+    H+=imgOverlay("dealsSection.banner");
+    if(editing&&sec.banner) H+='<button class="btn btn-ghost btn-sm db-rm" type="button" id="dbrm">'+(th?"ใช้แบนเนอร์แบบเดิม":"Use default banner")+'</button>';
+    return H+'</div>';
+  }
+  function dealPoster(x){
+    if(!thaiOnly(x.arr,x.it)) return dealPoster0(x);
+    var lg=lang; lang="th"; try{ return dealPoster0(x); } finally{ lang=lg; }
+  }
+  function dealPoster0(x){
+    var it=x.it, arr=x.arr, i=x.i, th=lang==="th", pi=priceInfo(it), ps=promoState(it), P=arr+"."+i+".";
+    var det=(arr==="tours"&&it.id)?"#/tour/"+encodeURIComponent(it.id):"";
+    var wab=waLink(data.contact&&data.contact.whatsapp);
+    var href=det||(wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจโปร ":"Hi! I'm interested in the deal ")+(it.code?it.code+" ":"")+t(it,"title")):"#contact");
+    var off=pi.was?numP(pi.was)-numP(pi.now):0;
+    var H='<article class="dcardp'+(ps!=="on"?' is-off':'')+'"'+(th?' lang="th"':'')+'><div class="dp" data-dp="'+esc(href)+'">';
+    if(it.poster){ H+='<img class="dp-poster" src="'+esc(it.poster)+'" alt="">'; }
+    else {
+      H+='<div class="dp-img">'+media(it)+'</div><div class="dp-shade"></div>';
+      H+='<div class="dp-top">'+(it.code?'<span class="dp-code">'+esc(it.code)+'</span>':'')+(t(it,"dur")?'<span class="dp-dur">'+esc(t(it,"dur").split("·")[0].trim())+'</span>':'')+'</div>';
+      if(off>0) H+='<div class="dp-off"><small>'+(th?"ลดเลย":"Save")+'</small><b>'+fmtN(off)+'</b><small>'+(th?"บาท":"THB")+'</small></div>';
+      H+='<div class="dp-bot"><div class="dp-title">'+esc(t(it,"title"))+'</div>';
+      if(it.promo_end) H+='<div class="dp-date">'+(th?"ถึง ":"Until ")+esc(fmtDate(it.promo_end))+'</div>';
+      H+='<div class="dp-price">'+(pi.was?'<span class="dp-was">'+(th?"ปกติ ":"Was ")+esc(pi.was)+'.-</span>':'')+'<span class="dp-now">'+esc(pi.now||"")+'</span><span class="dp-unit">'+(th?"บาท":"THB")+'</span></div></div>';
+    }
+    if(editing) H+='<label class="imgedit" data-img="'+esc(P+"poster")+'"><span>'+ICON.cam+(th?(it.poster?"เปลี่ยนโปสเตอร์":"ใส่โปสเตอร์"):(it.poster?"Change poster":"Add poster"))+'</span><input type="file" accept="image/*" hidden></label>';
+    if(editing&&ps!=="on") H+='<span class="dp-state">'+esc(promoLine(it))+'</span>';
+    H+='</div>';
+    if(editing){
+      H+='<div class="dp-edit"><button class="btn btn-ghost btn-sm" type="button" data-promo="'+arr+':'+i+'">🔥 '+(th?"แก้โปร":"Edit deal")+'</button>'+(it.poster?'<button class="btn btn-ghost btn-sm" type="button" data-posterdel="'+arr+':'+i+'">'+(th?"ลบโปสเตอร์":"Remove poster")+'</button>':'')+'</div>';
+    } else {
+      H+='<a class="dp-btn" href="'+esc(href)+'"'+(det?'':(wab?' target="_blank" rel="noopener"':''))+'>'+(det?(th?"คลิกเข้าชม<b>โปรแกรม</b>":"View <b>program</b>"):(th?"สอบถาม / <b>จอง</b>":"Enquire / <b>Book</b>"))+'</a>';
+      if(ps==="on"&&daysLeft(it)!=null) H+='<div class="dp-left">⏰ '+esc(promoLine(it))+'</div>';
+    }
+    return H+'</article>';
+  }
+  function dealGrid(L){ var H='<div class="dgrid4">'; L.forEach(function(x){ H+=dealPoster(x); }); return H+'</div>'; }
   function homeDeals(){
     var L=dealItems(false); if(!L.length) return "";
     var sec=data.dealsSection||{}, th=lang==="th";
     var H='<section class="blk deals-blk" id="deals"><div class="wrap"><div class="sec-head"><div class="eyebrow">🔥 '+esc(t(sec,"eyebrow"))+'</div><h2'+ed("dealsSection.title")+'>'+esc(t(sec,"title"))+'</h2></div>';
-    H+='<div class="tours-grid">'; L.slice(0,3).forEach(function(x){ H+=itemCard(x.arr,x.i,x.it); }); H+='</div>';
+    H+=dealGrid(L.slice(0,4));
     H+='<div class="seeall"><a class="btn btn-primary" href="#/deals" data-nav>'+(th?"ดูโปรทั้งหมด":"See all deals")+' ('+L.length+') →</a></div>';
     return H+'</div></section>';
   }
   function dealsPage(){
     var sec=data.dealsSection||{}, th=lang==="th", L=dealItems(editing);
-    var H='<section class="blk page-top" id="deals"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
-    H+='<div class="sec-head"><div class="eyebrow">🔥 <span'+ed("dealsSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</span></div><h1 class="page-title"'+ed("dealsSection.title")+'>'+esc(t(sec,"title"))+'</h1><p'+ed("dealsSection.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
-    if(editing) H+='<p class="td-hint">'+(th?"โปรจะขึ้นหน้าเว็บเองตามวันเริ่ม และหายไปเองหลังวันสิ้นสุด · ในโหมดแก้ไขจะเห็นโปรที่ยังไม่เริ่มและที่หมดแล้วด้วย":"Deals appear automatically from the start date and disappear after the end date · in edit mode you also see upcoming and ended deals")+'</p>';
-    H+='<div class="tours-grid">'; L.forEach(function(x){ H+=itemCard(x.arr,x.i,x.it); }); H+='</div>';
+    var H='<section class="blk page-top deals-page" id="deals"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
+    H+='<h1 class="page-title dp-h1"'+ed("dealsSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</h1>';
+    H+=dealBanner();
+    if(editing) H+='<p class="td-hint" style="margin-top:14px">'+(th?"แตะ “ใส่โปสเตอร์” เพื่อใช้ภาพโปสเตอร์โปรของคุณเอง (แนวตั้ง) · ถ้าไม่ใส่ ระบบจะทำโปสเตอร์จากรูปทัวร์ให้อัตโนมัติ · โปรขึ้นและหายเองตามวันที่":"Tap “Add poster” to use your own portrait promo poster · without one, a poster is built from the tour photo · deals appear and disappear by date")+'</p>';
+    H+=dealGrid(L);
     if(!L.length) H+='<p class="empty-note">'+(th?"ยังไม่มีโปรตอนนี้ — แวะมาดูใหม่เร็ว ๆ นี้ หรือทักสอบถามได้เลย":"No deals right now — check back soon or message us")+'</p>';
     H+='<button class="btn btn-ghost addbtn" type="button" id="dealadd">'+ICON.plus+(th?"เพิ่มโปรไฟไหม้":"Add a hot deal")+'</button>';
     return H+'</div></section>';
@@ -1511,6 +1601,9 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-pdfdel]"),function(b){ b.onclick=function(){ syncEdits(); data.tours[+b.getAttribute("data-pdfdel")].pdf=""; render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-promo]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-promo").split(":"); openPromoForm(v[0],+v[1]); }; });
     var da=document.getElementById("dealadd"); if(da) da.onclick=function(){ openPromoForm(); };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-dp]"),function(el){ el.onclick=function(e){ if(editing||e.target.closest("label,button")) return; var h=el.getAttribute("data-dp"); if(h.charAt(0)==="#") location.hash=h; else window.open(h,"_blank","noopener"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-posterdel]"),function(b){ b.onclick=function(){ syncEdits(); var v=b.getAttribute("data-posterdel").split(":"); data[v[0]][+v[1]].poster=""; render(); }; });
+    var dbr=document.getElementById("dbrm"); if(dbr) dbr.onclick=function(){ syncEdits(); data.dealsSection.banner=""; render(); };
     Array.prototype.forEach.call(document.querySelectorAll("[data-retr]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-retr").split(":"); forceTranslate(v[0],+v[1]); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-top5]"),function(cb){ cb.onchange=function(){ syncEdits(); var id=cb.getAttribute("data-top5"), L=data.top5=(data.top5||[]).filter(function(x){ return tourIdx(x)>=0; });
       var k=L.indexOf(id); if(cb.checked&&k<0){ if(L.length>=5){ cb.checked=false; toast(lang==="th"?"Top 5 เต็มแล้ว เอาอันอื่นออกก่อน":"Top 5 is full — remove one first"); return; } L.push(id); } else if(!cb.checked&&k>=0) L.splice(k,1);
@@ -1571,7 +1664,7 @@
     });
   }
   function handleImg(path,file){
-    compress(file,path.indexOf("hero")===0?2000:1400,0.82).then(function(uri){
+    compress(file,(path.indexOf("hero")===0||/banner$/.test(path))?2000:1400,0.82).then(function(uri){
       syncEdits(); setPlain(path,uri); render();
     }).catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); });
   }
@@ -2131,6 +2224,7 @@
     ["bikes","events","destinations"].forEach(function(k){ (data[k]||[]).forEach(function(o){ if(o._trAll==null) o._trAll=true; }); });
     if(!data.top5) data.top5=[];
     if(!data.dealsSection) data.dealsSection={eyebrow_en:"Hot deals",eyebrow_th:"โปรไฟไหม้",title_en:"Limited-time hot deals",title_th:"โปรไฟไหม้ ราคาพิเศษช่วงเวลาจำกัด",sub_en:"Special prices for a limited time only — book before the deal ends.",sub_th:"ราคาพิเศษเฉพาะช่วงเวลาที่กำหนด รีบจองก่อนหมดโปร"};
+    var ds=data.dealsSection; if(ds.b1_en==null){ ds.b1_en="SALE!!"; ds.b1_th="SALE!!"; ds.b2_en="Special prices every month"; ds.b2_th="ลดพิเศษทุกเดือน"; ds.b3_en="Hot Deals"; ds.b3_th="โปรไฟไหม้"; ds.b4_en="Catch our hottest deals first, right here"; ds.b4_th="ติดตามโปรไฟไหม้ ก่อนใครได้ที่นี่"; }
     if(!data.ticketsSection) data.ticketsSection={eyebrow_en:"Buy tickets",eyebrow_th:"ซื้อตั๋ว",title_en:"Bus & attraction tickets",title_th:"ตั๋วรถ & ตั๋วเข้าสถานที่ท่องเที่ยว",sub_en:"We book bus tickets, transfers and attraction tickets for you — just message us.",sub_th:"เราจองตั๋วรถ รถรับส่ง และบัตรเข้าสถานที่ท่องเที่ยวให้ ทักมาได้เลย"};
     if(!data.top5Section) data.top5Section={eyebrow_en:"Top 5",eyebrow_th:"Top 5",title_en:"Top 5 popular tours",title_th:"5 ทัวร์ยอดนิยม",sub_en:"Our travellers' favourite trips.",sub_th:"ทริปที่ลูกค้าเลือกมากที่สุด"};
     if(!data._ticketsSeeded){

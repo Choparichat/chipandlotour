@@ -79,7 +79,8 @@
   .logo-reset{display:none;width:24px;height:24px;border-radius:7px;border:0;background:rgba(180,40,30,.92);color:#fff;cursor:pointer;align-items:center;justify-content:center;flex:none;margin-left:-4px}
   .logo-reset svg{width:13px;height:13px}
   body.editing .logo-reset{display:inline-flex}
-  .nav-links{display:flex;gap:22px;margin-left:8px}
+  .nav-links{display:flex;gap:18px;margin-left:8px;white-space:nowrap}
+  .brand{white-space:nowrap}
   .nav-links a{text-decoration:none;color:var(--muted);font-weight:500;font-size:.95rem;padding:6px 2px;border-bottom:2px solid transparent}
   .nav-links a:hover{color:var(--ink)}
   .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
@@ -409,7 +410,7 @@
   .back:hover{color:var(--ink)}
   .empty-note{color:var(--muted);text-align:center;margin:10px 0 0}
   .nav-links a.on{color:var(--ink);border-bottom-color:var(--primary)}
-  @media (max-width:1100px){
+  @media (max-width:1240px){
     .nav-links{display:none}
     .menu-toggle{display:grid;place-items:center}
     .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px;gap:6px}
@@ -445,6 +446,84 @@
     .hide-sm{display:none}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  /* ===== destinations / tour detail / deals ===== */
+  .dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .dcard{position:relative;cursor:pointer;display:flex;flex-direction:column;gap:14px}
+  body.editing .dcard{cursor:default}
+  .dmedia{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:6px;background:var(--surface-2);box-shadow:var(--shadow)}
+  .dmedia>img,.dmedia>.ph{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+  .dcard:hover .dmedia>img{transform:scale(1.04)}
+  .dcap{text-align:center}
+  .dcap h3{font-family:var(--sans);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
+  .dcount{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+  .dedit{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .dcard .card-del{top:10px;right:10px}
+  .grp-title{font-family:var(--serif);font-size:clamp(1.4rem,2.6vw,1.9rem);margin:34px 0 20px}
+  .grp-title.first{margin-top:6px}
+  a.chip{text-decoration:none;display:inline-block}
+  .chips-sm{margin-bottom:14px} .chips-sm .chip{padding:6px 13px;font-size:.84rem}
+  .catctl{display:flex;flex-wrap:wrap;gap:6px}
+  .tcard h3 a.tlink{text-decoration:none} .tcard h3 a.tlink:hover{color:var(--primary-ink)}
+  .tcard .media[data-det]{cursor:pointer}
+  .act2{display:grid;grid-template-columns:1fr 1fr;gap:8px} .act2 .btn{justify-content:center;padding-inline:.6em}
+  .ebtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .tcard .act .btn-primary{width:100%;justify-content:center}
+  .price s,.td-price s{color:var(--muted);font-weight:400;font-size:.85em;margin-right:2px}
+  .price b.hot{color:#FF5A4E}
+  .hotbadge{position:absolute;right:12px;top:12px;z-index:3;background:#E5372B;color:#fff;font-weight:700;font-size:.78rem;padding:.35em .75em;border-radius:999px;box-shadow:0 4px 14px rgba(229,55,43,.4)}
+  .rank{position:absolute;left:12px;bottom:12px;z-index:3;background:var(--gold);color:#231a06;font-family:var(--serif);font-weight:700;font-size:1.35rem;line-height:1;padding:.3em .55em;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+  .tcard.is-hot{border-color:color-mix(in srgb,#E5372B 55%,var(--border))}
+  .promo-left{font-size:.84rem;font-weight:600;color:#FF7B6E;margin-top:-2px}
+  .promo-note{font-size:.82rem;font-weight:600;color:#FF7B6E;background:color-mix(in srgb,#E5372B 12%,transparent);border-radius:8px;padding:6px 10px}
+  body.editing .tcard .region:empty::before{content:attr(data-ph);opacity:.6}
+  body.editing .tcard .region{min-width:5em;min-height:1.6em}
+  .deals-blk{background:linear-gradient(180deg,color-mix(in srgb,#E5372B 10%,var(--bg)),var(--bg))}
+  .nav-links a.navhot{color:#FF7B6E} .nav-links a.navhot.on{color:#FF9A8F;border-bottom-color:#E5372B}
+  .tdet{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:40px;align-items:start;margin-top:6px}
+  .td-main{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--surface-2);cursor:zoom-in;box-shadow:var(--shadow)}
+  body.editing .td-main{cursor:default}
+  .td-main>img,.td-main>.ph{width:100%;height:100%;object-fit:cover}
+  .td-off{position:absolute;right:16px;top:16px;z-index:3;width:96px;height:96px;border-radius:999px;background:#E5372B;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:0 8px 24px rgba(0,0,0,.35);transform:rotate(-6deg)}
+  .td-off b{font-size:1.45rem} .td-off small{font-size:.72rem;font-weight:700}
+  .td-main .hotbadge{top:auto;bottom:14px;right:14px}
+  .td-thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto}
+  .td-thumbs img{width:78px;height:62px;object-fit:cover;border-radius:8px;cursor:zoom-in;flex:none;opacity:.8} .td-thumbs img:hover{opacity:1}
+  .td-title{font-family:var(--sans);font-weight:700;font-size:clamp(1.45rem,2.6vw,2rem);line-height:1.25;margin:4px 0 6px}
+  .td-code{color:var(--muted);font-size:1rem;margin-bottom:14px} .td-code b{color:var(--primary-ink);font-weight:700;letter-spacing:.02em}
+  .td-rows{display:flex;flex-direction:column;gap:14px;margin:18px 0}
+  .td-row{display:flex;gap:14px;align-items:flex-start;font-size:1.02rem}
+  .td-row svg{width:24px;height:24px;flex:none;color:#F08A2E;margin-top:1px}
+  .td-pdf,.td-pdfedit .btn{gap:.5em} .td-pdf svg,.td-pdfedit svg{width:16px;height:16px}
+  .td-pdfedit{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px} .td-pdfedit .ok{color:var(--primary-ink);font-weight:600;font-size:.9rem}
+  .td-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:22px 0 8px}
+  .td-price s{font-size:1.15rem;color:#5AA9E6;font-weight:600}
+  .td-price .now{font-size:2.1rem;font-weight:800;color:#FF4B3E;line-height:1}
+  .td-price .from{color:var(--muted);font-size:.95rem} .td-price .ask{font-size:1.2rem;color:var(--muted)}
+  .td-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px} .td-cta .btn svg{width:17px;height:17px}
+  .td-pedit{display:flex;flex-direction:column;gap:8px;margin:14px 0;padding:14px;border:1px dashed var(--border);border-radius:12px;font-size:.92rem}
+  .td-ebtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .td-body{max-width:820px;margin-top:44px}
+  .td-body h2{font-family:var(--serif);font-size:1.5rem;margin:26px 0 10px}
+  .td-desc{color:var(--ink);margin:0;white-space:pre-line}
+  .td-itin{white-space:pre-line;line-height:1.75;color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+  .td-itin:empty{display:none} body.editing .td-itin:empty{display:block;min-height:5em}
+  .td-hint{color:var(--muted);font-size:.86rem;margin:0 0 10px}
+  .t5edit{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px;border:1px dashed var(--border);border-radius:12px;margin-bottom:24px}
+  .t5edit b{flex-basis:100%;font-size:.9rem}
+  .t5edit select{max-width:260px}
+  .mshell{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+  .mbox{background:var(--surface);color:var(--ink);border-radius:16px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .mbox.wide{max-width:560px}
+  .mbox h3{margin:0 0 6px;font-family:var(--serif);font-size:1.35rem}
+  .mhint{color:var(--muted);font-size:.88rem;margin:0 0 12px} .mitem{font-weight:700;margin:4px 0 8px}
+  .mbox label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 5px}
+  .mbox input,.mbox select{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;background:#fff;color:#241F19;-webkit-text-fill-color:#241F19;color-scheme:light}
+  .mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sfrow{grid-template-columns:1fr 1fr auto;margin-bottom:8px;align-items:center}
+  .merr{color:#FF7B6E;font-size:.86rem;min-height:1.2em;margin-top:8px}
+  .mbtns{display:flex;gap:8px;align-items:center;margin-top:14px}
+  @media (max-width:860px){ .dgrid{grid-template-columns:repeat(2,1fr);gap:18px} .tdet{grid-template-columns:1fr;gap:24px} .dcap h3{font-size:1.15rem} }
+  @media (max-width:480px){ .dgrid{gap:14px} .dcap h3{font-size:1.02rem} .td-off{width:78px;height:78px} .td-off b{font-size:1.15rem} .act2{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -474,10 +553,20 @@
   try{ var s=localStorage.getItem(LS_LANG); if(s==="en"||s==="th") lang=s; }catch(e){}
   var editing=false, canEdit=false, artifactNS=null, editEnteredAt=0;
   var view="home", tourCat="all", actCat="all";
-  function getView(){ var h=location.hash||""; return h.indexOf("#/tours")===0?"tours":(h.indexOf("#/activities")===0?"activities":"home"); }
+  var route={v:"home"}, destSub="all";
+  function parseRoute(){ var h=location.hash||"", m;
+    if((m=h.match(/^#\/tour\/([^\/?#]+)/))) return {v:"tour",id:decodeURIComponent(m[1])};
+    if((m=h.match(/^#\/tours\/([^\/?#]+)/))) return {v:"dest",id:decodeURIComponent(m[1])};
+    if(h.indexOf("#/tours")===0) return {v:"tours"};
+    if(h.indexOf("#/activities")===0) return {v:"activities"};
+    if(h.indexOf("#/deals")===0) return {v:"deals"};
+    if(h.indexOf("#/tickets")===0) return {v:"tickets"};
+    if(h.indexOf("#/top5")===0) return {v:"top5"};
+    return {v:"home"}; }
+  function getView(){ route=parseRoute(); return route.v; }
   view=getView();
   var TOUR_CATS=[["thai","ทัวร์ในประเทศ","Thailand tours"],["intl","ทัวร์ต่างประเทศ","International tours"]];
-  var ACT_CATS=[["adventure","ผจญภัย","Adventure"],["nature","ธรรมชาติ & เดินป่า","Nature & trekking"],["culture","วัฒนธรรม & ประสบการณ์","Culture & experiences"],["water","กิจกรรมทางน้ำ","On the water"]];
+  var ACT_CATS=[["adventure","ผจญภัย","Adventure"],["nature","ธรรมชาติ & เดินป่า","Nature & trekking"],["culture","วัฒนธรรม & ประสบการณ์","Culture & experiences"],["water","กิจกรรมทางน้ำ","On the water"],["tickets","ซื้อตั๋ว","Buy tickets"]];
   var LIVE_SRC=(function(){ var e=document.getElementById("live-reviews"); return e?e.innerHTML:""; })();
 
   // ---------- helpers ----------
@@ -504,7 +593,10 @@
     car:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M3 17v-4l2-5h14l2 5v4"/><path d="M3 13h18"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>',
     star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>',
     check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
-    plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>'
+    plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
+    tag:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5a2 2 0 0 1 2-2h8.2a2 2 0 0 1 1.5.7l5.8 6.6a2 2 0 0 1 0 2.6l-5.8 6.6a2 2 0 0 1-1.5.7H5a2 2 0 0 1-2-2z"/></svg>',
+    bed:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 6h2v7h8V8h7a3 3 0 0 1 3 3v8h-2v-2H4v2H2z"/><circle cx="7.5" cy="10" r="2"/></svg>',
+    file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6M9 15l3 3 3-3"/></svg>'
   };
   function media(obj, cls){
     if(obj && obj.img){ return '<img src="'+esc(obj.img)+'" alt="">'; }
@@ -528,11 +620,13 @@
     if(hasLogo) H.push('<button class="logo-reset" id="logoreset" title="'+(lang==="th"?"ลบโลโก้ กลับไปใช้แบบเดิม":"Remove logo")+'">'+ICON.trash+'</button>');
     H.push('<nav class="nav-links" id="navlinks">');
     H.push('<a href="#top">'+(lang==="th"?"หน้าแรก":"Home")+'</a>');
-    H.push('<a href="#/tours" data-nav'+(view==="tours"?' class="on"':'')+'>'+(lang==="th"?"ทัวร์":"Tours")+'</a>');
+    var isT=(view==="tours"||view==="dest"||view==="tour");
+    H.push('<a href="#/tours" data-nav'+(isT?' class="on"':'')+'>'+(lang==="th"?"ทัวร์":"Tours")+'</a>');
+    H.push('<a href="#/deals" data-nav class="navhot'+(view==="deals"?' on':'')+'">🔥 '+(lang==="th"?"โปรไฟไหม้":"Hot Deals")+'</a>');
+    H.push('<a href="#/tickets" data-nav'+(view==="tickets"?' class="on"':'')+'>'+(lang==="th"?"ซื้อตั๋ว":"Tickets")+'</a>');
+    H.push('<a href="#/top5" data-nav'+(view==="top5"?' class="on"':'')+'>'+(lang==="th"?"Top 5 ยอดนิยม":"Top 5")+'</a>');
     H.push('<a href="#/activities" data-nav'+(view==="activities"?' class="on"':'')+'>'+(lang==="th"?"กิจกรรม":"Activities")+'</a>');
     if(d.bikes&&(d.bikes.length||editing)) H.push('<a href="#rental">'+(lang==="th"?"เช่ารถ":"Rentals")+'</a>');
-    H.push('<a href="#services">'+(lang==="th"?"บริการ":"Services")+'</a>');
-    if((d.reviews||[]).length||(d.reviewsSection&&d.reviewsSection.url)) H.push('<a href="#reviews">'+(lang==="th"?"รีวิว":"Reviews")+'</a>');
     H.push('<a href="#contact">'+(lang==="th"?"ติดต่อ":"Contact")+'</a>');
     H.push('</nav>');
     H.push('<div class="nav-right">');
@@ -578,8 +672,13 @@
 
     }
     // tours & activities
-    if(view==="home"){ H.push(listSection("tours","toursSection","tours",false)); H.push(listSection("activities","activitiesSection","activities",false)); }
-    else if(view==="tours") H.push(listSection("tours","toursSection","tours",true));
+    if(view==="home"){ H.push(homeDeals()); H.push(homeTours()); H.push(listSection("activities","activitiesSection","activities",false)); }
+    else if(view==="tours") H.push(toursPage());
+    else if(view==="dest") H.push(destPage());
+    else if(view==="tour") H.push(tourPage());
+    else if(view==="deals") H.push(dealsPage());
+    else if(view==="tickets") H.push(ticketsPage());
+    else if(view==="top5") H.push(top5Page());
     else if(view==="activities") H.push(listSection("activities","activitiesSection","activities",true));
 
     if(view==="home"){
@@ -828,48 +927,64 @@
   function catsFor(arr){ return arr==="activities"?ACT_CATS:TOUR_CATS; }
   function catOf(arr,it){ var cs=catsFor(arr); for(var k=0;k<cs.length;k++) if(cs[k][0]===it.cat) return cs[k]; return cs[0]; }
   function thaiOnly(arr,it){ return arr==="tours"&&it&&it.cat==="intl"; }
-  function itemCard(arr,i,it){
-    if(!thaiOnly(arr,it)) return itemCard0(arr,i,it);
-    var lg=lang; lang="th"; try{ return itemCard0(arr,i,it).replace('<article class="tcard"','<article lang="th" class="tcard"'); } finally{ lang=lg; }
+  function itemCard(arr,i,it,opt){
+    if(!thaiOnly(arr,it)) return itemCard0(arr,i,it,opt);
+    var lg=lang; lang="th"; try{ return itemCard0(arr,i,it,opt).replace('<article class="tcard"','<article lang="th" class="tcard"'); } finally{ lang=lg; }
   }
-  function itemCard0(arr,i,it){
-    var cat=catOf(arr,it), ph=(it.photos||[]).filter(Boolean), nph=ph.length+(it.img?1:0);
+  function itemCard0(arr,i,it,opt){
+    opt=opt||{};
+    var isTour=arr==="tours", th=lang==="th", ph=(it.photos||[]).filter(Boolean), nph=ph.length+(it.img?1:0), ps=promoState(it);
     var wab=waLink(data.contact&&data.contact.whatsapp), title=t(it,"title");
-    var href=wab?wab+"?text="+encodeURIComponent((lang==="th"?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+title):"#contact";
-    var h='<article class="tcard" data-ti="'+i+'" data-arr="'+arr+'">';
+    var href=wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+(it.code?it.code+" ":"")+title):"#contact";
+    var det=(isTour&&it.id)?"#/tour/"+encodeURIComponent(it.id):"";
+    var h='<article class="tcard'+(ps==="on"?' is-hot':'')+'" data-ti="'+i+'" data-arr="'+arr+'">';
     h+='<button class="card-del" data-del="'+arr+'" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>';
-    h+='<button class="drag-h" type="button" title="'+(lang==="th"?"กดค้างแล้วลากเพื่อย้าย":"Hold and drag to reorder")+'"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></button>';
-    h+='<div class="media" data-open="'+arr+':'+i+'"><span class="region"'+ed(arr+"."+i+".region")+'>'+esc(t(it,"region"))+'</span>'+media(it)+imgOverlay(arr+"."+i+".img")
-      +((nph>1&&!editing)?'<span class="phcount">'+ICON.cam+nph+'</span>':'')+'</div>';
-    h+='<div class="body">';
-    if(editing){ h+='<label class="catbtn">'+(lang==="th"?"หมวด:":"Category:")+' <select data-catsel="'+arr+':'+i+'">';
-      catsFor(arr).forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===cat[0]?' selected':'')+'>'+esc(lang==="th"?c[1]:c[2])+'</option>'; });
-      h+='</select></label>'; }
-    else h+='<span class="catlbl">'+esc(lang==="th"?cat[1]:cat[2])+'</span>';
-    h+='<h3'+ed(arr+"."+i+".title")+'>'+esc(title)+'</h3>';
+    h+='<button class="drag-h" type="button" title="'+(th?"กดค้างแล้วลากเพื่อย้าย":"Hold and drag to reorder")+'"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>'+(th?"ลาก":"Drag")+'</button>';
+    var badge=it.code||(!isTour?t(it,"region"):"");
+    h+='<div class="media" data-open="'+arr+':'+i+'"'+(det?' data-det="'+esc(det)+'"':'')+'>';
+    if(editing) h+='<span class="region"'+ed(arr+"."+i+".code")+' data-ph="'+(th?"รหัสทัวร์":"Tour code")+'">'+esc(it.code||"")+'</span>';
+    else if(badge) h+='<span class="region">'+esc(badge)+'</span>';
+    h+=media(it)+imgOverlay(arr+"."+i+".img");
+    if(!editing&&ps==="on") h+='<span class="hotbadge">🔥 '+(th?"โปรไฟไหม้":"Hot deal")+'</span>';
+    if(opt.rank) h+='<span class="rank">#'+opt.rank+'</span>';
+    if(nph>1&&!editing) h+='<span class="phcount">'+ICON.cam+nph+'</span>';
+    h+='</div><div class="body">';
+    if(editing) h+=catControls(arr,i,it); else h+='<span class="catlbl">'+esc(catLabel(arr,it))+'</span>';
+    if(det&&!editing) h+='<h3><a class="tlink" href="'+esc(det)+'">'+esc(title)+'</a></h3>';
+    else h+='<h3'+ed(arr+"."+i+".title")+'>'+esc(title)+'</h3>';
     h+='<p class="desc"'+ed(arr+"."+i+".desc")+'>'+esc(t(it,"desc"))+'</p>';
     if(editing){
       h+='<div class="iph">';
       ph.forEach(function(src,k){ h+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="'+arr+':'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; });
-      h+='<button class="iph-add" type="button" data-iphadd="'+arr+':'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div>';
+      h+='<button class="iph-add" type="button" data-iphadd="'+arr+':'+i+'">'+ICON.plus+(th?"เพิ่มรูป":"Add photos")+'</button></div>';
+      if(ps) h+='<div class="promo-note">🔥 '+esc(promoLine(it))+' · ฿'+esc(it.promo_price)+'</div>';
     }
     h+='<div class="meta"><span class="dur">'+ICON.clock+'<span'+ed(arr+"."+i+".dur")+'>'+esc(t(it,"dur"))+'</span></span>';
-    if(it.price||editing) h+='<span class="price">'+(lang==="th"?"เริ่ม ฿":"from ฿")+'<b'+ed(arr+"."+i+".price")+'>'+esc(it.price||"")+'</b></span>';
-    else h+='<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>';
-    h+='</div><div class="act"><a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"สอบถาม / จอง":"Enquire / Book")+'</a></div>';
-    return h+'</div></article>';
+    if(editing) h+='<span class="price">'+(th?"เริ่ม ฿":"from ฿")+'<b'+ed(arr+"."+i+".price")+'>'+esc(it.price||"")+'</b></span>';
+    else h+=cardPrice(it);
+    h+='</div>';
+    if(!editing&&ps==="on") h+='<div class="promo-left">⏰ '+esc(promoLine(it))+'</div>';
+    h+='<div class="act">';
+    if(editing){
+      if(det) h+='<a class="btn btn-primary btn-sm" href="'+esc(det)+'" data-nav>'+(th?"แก้ไขรายละเอียดทัวร์ →":"Edit tour details →")+'</a>';
+      h+='<div class="ebtns"><button class="btn btn-ghost btn-sm" type="button" data-promo="'+arr+':'+i+'">🔥 '+(ps?(th?"แก้โปร":"Edit deal"):(th?"ตั้งโปร":"Set deal"))+'</button><button class="btn btn-ghost btn-sm" type="button" data-retr="'+arr+':'+i+'">🌐 '+(th?"แปลอีกภาษา":"Translate")+'</button></div>';
+    } else if(det){
+      h+='<div class="act2"><a class="btn btn-primary btn-sm" href="'+esc(det)+'">'+(th?"ดูรายละเอียด":"View details")+'</a><a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a></div>';
+    } else h+='<a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a>';
+    return h+'</div></div></article>';
   }
   function listSection(arr,secKey,sid,full){
-    var d=data, sec=d[secKey]||{}, list=d[arr]||[], cs=catsFor(arr), cur=arr==="tours"?tourCat:actCat;
+    if(arr==="tours") return full?toursPage():homeTours();
+    var d=data, sec=d[secKey]||{}, list=d[arr]||[], cs=catsFor(arr).filter(function(c){ return c[0]!=="tickets"; }), cur=actCat;
     var H=['<section class="blk'+(full?' page-top':'')+'" id="'+sid+'"'+(arr==="activities"&&!full?' style="background:var(--surface-2)"':'')+'><div class="wrap">'];
     if(full) H.push('<a class="back" href="#top" data-nav>← '+(lang==="th"?"กลับหน้าแรก":"Back to home")+'</a>');
     H.push('<div class="sec-head"><div class="eyebrow"'+ed(secKey+".eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div>');
     H.push((full?'<h1 class="page-title"':'<h2')+ed(secKey+".title")+'>'+esc(t(sec,"title"))+(full?'</h1>':'</h2>'));
     H.push('<p'+ed(secKey+".sub")+'>'+esc(t(sec,"sub"))+'</p></div>');
-    var idx=list.map(function(_,i){ return i; });
+    var idx=list.map(function(_,i){ return i; }).filter(function(i){ return list[i].cat!=="tickets"; }), nAll=idx.length;
     if(full){
       var cnt=function(c){ return list.filter(function(it){ return catOf(arr,it)[0]===c; }).length; };
-      H.push('<div class="chips"><button type="button" class="chip'+(cur==="all"?' on':'')+'" data-fcat="'+arr+':all">'+(lang==="th"?"ทั้งหมด":"All")+' <span>'+list.length+'</span></button>');
+      H.push('<div class="chips"><button type="button" class="chip'+(cur==="all"?' on':'')+'" data-fcat="'+arr+':all">'+(lang==="th"?"ทั้งหมด":"All")+' <span>'+nAll+'</span></button>');
       cs.forEach(function(c){ var n=cnt(c[0]); if(!n&&!editing) return; H.push('<button type="button" class="chip'+(cur===c[0]?' on':'')+'" data-fcat="'+arr+':'+c[0]+'">'+esc((lang==="th"||(arr==="tours"&&c[0]==="intl"))?c[1]:c[2])+' <span>'+n+'</span></button>'); });
       H.push('</div>');
       if(cur!=="all") idx=idx.filter(function(i){ return catOf(arr,list[i])[0]===cur; });
@@ -879,10 +994,337 @@
       if(!idx.length) H.push('<p class="empty-note">'+(lang==="th"?"ยังไม่มีรายการในหมวดนี้":"Nothing in this category yet")+'</p>');
       H.push('<button class="btn btn-ghost addbtn" data-add="'+arr+'">'+ICON.plus+(lang==="th"?(arr==="tours"?"เพิ่มทัวร์":"เพิ่มกิจกรรม"):(arr==="tours"?"Add a tour":"Add an activity"))+'</button>');
     } else {
-      H.push('<div class="seeall"><a class="btn btn-primary" href="#/'+arr+'" data-nav>'+(lang==="th"?(arr==="tours"?"ดูทัวร์ทั้งหมด":"ดูกิจกรรมทั้งหมด"):(arr==="tours"?"See all tours":"See all activities"))+' ('+list.length+') →</a></div>');
+      H.push('<div class="seeall"><a class="btn btn-primary" href="#/'+arr+'" data-nav>'+(lang==="th"?(arr==="tours"?"ดูทัวร์ทั้งหมด":"ดูกิจกรรมทั้งหมด"):(arr==="tours"?"See all tours":"See all activities"))+' ('+nAll+') →</a></div>');
     }
     H.push('</div></section>');
     return H.join("");
+  }
+  // ---------- destinations / tour helpers ----------
+  function newId(p){ return (p||"t")+Date.now().toString(36).slice(-4)+Math.random().toString(36).slice(2,6); }
+  function dests(){ return data.destinations||[]; }
+  function destById(id){ var L=dests(); for(var i=0;i<L.length;i++) if(L[i].id===id) return L[i]; return null; }
+  function tourDest(tr){ return destById(tr.dest)||dests().filter(function(d){ return d.cat===(tr.cat||"thai"); })[0]||null; }
+  function dname(d){ if(!d) return ""; return d.cat==="intl"?(d.name_th||d.name_en||""):t(d,"name"); }
+  function subName(d,sid){ var s=((d&&d.subs)||[]).filter(function(x){ return x.id===sid; })[0]; if(!s) return ""; return (d.cat==="intl"||lang==="th")?(s.name_th||s.name_en||""):(s.name_en||s.name_th||""); }
+  function toursOf(did){ var L=data.tours||[]; return L.map(function(_,i){ return i; }).filter(function(i){ var d=tourDest(L[i]); return d&&d.id===did; }); }
+  function destCover(d){ if(d.img) return d; var ix=toursOf(d.id); for(var q=0;q<ix.length;q++){ var tr=data.tours[ix[q]]; if(tr.img) return {img:tr.img}; } return d; }
+  function tourIdx(id){ var L=data.tours||[]; for(var i=0;i<L.length;i++) if(L[i].id===id) return i; return -1; }
+  function numP(s){ var n=parseFloat(String(s||"").replace(/[^\d.]/g,"")); return isNaN(n)?0:n; }
+  function fmtN(n){ return Math.round(n).toLocaleString("en-US"); }
+  function pad2(n){ return (n<10?"0":"")+n; }
+  function todayStr(){ var d=new Date(); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+  function promoState(it){ if(!it||!String(it.promo_price||"").trim()) return ""; var td=todayStr(); if(it.promo_start&&td<it.promo_start) return "soon"; if(it.promo_end&&td>it.promo_end) return "ended"; return "on"; }
+  function daysLeft(it){ if(!it.promo_end) return null; var e=new Date(it.promo_end+"T23:59:59"); return Math.max(0,Math.ceil((e-new Date())/864e5)); }
+  function fmtDate(s){ if(!s) return ""; var p=String(s).split("-"); if(p.length<3) return s; var y=+p[0], m=+p[1]-1, dd=+p[2];
+    var MT=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."], ME=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return lang==="th"?(dd+" "+MT[m]+" "+pad2((y+543)%100)):(dd+" "+ME[m]+" "+y); }
+  function priceInfo(it){
+    if(promoState(it)==="on"){ var was=it.price||it.price_full||""; if(numP(was)<=numP(it.promo_price)) was=""; return {now:it.promo_price,was:was,promo:true}; }
+    return {now:it.price||"",was:(it.price_full&&numP(it.price_full)>numP(it.price))?it.price_full:"",promo:false};
+  }
+  function cardPrice(it){
+    var p=priceInfo(it); if(!p.now) return '<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>';
+    return '<span class="price">'+(p.was?'<s>฿'+esc(p.was)+'</s> ':(lang==="th"?"เริ่ม ":"from "))+'฿<b'+(p.promo?' class="hot"':'')+'>'+esc(p.now)+'</b></span>';
+  }
+  function promoLine(it){
+    var ps=promoState(it); if(!ps) return "";
+    var th=lang==="th", dl=daysLeft(it);
+    if(ps==="soon") return (th?"เริ่มโปร ":"Deal starts ")+fmtDate(it.promo_start);
+    if(ps==="ended") return (th?"โปรหมดเขตแล้ว (":"Deal ended (")+fmtDate(it.promo_end)+")";
+    if(dl===null) return th?"โปรไฟไหม้ มีจำนวนจำกัด":"Hot deal — limited time";
+    return (dl<=1?(th?"วันสุดท้าย! ":"Last day! "):(th?"เหลืออีก "+dl+" วัน · ":dl+" days left · "))+(th?"ถึง ":"until ")+fmtDate(it.promo_end);
+  }
+  function catLabel(arr,it){
+    if(arr==="tours"){ var d=tourDest(it); if(d) return dname(d)+(it.sub&&subName(d,it.sub)?" · "+subName(d,it.sub):""); }
+    var c=catOf(arr,it); return lang==="th"?c[1]:c[2];
+  }
+  function catControls(arr,i,it){
+    var th=lang==="th", h;
+    if(arr!=="tours"){
+      h='<label class="catbtn">'+(th?"หมวด:":"Category:")+' <select data-catsel="'+arr+':'+i+'">';
+      var cur=catOf(arr,it)[0]; catsFor(arr).forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===cur?' selected':'')+'>'+esc(th?c[1]:c[2])+'</option>'; });
+      return h+'</select></label>';
+    }
+    var d=tourDest(it), cat=(d&&d.cat)||it.cat||"thai";
+    h='<div class="catctl"><label class="catbtn">'+(th?"หมวด:":"Category:")+' <select data-tcat="'+i+'">';
+    TOUR_CATS.forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===cat?' selected':'')+'>'+esc(th?c[1]:c[2])+'</option>'; });
+    h+='</select></label><label class="catbtn">'+(cat==="intl"?(th?"ประเทศ:":"Country:"):(th?"จังหวัด:":"Province:"))+' <select data-tdest="'+i+'">';
+    dests().filter(function(x){ return x.cat===cat; }).forEach(function(x){ h+='<option value="'+esc(x.id)+'"'+(d&&x.id===d.id?' selected':'')+'>'+esc(dname(x))+'</option>'; });
+    h+='</select></label>';
+    if(d&&d.subs&&d.subs.length){
+      h+='<label class="catbtn">'+(th?"เมือง:":"City:")+' <select data-tsub="'+i+'"><option value="">'+(th?"— ไม่ระบุ —":"— none —")+'</option>';
+      d.subs.forEach(function(s){ h+='<option value="'+esc(s.id)+'"'+(it.sub===s.id?' selected':'')+'>'+esc(subName(d,s.id))+'</option>'; });
+      h+='</select></label>';
+    }
+    return h+'</div>';
+  }
+  function destCard(d,k){
+    var n=toursOf(d.id).length, th=lang==="th", intl=d.cat==="intl";
+    var h='<article class="dcard" data-dest="'+esc(d.id)+'"'+(intl?' lang="th"':'')+'>';
+    h+='<button class="card-del" data-del="destinations" data-i="'+k+'" title="Delete">'+ICON.trash+'</button>';
+    h+='<div class="dmedia">'+media(destCover(d))+imgOverlay("destinations."+k+".img")+'</div>';
+    h+='<div class="dcap"><h3'+ed("destinations."+k+".name")+'>'+esc(dname(d))+'</h3><span class="dcount">'+n+' '+(th?"โปรแกรม":(n===1?"program":"programs"))+'</span></div>';
+    if(editing){
+      h+='<div class="dedit"><label class="catbtn">'+(th?"หมวด:":"Category:")+' <select data-dcat="'+k+'">';
+      TOUR_CATS.forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===d.cat?' selected':'')+'>'+esc(th?c[1]:c[2])+'</option>'; });
+      h+='</select></label><button class="btn btn-ghost btn-sm" type="button" data-dsubs="'+k+'">'+(th?"เมืองย่อย":"Cities")+' ('+((d.subs||[]).length)+')</button>';
+      h+='<a class="btn btn-primary btn-sm" data-nav href="#/tours/'+encodeURIComponent(d.id)+'">'+(th?"เปิดดูทัวร์ →":"Open →")+'</a></div>';
+    }
+    return h+'</article>';
+  }
+  function destGrid(list){ var H='<div class="dgrid">'; list.forEach(function(k){ H+=destCard(dests()[k],k); }); return H+'</div>'; }
+  function homeTours(){
+    var sec=data.toursSection||{}, L=dests(), th=lang==="th";
+    var ix=L.map(function(_,k){ return k; }).sort(function(a,b){ return (L[a].cat==="intl")-(L[b].cat==="intl")||a-b; }).slice(0,6);
+    var H='<section class="blk" id="tours"><div class="wrap"><div class="sec-head"><div class="eyebrow"'+ed("toursSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div>';
+    H+='<h2'+ed("toursSection.title")+'>'+esc(t(sec,"title"))+'</h2><p'+ed("toursSection.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
+    H+=destGrid(ix);
+    H+='<div class="seeall"><a class="btn btn-primary" href="#/tours" data-nav>'+(th?"ดูทัวร์ทั้งหมด":"See all tours")+' ('+(data.tours||[]).length+') →</a></div>';
+    return H+'</div></section>';
+  }
+  function toursPage(){
+    var sec=data.toursSection||{}, L=dests(), th=lang==="th", cur=tourCat;
+    var H='<section class="blk page-top" id="tours"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
+    H+='<div class="sec-head"><div class="eyebrow"'+ed("toursSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div>';
+    H+='<h1 class="page-title"'+ed("toursSection.title")+'>'+esc(t(sec,"title"))+'</h1><p'+ed("toursSection.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
+    var cnt=function(c){ return L.filter(function(d){ return d.cat===c; }).length; };
+    H+='<div class="chips"><button type="button" class="chip'+(cur==="all"?' on':'')+'" data-fcat="tours:all">'+(th?"ทั้งหมด":"All")+' <span>'+L.length+'</span></button>';
+    TOUR_CATS.forEach(function(c){ H+='<button type="button" class="chip'+(cur===c[0]?' on':'')+'" data-fcat="tours:'+c[0]+'">'+esc((th||c[0]==="intl")?c[1]:c[2])+' <span>'+cnt(c[0])+'</span></button>'; });
+    H+='</div>';
+    TOUR_CATS.forEach(function(c){
+      if(cur!=="all"&&cur!==c[0]) return;
+      var ix=L.map(function(_,k){ return k; }).filter(function(k){ return L[k].cat===c[0]; });
+      if(!ix.length&&!editing) return;
+      if(cur==="all") H+='<h2 class="grp-title'+(c[0]==="thai"?' first':'')+'">'+esc((th||c[0]==="intl")?c[1]:c[2])+'</h2>';
+      H+=destGrid(ix);
+    });
+    H+='<button class="btn btn-ghost addbtn" data-add="destinations">'+ICON.plus+(th?"เพิ่มจังหวัด / ประเทศ":"Add a province / country")+'</button>';
+    return H+'</div></section>';
+  }
+  function destPage(){
+    var th=lang==="th", d=destById(route.id);
+    var H='<section class="blk page-top" id="tours"><div class="wrap"><a class="back" href="#/tours" data-nav>← '+(th?"ทัวร์ทั้งหมด":"All tours")+'</a>';
+    if(!d) return H+'<p class="empty-note">'+(th?"ไม่พบหน้านี้":"Page not found")+'</p></div></section>';
+    var k=dests().indexOf(d), intl=d.cat==="intl";
+    var ix=toursOf(d.id);
+    H+='<div class="sec-head"><div class="eyebrow">'+esc(intl?TOUR_CATS[1][1]:(th?TOUR_CATS[0][1]:TOUR_CATS[0][2]))+'</div>';
+    H+='<h1 class="page-title"'+(intl?' lang="th"':'')+ed("destinations."+k+".name")+'>'+esc(dname(d))+'</h1><p>'+ix.length+' '+(th?"โปรแกรมทัวร์":"tour programs")+'</p></div>';
+    H+='<div class="chips chips-sm">';
+    dests().filter(function(x){ return x.cat===d.cat; }).forEach(function(x){ H+='<a class="chip'+(x.id===d.id?' on':'')+'" href="#/tours/'+encodeURIComponent(x.id)+'" data-nav>'+esc(dname(x))+' <span>'+toursOf(x.id).length+'</span></a>'; });
+    H+='</div>';
+    var subs=d.subs||[];
+    if(subs.length){
+      var sc=function(sid){ return ix.filter(function(i){ return data.tours[i].sub===sid; }).length; };
+      H+='<div class="chips"><button type="button" class="chip'+(destSub==="all"?' on':'')+'" data-dsub="all">'+(th?"ทุกเมือง":"All cities")+' <span>'+ix.length+'</span></button>';
+      subs.forEach(function(s){ var n=sc(s.id); if(!n&&!editing) return; H+='<button type="button" class="chip'+(destSub===s.id?' on':'')+'" data-dsub="'+esc(s.id)+'">'+esc(subName(d,s.id))+' <span>'+n+'</span></button>'; });
+      H+='</div>';
+      if(destSub!=="all") ix=ix.filter(function(i){ return data.tours[i].sub===destSub; });
+    }
+    H+='<div class="tours-grid">'; ix.forEach(function(i){ H+=itemCard("tours",i,data.tours[i]); }); H+='</div>';
+    if(!ix.length) H+='<p class="empty-note">'+(th?"ยังไม่มีโปรแกรมทัวร์ในหมวดนี้":"No tour programs here yet")+'</p>';
+    H+='<button class="btn btn-ghost addbtn" data-add="tours">'+ICON.plus+(th?"เพิ่มโปรแกรมทัวร์":"Add a tour program")+'</button>';
+    return H+'</div></section>';
+  }
+  function tourPage(){
+    var i=tourIdx(route.id), it=(data.tours||[])[i];
+    if(!it) return '<section class="blk page-top"><div class="wrap"><a class="back" href="#/tours" data-nav>← '+(lang==="th"?"ทัวร์ทั้งหมด":"All tours")+'</a><p class="empty-note">'+(lang==="th"?"ไม่พบโปรแกรมทัวร์นี้":"Tour not found")+'</p></div></section>';
+    if(!thaiOnly("tours",it)) return tourPage0(i,it);
+    var lg=lang; lang="th"; try{ return tourPage0(i,it).replace('<section class="blk page-top tdp"','<section lang="th" class="blk page-top tdp"'); } finally{ lang=lg; }
+  }
+  function tourPage0(i,it){
+    var th=lang==="th", d=tourDest(it), P="tours."+i+".", pi=priceInfo(it), ps=promoState(it);
+    var pics=[it.img].concat(it.photos||[]).filter(Boolean);
+    var wab=waLink(data.contact&&data.contact.whatsapp), title=t(it,"title");
+    var href=wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจทัวร์ ":"Hi! I'm interested in the tour ")+(it.code?it.code+" ":"")+title):"#contact";
+    var H='<section class="blk page-top tdp"><div class="wrap">';
+    H+='<a class="back" href="#/tours/'+encodeURIComponent(d?d.id:"")+'" data-nav>← '+esc(d?dname(d)+(it.sub&&subName(d,it.sub)?" · "+subName(d,it.sub):""):(th?"ทัวร์ทั้งหมด":"All tours"))+'</a>';
+    H+='<div class="tdet"><div class="td-media"><div class="td-main" data-tdimg="0">'+media(it)+imgOverlay(P+"img");
+    if(pi.was&&!editing){ var off=numP(pi.was)-numP(pi.now); if(off>0) H+='<div class="td-off"><small>'+(th?"ลดพิเศษ":"Save")+'</small><b>'+fmtN(off)+'</b><small>'+(th?"บาท":"THB")+'</small></div>'; }
+    if(ps==="on"&&!editing) H+='<span class="hotbadge">🔥 '+(th?"โปรไฟไหม้":"Hot deal")+'</span>';
+    H+='</div>';
+    if(pics.length>1&&!editing){ H+='<div class="td-thumbs">'; pics.forEach(function(src,k){ H+='<img data-tdimg="'+k+'" src="'+esc(src)+'" alt="">'; }); H+='</div>'; }
+    if(editing){ var ph=(it.photos||[]); H+='<div class="iph" style="margin-top:12px">'; ph.forEach(function(src,k){ H+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="tours:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; });
+      H+='<button class="iph-add" type="button" data-iphadd="tours:'+i+'">'+ICON.plus+(th?"เพิ่มรูป":"Add photos")+'</button></div>'; }
+    H+='</div><div class="td-info">';
+    if(editing) H+=catControls("tours",i,it);
+    H+='<h1 class="td-title"'+ed(P+"title")+'>'+esc(title)+'</h1>';
+    if(it.code||editing) H+='<div class="td-code">'+(th?"ทัวร์โค้ด ":"Tour code ")+'<b'+ed(P+"code")+'>'+esc(it.code||"")+'</b></div>';
+    H+='<div class="td-rows">';
+    H+='<div class="td-row">'+ICON.clock+'<span'+ed(P+"dur")+'>'+esc(t(it,"dur"))+'</span></div>';
+    if(t(it,"hl")||editing) H+='<div class="td-row">'+ICON.tag+'<span'+ed(P+"hl")+'>'+esc(t(it,"hl"))+'</span></div>';
+    if(it.stars||editing) H+='<div class="td-row">'+ICON.bed+'<span><span'+ed(P+"stars")+'>'+esc(it.stars||"")+'</span>'+(th?" ดาว":"-star hotel")+'</span></div>';
+    H+='</div>';
+    if(editing){
+      H+='<div class="td-pdfedit">'+(it.pdf?'<span class="ok">✓ '+(th?"มีไฟล์โปรแกรมทัวร์ (PDF) แล้ว":"Program PDF attached")+'</span>':'')
+        +'<button class="btn btn-ghost btn-sm" type="button" data-pdfadd="'+i+'">'+ICON.file+(it.pdf?(th?"เปลี่ยนไฟล์ PDF":"Replace PDF"):(th?"อัปโหลดโปรแกรมทัวร์ (PDF)":"Upload program (PDF)"))+'</button>'
+        +(it.pdf?'<button class="btn btn-ghost btn-sm" type="button" data-pdfdel="'+i+'">'+(th?"ลบ PDF":"Remove PDF")+'</button>':'')+'</div>';
+    } else if(it.pdf) H+='<a class="btn btn-ghost btn-sm td-pdf" href="'+esc(it.pdf)+'" target="_blank" rel="noopener">'+ICON.file+(th?"ดาวน์โหลดโปรแกรมทัวร์":"Download tour program")+'</a>';
+    if(editing){
+      H+='<div class="td-pedit"><div>'+(th?"ราคา (บาท)":"Price (THB)")+': <b'+ed(P+"price")+'>'+esc(it.price||"")+'</b></div>';
+      H+='<div>'+(th?"ราคาเต็มก่อนลด (โชว์ขีดฆ่า — เว้นว่างได้)":"Full price before discount (shown struck-through — optional)")+': <b'+ed(P+"price_full")+'>'+esc(it.price_full||"")+'</b></div>';
+      if(ps) H+='<div class="promo-note">🔥 '+esc(promoLine(it))+' · ฿'+esc(it.promo_price)+'</div>';
+      H+='<div class="td-ebtns"><button class="btn btn-ghost btn-sm" type="button" data-promo="tours:'+i+'">🔥 '+(th?(ps?"แก้โปรไฟไหม้":"ตั้งโปรไฟไหม้"):(ps?"Edit hot deal":"Set a hot deal"))+'</button>';
+      H+='<label class="catbtn"><input type="checkbox" data-top5="'+esc(it.id)+'"'+((data.top5||[]).indexOf(it.id)>=0?' checked':'')+'> ⭐ Top 5</label>';
+      H+='<button class="btn btn-ghost btn-sm" type="button" data-retr="tours:'+i+'">🌐 '+(th?"แปลอีกภาษาอัตโนมัติ":"Auto-translate other language")+'</button></div></div>';
+    } else {
+      H+='<div class="td-price">'+(pi.now?((pi.was?'<s>'+esc(pi.was)+'</s>':'<span class="from">'+(th?"เริ่มต้น":"From")+'</span>')+'<span class="now">'+esc(pi.now)+' '+(th?"บ.":"THB")+'</span>'):'<span class="ask">'+(th?"สอบถามราคา":"Ask for price")+'</span>')+'</div>';
+      if(ps==="on") H+='<div class="promo-left">⏰ '+esc(promoLine(it))+'</div>';
+    }
+    H+='<div class="td-cta"><a class="btn btn-primary"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+ICON.chat+(th?"สอบถาม / จองทัวร์นี้":"Enquire / Book this tour")+'</a>';
+    var ph2=(data.contact&&data.contact.phone)||""; if(ph2) H+='<a class="btn btn-ghost" href="tel:'+esc(ph2.replace(/\s/g,""))+'">'+ICON.phone+(th?"โทรสอบถาม":"Call us")+'</a>';
+    H+='</div></div></div>';
+    H+='<div class="td-body">';
+    if(t(it,"desc")||editing) H+='<h2>'+(th?"รายละเอียดทัวร์":"About this tour")+'</h2><p class="td-desc"'+ed(P+"desc")+'>'+esc(t(it,"desc"))+'</p>';
+    if(t(it,"itin")||editing) H+='<h2>'+(th?"โปรแกรมการเดินทาง":"Itinerary")+'</h2>'+(editing?'<p class="td-hint">'+(th?"พิมพ์ได้หลายบรรทัด เช่น วันที่ 1 … / วันที่ 2 …":"Multiple lines allowed, e.g. Day 1 … / Day 2 …")+'</p>':'')+'<div class="td-itin"'+ed(P+"itin")+'>'+esc(t(it,"itin"))+'</div>';
+    H+='</div>';
+    var rel=(d?toursOf(d.id):[]).filter(function(j){ return j!==i; }).slice(0,3);
+    if(rel.length&&!editing){ H+='<h2 class="grp-title">'+(th?"โปรแกรมอื่นใน":"More in")+' '+esc(dname(d))+'</h2><div class="tours-grid">'; rel.forEach(function(j){ H+=itemCard("tours",j,data.tours[j]); }); H+='</div>'; }
+    return H+'</div></section>';
+  }
+  function dealItems(all){
+    var out=[];
+    ["tours","activities"].forEach(function(arr){ (data[arr]||[]).forEach(function(it,i){ var s=promoState(it); if(s==="on"||(all&&s)) out.push({arr:arr,i:i,it:it,s:s}); }); });
+    var rank={on:0,soon:1,ended:2};
+    out.sort(function(a,b){ return rank[a.s]-rank[b.s]||((daysLeft(a.it)==null?999:daysLeft(a.it))-(daysLeft(b.it)==null?999:daysLeft(b.it))); });
+    return out;
+  }
+  function homeDeals(){
+    var L=dealItems(false); if(!L.length) return "";
+    var sec=data.dealsSection||{}, th=lang==="th";
+    var H='<section class="blk deals-blk" id="deals"><div class="wrap"><div class="sec-head"><div class="eyebrow">🔥 '+esc(t(sec,"eyebrow"))+'</div><h2'+ed("dealsSection.title")+'>'+esc(t(sec,"title"))+'</h2></div>';
+    H+='<div class="tours-grid">'; L.slice(0,3).forEach(function(x){ H+=itemCard(x.arr,x.i,x.it); }); H+='</div>';
+    H+='<div class="seeall"><a class="btn btn-primary" href="#/deals" data-nav>'+(th?"ดูโปรทั้งหมด":"See all deals")+' ('+L.length+') →</a></div>';
+    return H+'</div></section>';
+  }
+  function dealsPage(){
+    var sec=data.dealsSection||{}, th=lang==="th", L=dealItems(editing);
+    var H='<section class="blk page-top" id="deals"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
+    H+='<div class="sec-head"><div class="eyebrow">🔥 <span'+ed("dealsSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</span></div><h1 class="page-title"'+ed("dealsSection.title")+'>'+esc(t(sec,"title"))+'</h1><p'+ed("dealsSection.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
+    if(editing) H+='<p class="td-hint">'+(th?"โปรจะขึ้นหน้าเว็บเองตามวันเริ่ม และหายไปเองหลังวันสิ้นสุด · ในโหมดแก้ไขจะเห็นโปรที่ยังไม่เริ่มและที่หมดแล้วด้วย":"Deals appear automatically from the start date and disappear after the end date · in edit mode you also see upcoming and ended deals")+'</p>';
+    H+='<div class="tours-grid">'; L.forEach(function(x){ H+=itemCard(x.arr,x.i,x.it); }); H+='</div>';
+    if(!L.length) H+='<p class="empty-note">'+(th?"ยังไม่มีโปรตอนนี้ — แวะมาดูใหม่เร็ว ๆ นี้ หรือทักสอบถามได้เลย":"No deals right now — check back soon or message us")+'</p>';
+    H+='<button class="btn btn-ghost addbtn" type="button" id="dealadd">'+ICON.plus+(th?"เพิ่มโปรไฟไหม้":"Add a hot deal")+'</button>';
+    return H+'</div></section>';
+  }
+  function ticketsPage(){
+    var sec=data.ticketsSection||{}, th=lang==="th", L=data.activities||[];
+    var ix=L.map(function(_,i){ return i; }).filter(function(i){ return L[i].cat==="tickets"; });
+    var H='<section class="blk page-top" id="tickets"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
+    H+='<div class="sec-head"><div class="eyebrow"'+ed("ticketsSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div><h1 class="page-title"'+ed("ticketsSection.title")+'>'+esc(t(sec,"title"))+'</h1><p'+ed("ticketsSection.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
+    H+='<div class="tours-grid">'; ix.forEach(function(i){ H+=itemCard("activities",i,L[i]); }); H+='</div>';
+    if(!ix.length) H+='<p class="empty-note">'+(th?"ยังไม่มีตั๋วในหมวดนี้":"No tickets yet")+'</p>';
+    if(editing) H+='<p class="td-hint">'+(th?"ย้ายกิจกรรมมาหน้านี้ได้ โดยเลือกหมวด “ซื้อตั๋ว” ที่การ์ดกิจกรรม":"Move an activity here by setting its category to “Buy tickets”")+'</p>';
+    H+='<button class="btn btn-ghost addbtn" data-add="tickets">'+ICON.plus+(th?"เพิ่มตั๋ว":"Add a ticket")+'</button>';
+    return H+'</div></section>';
+  }
+  function top5Page(){
+    var sec=data.top5Section||{}, th=lang==="th", T=data.tours||[];
+    var ids=(data.top5||[]).filter(function(id){ return tourIdx(id)>=0; }).slice(0,5);
+    var fallback=false; if(!ids.length&&!editing){ ids=T.slice(0,5).map(function(x){ return x.id; }); fallback=true; }
+    var H='<section class="blk page-top" id="top5"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
+    H+='<div class="sec-head"><div class="eyebrow"'+ed("top5Section.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div><h1 class="page-title"'+ed("top5Section.title")+'>'+esc(t(sec,"title"))+'</h1><p'+ed("top5Section.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
+    if(editing){
+      H+='<div class="t5edit"><b>'+(th?"เลือกทัวร์ยอดนิยม 5 อันดับ":"Pick the top 5 tours")+'</b>';
+      for(var k=0;k<5;k++){
+        var sel=(data.top5||[])[k]||"";
+        H+='<label class="catbtn">#'+(k+1)+' <select data-t5slot="'+k+'"><option value="">'+(th?"— ว่าง —":"— empty —")+'</option>';
+        T.forEach(function(x){ H+='<option value="'+esc(x.id)+'"'+(x.id===sel?' selected':'')+'>'+esc((x.code?x.code+" · ":"")+(x.cat==="intl"?(x.title_th||x.title_en):t(x,"title")))+'</option>'; });
+        H+='</select></label>';
+      }
+      H+='</div>';
+    }
+    H+='<div class="tours-grid top5-grid">'; ids.forEach(function(id,k){ var i=tourIdx(id); H+=itemCard("tours",i,T[i],{rank:fallback?0:k+1}); }); H+='</div>';
+    if(!ids.length) H+='<p class="empty-note">'+(th?"ยังไม่ได้เลือกทัวร์ยอดนิยม":"No top tours chosen yet")+'</p>';
+    return H+'</div></section>';
+  }
+
+  // ---------- auto translation (EN <-> TH) ----------
+  function trEligible(o,k){ return !String(o[k]||"").trim()||!!(o._auto&&o._auto[k])||!!(o._trAll&&!(o._man&&o._man[k])); }
+  function markManual(o,k){ o._man=o._man||{}; o._man[k]=1; if(o._auto) delete o._auto[k]; }
+  var trQ=[], trT=null, trP=Promise.resolve();
+  function queueTr(o,key,from,text,path){ trQ=trQ.filter(function(q){ return !(q.o===o&&q.key===key); }); trQ.push({o:o,key:key,from:from,text:text,path:path}); clearTimeout(trT); trT=setTimeout(flushTr,700); }
+  function flushTr(){ clearTimeout(trT); var batch=trQ.splice(0); if(batch.length) trP=trP.then(function(){ return runTr(batch); }); return trP; }
+  function runTr(batch){
+    var groups={en:[],th:[]}; batch.forEach(function(q){ (groups[q.from]||groups.en).push(q); });
+    return Promise.all(["en","th"].map(function(f){
+      var g=groups[f], chunks=[]; for(var s=0;s<g.length;s+=20) chunks.push(g.slice(s,s+20));
+      return Promise.all(chunks.map(function(ch){ return translateTexts(ch.map(function(q){ return q.text; }),f).then(function(res){
+        ch.forEach(function(q,j){ var to=f==="en"?"th":"en", k=q.key+"_"+to;
+          if(q.o[q.key+"_"+f]!==q.text||!trEligible(q.o,k)) return;
+          var v=(res&&res[j])||q.text;
+          q.o[k]=v; q.o._auto=q.o._auto||{}; q.o._auto[k]=1;
+          if(lang===to&&editing&&!isThaiOnlyPath(q.path)){ var el=document.querySelector('[data-edit="'+q.path+'"]'); if(el&&el!==document.activeElement) el.textContent=v; }
+        }); }); }));
+    })).catch(function(){});
+  }
+  function translateTexts(texts,from){
+    var cfg=ghCfg(), to=from==="en"?"th":"en";
+    var srv=(cfg&&cfg.pw)?fetch("/api/translate",{method:"POST",cache:"no-store",headers:{"Authorization":"Bearer "+cfg.token,"Content-Type":"application/json"},body:JSON.stringify({from:from,texts:texts})})
+      .then(function(r){ return r.ok?r.json():null; }).then(function(j){ return (j&&j.texts)||null; }).catch(function(){ return null; }):Promise.resolve(null);
+    return srv.then(function(res){
+      if(res&&res.some(Boolean)) return res;
+      return Promise.all(texts.map(function(s){ return fetch("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl="+from+"&tl="+to+"&q="+encodeURIComponent(s))
+        .then(function(r){ return r.ok?r.json():null; }).then(function(j){ return (j&&j[0])?j[0].map(function(x){ return x[0]; }).join(""):null; }).catch(function(){ return null; }); }));
+    });
+  }
+  function isThaiOnlyPath(path){ var m=String(path||"").match(/^(tours|destinations)\.(\d+)\./); if(!m) return false; var o=(data[m[1]]||[])[+m[2]]; return !!(o&&o.cat==="intl"); }
+  function forceTranslate(arr,i){
+    syncEdits(); var o=data[arr][i], from=isThaiOnlyPath(arr+"."+i+".x")?"th":lang, to=from==="en"?"th":"en", n=0;
+    ["title","desc","dur","hl","itin","name","spec","date"].forEach(function(key){ var v=o[key+"_"+from]; if(!v) return; var k=key+"_"+to;
+      if(o._man) delete o._man[k]; o._auto=o._auto||{}; o._auto[k]=1; queueTr(o,key,from,v,arr+"."+i+"."+key); n++; });
+    toast(lang==="th"?"กำลังแปล…":"Translating…");
+    flushTr().then(function(){ render(); toast(lang==="th"?"แปลเป็นอีกภาษาแล้ว "+n+" ช่อง (ตรวจแก้ได้เลย)":"Translated "+n+" fields — review and fix as needed"); });
+  }
+
+  // ---------- modals: promo, cities, pdf ----------
+  function modalShell(inner,wide){
+    var w=document.createElement("div"); w.className="mshell";
+    w.innerHTML='<div class="mbox'+(wide?' wide':'')+'">'+inner+'</div>'; document.body.appendChild(w); return w;
+  }
+  function openPromoForm(arr,i){
+    syncEdits(); var th=lang==="th", pick=(arr==null);
+    var opts="";
+    if(pick){ ["tours","activities"].forEach(function(a){ opts+='<optgroup label="'+(a==="tours"?(th?"ทัวร์":"Tours"):(th?"กิจกรรม / ตั๋ว":"Activities / tickets"))+'">';
+      (data[a]||[]).forEach(function(x,j){ opts+='<option value="'+a+':'+j+'">'+esc((x.code?x.code+" · ":"")+((a==="tours"&&x.cat==="intl")?(x.title_th||x.title_en):t(x,"title")))+'</option>'; }); opts+='</optgroup>'; }); }
+    var w=modalShell('<h3>🔥 '+(th?"โปรไฟไหม้":"Hot deal")+'</h3><p class="mhint">'+(th?"ใส่ราคาโปรและช่วงวันที่ โปรจะแสดงเองในช่วงเวลานั้น แล้วราคาจะกลับเป็นปกติเองหลังหมดเขต":"Set a deal price and dates. It shows automatically in that period and the price returns to normal afterwards.")+'</p>'
+      +(pick?'<label>'+(th?"เลือกทัวร์ / กิจกรรม":"Choose a tour / activity")+'</label><select id="pf-item">'+opts+'</select>':'<p class="mitem" id="pf-name"></p>')
+      +'<label>'+(th?"ราคาปกติ (บาท)":"Normal price (THB)")+'</label><input id="pf-base" inputmode="numeric">'
+      +'<label>'+(th?"ราคาโปร (บาท)":"Deal price (THB)")+'</label><input id="pf-price" inputmode="numeric" placeholder="เช่น 9,999">'
+      +'<div class="mrow"><div><label>'+(th?"วันเริ่ม":"Start date")+'</label><input type="date" id="pf-start"></div><div><label>'+(th?"วันสิ้นสุด":"End date")+'</label><input type="date" id="pf-end"></div></div>'
+      +'<div class="merr" id="pf-err"></div><div class="mbtns"><button class="btn btn-ghost btn-sm" type="button" id="pf-del">'+(th?"ลบโปร":"Remove deal")+'</button><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="pf-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="pf-ok">'+(th?"บันทึกโปร":"Save deal")+'</button></div>');
+    var $=function(id){ return w.querySelector("#"+id); };
+    function cur(){ if(pick){ var v=$("pf-item").value.split(":"); return {a:v[0],j:+v[1]}; } return {a:arr,j:i}; }
+    function fill(){ var c=cur(), x=data[c.a][c.j]; if(!pick) $("pf-name").textContent=(x.code?x.code+" · ":"")+(x.cat==="intl"?(x.title_th||x.title_en):t(x,"title"));
+      $("pf-base").value=x.price||""; $("pf-price").value=x.promo_price||""; $("pf-start").value=x.promo_start||todayStr(); $("pf-end").value=x.promo_end||""; $("pf-del").style.visibility=x.promo_price?"visible":"hidden"; }
+    fill(); if(pick) $("pf-item").onchange=fill;
+    $("pf-cancel").onclick=function(){ w.remove(); };
+    w.onclick=function(e){ if(e.target===w) w.remove(); };
+    $("pf-del").onclick=function(){ var c=cur(), x=data[c.a][c.j]; delete x.promo_price; delete x.promo_start; delete x.promo_end; w.remove(); render(); toast(th?"ลบโปรแล้ว อย่าลืมกดบันทึก":"Deal removed — remember to save"); };
+    $("pf-ok").onclick=function(){ var c=cur(), x=data[c.a][c.j], p=$("pf-price").value.trim(), b=$("pf-base").value.trim(), s=$("pf-start").value, e=$("pf-end").value, er=$("pf-err");
+      if(!p){ er.textContent=th?"กรุณาใส่ราคาโปร":"Enter the deal price"; return; }
+      if(s&&e&&s>e){ er.textContent=th?"วันสิ้นสุดต้องอยู่หลังวันเริ่ม":"End date must be after the start date"; return; }
+      if(b) x.price=b; x.promo_price=p; x.promo_start=s; x.promo_end=e; w.remove(); render();
+      toast(th?"ตั้งโปรแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Deal set — tap “Save & publish”"); };
+  }
+  function openSubsForm(k){
+    syncEdits(); var th=lang==="th", d=dests()[k], rows=(d.subs||[]).map(function(s){ return {id:s.id,name_th:s.name_th||"",name_en:s.name_en||""}; });
+    var w=modalShell('<h3>'+(th?"เมืองย่อยของ ":"Cities in ")+esc(dname(d))+'</h3><p class="mhint">'+(th?"ใช้แยกทัวร์ในประเทศนี้ตามเมือง เช่น ญี่ปุ่น → โตเกียว, ฮอกไกโด":"Used to split this destination's tours by city, e.g. Japan → Tokyo, Hokkaido")+'</p><div id="sf-rows"></div><button class="btn btn-ghost btn-sm" type="button" id="sf-add">'+ICON.plus+(th?"เพิ่มเมือง":"Add a city")+'</button><div class="mbtns"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="sf-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="sf-ok">'+(th?"ตกลง":"OK")+'</button></div>',true);
+    function draw(){ w.querySelector("#sf-rows").innerHTML=rows.map(function(r,j){ return '<div class="mrow sfrow"><input data-j="'+j+'" data-f="name_th" placeholder="ชื่อไทย" value="'+esc(r.name_th)+'"><input data-j="'+j+'" data-f="name_en" placeholder="English name" value="'+esc(r.name_en)+'"><button class="btn btn-ghost btn-sm" type="button" data-rm="'+j+'">'+ICON.trash+'</button></div>'; }).join("")||'<p class="mhint">'+(th?"ยังไม่มีเมืองย่อย":"No cities yet")+'</p>'; }
+    function read(){ Array.prototype.forEach.call(w.querySelectorAll("#sf-rows input"),function(inp){ rows[+inp.getAttribute("data-j")][inp.getAttribute("data-f")]=inp.value.trim(); }); }
+    draw();
+    w.onclick=function(e){ var tg=e.target; if(tg===w){ w.remove(); return; } var rm=tg.closest&&tg.closest("[data-rm]"); if(rm){ read(); rows.splice(+rm.getAttribute("data-rm"),1); draw(); } };
+    w.querySelector("#sf-add").onclick=function(){ read(); rows.push({id:"",name_th:"",name_en:""}); draw(); var ins=w.querySelectorAll("#sf-rows input"); if(ins.length) ins[ins.length-2].focus(); };
+    w.querySelector("#sf-cancel").onclick=function(){ w.remove(); };
+    w.querySelector("#sf-ok").onclick=function(){ read(); d.subs=rows.filter(function(r){ return r.name_th||r.name_en; }).map(function(r){ return {id:r.id||newId("c"),name_th:r.name_th||r.name_en,name_en:r.name_en||r.name_th}; });
+      var ok={}; d.subs.forEach(function(s){ ok[s.id]=1; }); (data.tours||[]).forEach(function(tr){ if(tr.dest===d.id&&tr.sub&&!ok[tr.sub]) tr.sub=""; });
+      w.remove(); render(); toast(th?"อัปเดตเมืองแล้ว อย่าลืมกดบันทึก":"Cities updated — remember to save"); };
+  }
+  function pickPdf(cb){
+    var inp=document.createElement("input"); inp.type="file"; inp.accept="application/pdf"; inp.hidden=true; document.body.appendChild(inp);
+    inp.onchange=function(){ var f=inp.files&&inp.files[0]; inp.remove(); if(!f) return;
+      if(f.size>15*1024*1024){ toast(lang==="th"?"ไฟล์ใหญ่เกิน 15 MB":"File is larger than 15 MB"); return; }
+      var rd=new FileReader(); rd.onload=function(){ var u=String(rd.result||""); if(!/^data:application\/pdf;base64,/.test(u)) u=u.replace(/^data:[^;]*;base64,/,"data:application/pdf;base64,"); cb(u); }; rd.readAsDataURL(f); };
+    inp.click();
   }
   function crow(ico,lbl,val,qrKey){
     var q="";
@@ -901,7 +1343,10 @@
     var last=parts[parts.length-1]; last=(/^\d+$/.test(last))?+last:last;
     return {obj:o,key:last};
   }
-  function setText(path,val){ var r=ref(path), m=path.match(/^tours\.(\d+)\./), lg=(m&&data.tours&&thaiOnly("tours",data.tours[+m[1]]))?"th":lang; r.obj[r.key+"_"+lg]=val; }
+  function setText(path,val){ var r=ref(path), lg=isThaiOnlyPath(path)?"th":lang, o=r.obj, k=r.key+"_"+lg;
+    var prev=o[k]; if(prev==null) prev=""; if(String(prev)===val) return;
+    o[k]=val; markManual(o,k);
+    var other=lg==="en"?"th":"en"; if(val&&trEligible(o,r.key+"_"+other)) queueTr(o,r.key,lg,val,path); }
   function setPlain(path,val){ var r=ref(path); r.obj[r.key]=val; }
 
   // ---------- bind events ----------
@@ -1043,26 +1488,56 @@
         if(v[0]==="tours"&&tourCat!=="all") tourCat=it.cat; if(v[0]==="activities"&&actCat!=="all") actCat=it.cat; render();
         toast(lang==="th"?"ย้ายหมวดแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Category changed — tap “Save & publish”"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-open]"),function(m){ m.onclick=function(e){ if(editing||e.target.closest("label,button")) return;
+      if(m.getAttribute("data-det")){ location.hash=m.getAttribute("data-det"); return; }
       var v=m.getAttribute("data-open").split(":"), it=data[v[0]][+v[1]]; var list=[it.img].concat(it.photos||[]).filter(Boolean); if(list.length) openLB(list,0); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphdel]"),function(b){ b.onclick=function(e){ e.stopPropagation(); syncEdits(); var v=b.getAttribute("data-iphdel").split(":"); data[v[0]][+v[1]].photos.splice(+v[2],1); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphadd]"),function(b){ b.onclick=function(){ var v=b.getAttribute("data-iphadd").split(":");
       pickFiles(function(files){ var it=data[v[0]][+v[1]]; it.photos=it.photos||[]; var jobs=files.map(function(f){ return compress(f,1400,0.8); });
         Promise.all(jobs).then(function(uris){ syncEdits(); uris.forEach(function(u){ if(!it.img) it.img=u; else it.photos.push(u); }); render(); toast(lang==="th"?"เพิ่มรูปแล้ว อย่าลืมกดบันทึก":"Photos added — remember to save"); }).catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); }); }); }; });
+    // destinations / tour detail / deals / top5
+    Array.prototype.forEach.call(document.querySelectorAll(".dcard[data-dest]"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a,select,input")) return; location.hash="#/tours/"+encodeURIComponent(c.getAttribute("data-dest")); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-dcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var d=dests()[+sel.getAttribute("data-dcat")]; d.cat=sel.value;
+      (data.tours||[]).forEach(function(tr){ if(tr.dest===d.id) tr.cat=d.cat; }); render(); toast(lang==="th"?"ย้ายหมวดแล้ว อย่าลืมกดบันทึก":"Category changed — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-dsubs]"),function(b){ b.onclick=function(){ openSubsForm(+b.getAttribute("data-dsubs")); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-dsub]"),function(b){ b.onclick=function(){ syncEdits(); destSub=b.getAttribute("data-dsub"); render(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tcat")]; it.cat=sel.value;
+      var f=dests().filter(function(x){ return x.cat===it.cat; })[0]; it.dest=f?f.id:""; it.sub=""; render(); toast(lang==="th"?"ย้ายหมวดแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tdest]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tdest")], d=destById(sel.value); it.dest=sel.value; if(d) it.cat=d.cat; it.sub=""; render(); toast(lang==="th"?"ย้ายแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tsub]"),function(sel){ sel.onchange=function(){ syncEdits(); data.tours[+sel.getAttribute("data-tsub")].sub=sel.value; render(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tdimg]"),function(el){ el.onclick=function(e){ if(editing||e.target.closest("label,button")) return; var it=data.tours[tourIdx(route.id)]; if(!it) return;
+      var pics=[it.img].concat(it.photos||[]).filter(Boolean); if(pics.length) openLB(pics,+el.getAttribute("data-tdimg")||0); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-pdfadd]"),function(b){ b.onclick=function(){ var i=+b.getAttribute("data-pdfadd"); pickPdf(function(u){ syncEdits(); data.tours[i].pdf=u; render(); toast(lang==="th"?"แนบไฟล์แล้ว อย่าลืมกดบันทึก":"PDF attached — remember to save"); }); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-pdfdel]"),function(b){ b.onclick=function(){ syncEdits(); data.tours[+b.getAttribute("data-pdfdel")].pdf=""; render(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-promo]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-promo").split(":"); openPromoForm(v[0],+v[1]); }; });
+    var da=document.getElementById("dealadd"); if(da) da.onclick=function(){ openPromoForm(); };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-retr]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-retr").split(":"); forceTranslate(v[0],+v[1]); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-top5]"),function(cb){ cb.onchange=function(){ syncEdits(); var id=cb.getAttribute("data-top5"), L=data.top5=(data.top5||[]).filter(function(x){ return tourIdx(x)>=0; });
+      var k=L.indexOf(id); if(cb.checked&&k<0){ if(L.length>=5){ cb.checked=false; toast(lang==="th"?"Top 5 เต็มแล้ว เอาอันอื่นออกก่อน":"Top 5 is full — remove one first"); return; } L.push(id); } else if(!cb.checked&&k>=0) L.splice(k,1);
+      toast(lang==="th"?"อัปเดต Top 5 แล้ว อย่าลืมกดบันทึก":"Top 5 updated — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-t5slot]"),function(sel){ sel.onchange=function(){ syncEdits(); var k=+sel.getAttribute("data-t5slot"), L=(data.top5||[]).slice(0,5); while(L.length<5) L.push("");
+      var v=sel.value; if(v){ var dup=L.indexOf(v); if(dup>=0&&dup!==k) L[dup]=""; } L[k]=v; data.top5=L.filter(Boolean); render(); }; });
     // special events: open details popup
     Array.prototype.forEach.call(document.querySelectorAll(".ev-card"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a")) return; openEvent(+c.getAttribute("data-ev")); }; });
     var li=document.getElementById("licimg"); if(li) li.onclick=function(e){ if(editing||e.target.closest("label")) return; if(data.license&&data.license.img) openLB([data.license.img],0); };
     // delete card
     Array.prototype.forEach.call(document.querySelectorAll(".card-del"),function(b){
-      b.onclick=function(){ syncEdits(); var arr=b.getAttribute("data-del"), i=+b.getAttribute("data-i"); data[arr].splice(i,1); render(); };
+      b.onclick=function(e){ e.stopPropagation(); syncEdits(); var arr=b.getAttribute("data-del"), i=+b.getAttribute("data-i");
+        if(arr==="destinations"){ var dd=data.destinations[i], n=toursOf(dd.id).length; if(n&&!confirm(lang==="th"?"ลบ “"+dname(dd)+"” ? ทัวร์ "+n+" โปรแกรมข้างในจะย้ายไปอยู่จังหวัด/ประเทศแรกของหมวดเดียวกัน":"Delete “"+dname(dd)+"”? Its "+n+" tours will move to the first destination of the same category")) return;
+          (data.tours||[]).forEach(function(tr){ if(tr.dest===dd.id){ tr.dest=""; tr.sub=""; } }); data.destinations.splice(i,1); (data.tours||[]).forEach(function(tr){ if(!tr.dest){ var f=tourDest(tr); tr.dest=f?f.id:""; } }); render(); return; }
+        if(arr==="tours"){ var tid=(data.tours[i]||{}).id; data.top5=(data.top5||[]).filter(function(x){ return x!==tid; }); }
+        data[arr].splice(i,1); render(); };
     });
     // add
     Array.prototype.forEach.call(document.querySelectorAll("[data-add]"),function(b){
       b.onclick=function(){ syncEdits(); var which=b.getAttribute("data-add");
         if(which==="events") data.events.push({title_en:"New event",title_th:"อีเวนต์ใหม่",date_en:"Date",date_th:"วันที่",desc_en:"Describe this event...",desc_th:"รายละเอียดอีเวนต์...",price:"",img:"",c1:"#2E6B6B",c2:"#123B3B",photos:[]});
         else if(which==="activities") data.activities.push({cat:(actCat!=="all"?actCat:"adventure"),region_en:"Chiang Mai",region_th:"เชียงใหม่",title_en:"New activity",title_th:"กิจกรรมใหม่",desc_en:"Describe this activity...",desc_th:"อธิบายกิจกรรมนี้...",dur_en:"Half day",dur_th:"ครึ่งวัน",price:"",img:"",c1:"#1F5E55",c2:"#0E2E2A",photos:[]});
-        else if(which==="tours"&&tourCat==="intl") data.tours.push({cat:"intl",img:"",c1:"#123B4E",c2:"#0B2330",region_en:"Country",region_th:"ประเทศ",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน",price:""});
+        else if(which==="destinations"){ var dc=tourCat==="intl"?"intl":"thai"; data.destinations.push({id:newId("d"),cat:dc,name_en:dc==="intl"?"New country":"New province",name_th:dc==="intl"?"ประเทศใหม่":"จังหวัดใหม่",img:"",c1:"#2E6B6B",c2:"#123B3B",subs:[],_trAll:true}); }
+        else if(which==="tickets") data.activities.push({id:newId("a"),cat:"tickets",code:"",region_en:"",region_th:"",title_en:"New ticket",title_th:"ตั๋วใหม่",desc_en:"Describe this ticket...",desc_th:"รายละเอียดตั๋ว...",dur_en:"One way",dur_th:"เที่ยวเดียว",price:"",img:"",c1:"#2E6B6B",c2:"#123B3B",photos:[],_trAll:true});
+        else if(which==="tours_intl_legacy") data.tours.push({cat:"intl",img:"",c1:"#123B4E",c2:"#0B2330",region_en:"Country",region_th:"ประเทศ",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน",price:""});
         else if(which==="bikes") data.bikes.push({name:"New bike",price:"300",desc_en:"Describe this bike...",desc_th:"รายละเอียดรถ...",img:"",c1:"#2E6B6B",c2:"#123B3B"});
-        else if(which==="tours") data.tours.push({img:"",c1:"#0F6E5C",c2:"#123B4E",region_en:"Region",region_th:"พื้นที่",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"0"});
+        else if(which==="tours"){ var dd=(view==="dest"&&destById(route.id))||dests().filter(function(x){ return x.cat===(tourCat==="intl"?"intl":"thai"); })[0]||{};
+          data.tours.push({id:newId("t"),cat:dd.cat||"thai",dest:dd.id||"",sub:(view==="dest"&&destSub!=="all")?destSub:"",code:"",img:"",photos:[],c1:"#0F6E5C",c2:"#123B4E",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"",_trAll:true}); }
         else if(which==="reviews"){ data.reviews=data.reviews||[]; data.reviews.push({name:(lang==="th"?"ชื่อผู้รีวิว":"Reviewer name"),date:(lang==="th"?"วันที่":"Date"),rating:5,text:(lang==="th"?"วางข้อความรีวิวจาก Google Maps ที่นี่":"Paste the review text from Google Maps here")}); }
         else data.gallery.push({img:"",c1:"#2E6B6B",c2:"#123B3B"});
         render();
@@ -1082,10 +1557,14 @@
     if(!editing) return;
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
-      var val=el.textContent.replace(/ /g," ").trim();
+      var val=(/\.itin$/.test(path)?el.innerText:el.textContent).replace(/ /g," ").trim();
+      if(/\.(code|stars|price_full|promo_price)$/.test(path)){ setPlain(path,val); return; }
       if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||path==="license.no"||/^social\.\d+\.name$/.test(path)||/^bikes\.\d+\.name$/.test(path)||path==="contact.line_link"||/^reviews\./.test(path)||/\.price$/.test(path)){
         setPlain(path,val);
       } else {
+        var rr=ref(path), lg2=isThaiOnlyPath(path)?"th":lang, shown=rr.obj[rr.key+"_"+lg2]; if(shown==null||shown==="") shown=rr.obj[rr.key+"_en"]||"";
+        var nz=function(x){ return String(x||"").replace(/\s+/g," ").trim(); };
+        if(nz(shown)===nz(val)) return;
         setText(path,val);
       }
     });
@@ -1259,7 +1738,7 @@
     function walk(o){
       if(Array.isArray(o)) return o.map(walk);
       if(o&&typeof o==="object"){ var r={}; for(var k in o) r[k]=walk(o[k]); return r; }
-      if(typeof o==="string"&&/^data:image\/(jpeg|png|webp|gif);base64,/.test(o)){
+      if(typeof o==="string"&&/^data:(image\/(jpeg|png|webp|gif)|application\/pdf);base64,/.test(o)){
         if(uploadedImg[o]) return uploadedImg[o];
         var ph={__img:o}; jobs.push(ph); return ph;
       }
@@ -1267,8 +1746,8 @@
     }
     var copy=walk(data);
     return Promise.all(jobs.map(function(ph){
-      var m=ph.__img.match(/^data:image\/(\w+);base64,(.*)$/), ext=m[1]==="jpeg"?"jpg":m[1];
-      return sha1hex(ph.__img).then(function(h){ var path="images/"+h.slice(0,16)+"."+ext; if(!files.some(function(f){ return f.path===path; })) files.push({path:path,b64:m[2]}); ph.__path=path; });
+      var m=ph.__img.match(/^data:(?:image|application)\/(\w+);base64,(.*)$/), ext=m[1]==="jpeg"?"jpg":m[1];
+      return sha1hex(ph.__img).then(function(h){ var path=(ext==="pdf"?"files/":"images/")+h.slice(0,16)+"."+ext; if(!files.some(function(f){ return f.path===path; })) files.push({path:path,b64:m[2]}); ph.__path=path; });
     })).then(function(){
       function fix(o){ if(Array.isArray(o)) return o.map(fix); if(o&&typeof o==="object"){ if(o.__img) return o.__path; var r={}; for(var k in o) r[k]=fix(o[k]); return r; } return o; }
       var out=fix(copy);
@@ -1300,7 +1779,7 @@
     if(data._fallback){ bar.classList.remove("busy"); renderAdminBar(); toast(lang==="th"?"โหลดข้อมูลเว็บไม่ครบ กรุณารีเฟรชหน้าแล้วลองใหม่ (ยังไม่ได้บันทึก)":"Site data didn't load — refresh and try again (not saved)"); return; }
     document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังบันทึกขึ้นเว็บ...":"Publishing...");
     var nImg=0;
-    prepareSave().then(function(files){ nImg=files.length-1; if(nImg) document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังอัปโหลดรูป "+nImg+" รูป...":"Uploading "+nImg+" photos..."); return ghCommitFiles(cfg,files); }).then(function(){
+    flushTr().then(prepareSave).then(function(files){ nImg=files.length-1; if(nImg) document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังอัปโหลดรูป "+nImg+" รูป...":"Uploading "+nImg+" photos..."); return ghCommitFiles(cfg,files); }).then(function(){
       editing=false; bar.classList.remove("busy"); try{ mountWidget(); }catch(e){}
       try{ render(); }catch(e){}
       renderAdminBar();
@@ -1476,9 +1955,9 @@
   function updateNavActive(){
     var links=document.querySelectorAll("#navlinks a"); if(!links.length) return;
     var cur;
-    if(view==="tours") cur="#/tours"; else if(view==="activities") cur="#/activities";
+    if(view==="tours"||view==="dest"||view==="tour") cur="#/tours"; else if(view==="activities") cur="#/activities"; else if(view==="deals") cur="#/deals"; else if(view==="tickets") cur="#/tickets"; else if(view==="top5") cur="#/top5";
     else {
-      var map=[["top","#top"],["services","#services"],["about","#services"],["tours","#/tours"],["activities","#/activities"],["rental","#rental"],["gallery","#rental"],["events","#top"],["reviews","#reviews"],["contact","#contact"]];
+      var map=[["top","#top"],["services","#services"],["about","#services"],["deals","#/deals"],["tours","#/tours"],["activities","#/activities"],["rental","#rental"],["gallery","#rental"],["events","#top"],["reviews","#reviews"],["contact","#contact"]];
       cur="#top";
       var best=-1e9; map.forEach(function(m){ var el=document.getElementById(m[0]); if(!el) return; var tp=el.getBoundingClientRect().top; if(tp<=150&&tp>best){ best=tp; cur=m[1]; } });
       if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4) cur="#contact";
@@ -1487,9 +1966,11 @@
   }
   var navTick=false;
   window.addEventListener("scroll",function(){ if(navTick) return; navTick=true; requestAnimationFrame(function(){ navTick=false; updateNavActive(); }); },{passive:true});
+  var routeKey=route.v+":"+(route.id||"");
   window.addEventListener("hashchange",function(){
-    var nv=getView(), h=location.hash||"";
-    if(nv!==view){ if(editing){ try{ syncEdits(); }catch(e){} } view=nv; render(); }
+    if(editing){ try{ syncEdits(); }catch(e){} }
+    var nv=getView(), h=location.hash||"", nk=route.v+":"+(route.id||"");
+    if(nk!==routeKey){ if(route.v==="dest"&&routeKey!==nk) destSub="all"; routeKey=nk; view=nv; render(); }
     if(nv==="home" && h.length>1 && h.charAt(1)!=="/"){ var el=document.getElementById(h.slice(1)); if(el) setTimeout(function(){ el.scrollIntoView(); },0); }
     else if(nv!=="home") window.scrollTo(0,0);
   });
@@ -1611,7 +2092,59 @@
     add.forEach(function(n){ if(!data.tours.some(function(tr){ return tr.title_th===n.title_th; })) data.tours.push(n); });
     data._intl2Added=true;
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureStructure(){
+    var th=function(a,b){ return {en:a,th:b}; };
+    if(!data.destinations) data.destinations=[
+      {id:"chiangmai",cat:"thai",name_en:"Chiang Mai",name_th:"เชียงใหม่",img:"",c1:"#0F6E5C",c2:"#123B4E",subs:[]},
+      {id:"chiangrai",cat:"thai",name_en:"Chiang Rai",name_th:"เชียงราย",img:"",c1:"#2E5E8A",c2:"#122A3E",subs:[]},
+      {id:"maehongson",cat:"thai",name_en:"Mae Hong Son",name_th:"แม่ฮ่องสอน",img:"",c1:"#5E7A2E",c2:"#223012",subs:[]},
+      {id:"china",cat:"intl",name_en:"China",name_th:"จีน",img:"",c1:"#B3261E",c2:"#3A0F0C",subs:[{id:"macau",name_th:"มาเก๊า · จูไห่",name_en:"Macau · Zhuhai"}]},
+      {id:"japan",cat:"intl",name_en:"Japan",name_th:"ญี่ปุ่น",img:"",c1:"#C0392B",c2:"#2C1A3A",subs:[{id:"tokyo",name_th:"โตเกียว",name_en:"Tokyo"},{id:"osaka",name_th:"โอซาก้า",name_en:"Osaka"},{id:"hokkaido",name_th:"ฮอกไกโด",name_en:"Hokkaido"},{id:"okinawa",name_th:"โอกินาว่า",name_en:"Okinawa"}]},
+      {id:"taiwan",cat:"intl",name_en:"Taiwan",name_th:"ไต้หวัน",img:"",c1:"#1F6FB2",c2:"#0E2A44",subs:[{id:"taipei",name_th:"ไทเป",name_en:"Taipei"}]},
+      {id:"hongkong",cat:"intl",name_en:"Hong Kong",name_th:"ฮ่องกง",img:"",c1:"#D4A017",c2:"#5A1E0E",subs:[]},
+      {id:"vietnam",cat:"intl",name_en:"Vietnam",name_th:"เวียดนาม",img:"",c1:"#1A9E8F",c2:"#0D3B3A",subs:[{id:"hanoi",name_th:"ฮานอย · ฮาลอง",name_en:"Hanoi · Ha Long"},{id:"danang",name_th:"ดานัง",name_en:"Da Nang"},{id:"phuquoc",name_th:"ฟูก๊วก",name_en:"Phu Quoc"}]},
+      {id:"laos",cat:"intl",name_en:"Laos",name_th:"ลาว",img:"",c1:"#B7791F",c2:"#5B2A0E",subs:[]},
+      {id:"cambodia",cat:"intl",name_en:"Cambodia",name_th:"กัมพูชา",img:"",c1:"#8A5A2B",c2:"#2A1A10",subs:[]}
+    ];
+    var RULES=[["laos",/ลาว|laos|luang/i],["cambodia",/กัมพูชา|cambodia|siem ?reap|angkor|นครวัด/i],["china",/มาเก๊า|macau|จูไห่|zhuhai|จีน|china/i],
+      ["japan",/ญี่ปุ่น|japan|โตเกียว|tokyo|โอกินาว่า|okinawa|ฮอกไกโด|hokkaido|โอซาก้า|osaka/i],["taiwan",/ไต้หวัน|taiwan|ไทเป|taipei/i],
+      ["hongkong",/ฮ่องกง|hong ?kong/i],["vietnam",/เวียดนาม|vietnam|ฮานอย|hanoi|ฟูก๊วก|phu ?quoc|ดานัง|da ?nang/i],
+      ["chiangrai",/chiang ?rai|เชียงราย|white temple|golden triangle/i],["maehongson",/mae ?hong ?son|แม่ฮ่องสอน|ปาย|\bpai\b/i]];
+    var SUBS=[["macau",/มาเก๊า|macau/i],["tokyo",/โตเกียว|tokyo/i],["okinawa",/โอกินาว่า|okinawa/i],["hokkaido",/ฮอกไกโด|hokkaido/i],["osaka",/โอซาก้า|osaka/i],
+      ["taipei",/ไทเป|taipei/i],["phuquoc",/ฟูก๊วก|phu ?quoc/i],["hanoi",/ฮานอย|hanoi|ha ?long|ฮาลอง/i],["danang",/ดานัง|da ?nang/i]];
+    var looksCode=function(s){ return /^[A-Za-z]{1,6}[- ]?\d{1,5}[A-Za-z]?$/.test(String(s||"").trim()); };
+    (data.tours||[]).forEach(function(tr){
+      if(!tr.id) tr.id=newId("t");
+      if(tr.code==null){ var c=[tr.region_en,tr.region_th].filter(looksCode)[0]; tr.code=c?String(c).trim():""; }
+      if(!tr.dest||!destById(tr.dest)){
+        var txt=[tr.region_en,tr.region_th,tr.title_en,tr.title_th].join(" "), got="";
+        for(var q=0;q<RULES.length&&!got;q++) if(RULES[q][1].test(txt)){ var dd=destById(RULES[q][0]); if(dd&&(tr.cat!=="intl"||dd.cat==="intl")&&(tr.cat==="intl"||dd.cat==="thai")) got=dd.id; }
+        if(!got){ var f=dests().filter(function(x){ return x.cat===(tr.cat==="intl"?"intl":"thai"); })[0]; got=f?f.id:""; }
+        tr.dest=got;
+        var dsub=destById(got); if(dsub&&!tr.sub){ for(var s=0;s<SUBS.length;s++) if(SUBS[s][1].test(txt)&&(dsub.subs||[]).some(function(x){ return x.id===SUBS[s][0]; })){ tr.sub=SUBS[s][0]; break; } }
+      }
+      var d=destById(tr.dest); if(d) tr.cat=d.cat;
+      if(tr._trAll==null) tr._trAll=true;
+    });
+    (data.activities||[]).forEach(function(a){ if(!a.id) a.id=newId("a"); if(a.code==null){ a.code=looksCode(a.region_en)?a.region_en:(looksCode(a.region_th)?a.region_th:""); } if(a._trAll==null) a._trAll=true; });
+    ["bikes","events","destinations"].forEach(function(k){ (data[k]||[]).forEach(function(o){ if(o._trAll==null) o._trAll=true; }); });
+    if(!data.top5) data.top5=[];
+    if(!data.dealsSection) data.dealsSection={eyebrow_en:"Hot deals",eyebrow_th:"โปรไฟไหม้",title_en:"Limited-time hot deals",title_th:"โปรไฟไหม้ ราคาพิเศษช่วงเวลาจำกัด",sub_en:"Special prices for a limited time only — book before the deal ends.",sub_th:"ราคาพิเศษเฉพาะช่วงเวลาที่กำหนด รีบจองก่อนหมดโปร"};
+    if(!data.ticketsSection) data.ticketsSection={eyebrow_en:"Buy tickets",eyebrow_th:"ซื้อตั๋ว",title_en:"Bus & attraction tickets",title_th:"ตั๋วรถ & ตั๋วเข้าสถานที่ท่องเที่ยว",sub_en:"We book bus tickets, transfers and attraction tickets for you — just message us.",sub_th:"เราจองตั๋วรถ รถรับส่ง และบัตรเข้าสถานที่ท่องเที่ยวให้ ทักมาได้เลย"};
+    if(!data.top5Section) data.top5Section={eyebrow_en:"Top 5",eyebrow_th:"Top 5",title_en:"Top 5 popular tours",title_th:"5 ทัวร์ยอดนิยม",sub_en:"Our travellers' favourite trips.",sub_th:"ทริปที่ลูกค้าเลือกมากที่สุด"};
+    if(!data._ticketsSeeded){
+      var A=data.activities=data.activities||[];
+      A.forEach(function(a){ if(/muay|มวย|grand canyon|แกรนด์แคนยอน|night safari|ไนท์ซาฟารี/i.test((a.title_en||"")+" "+(a.title_th||""))) a.cat="tickets"; });
+      var has=function(re){ return A.some(function(a){ return re.test((a.title_en||"")+" "+(a.title_th||"")); }); };
+      var mk=function(o){ o.id=newId("a"); o.cat="tickets"; o.code=""; o.img=""; o.photos=[]; o.price=""; o._trAll=true; o.region_en=""; o.region_th=""; return o; };
+      if(!has(/green ?bus|กรีนบัส/i)) A.push(mk({c1:"#2E7D32",c2:"#123B18",title_en:"Green Bus ticket to Chiang Rai",title_th:"ตั๋วรถกรีนบัส ไปเชียงราย",desc_en:"Comfortable air-conditioned Green Bus from Chiang Mai to Chiang Rai. Tell us your date and time and we'll book the seats.",desc_th:"รถกรีนบัสปรับอากาศ เชียงใหม่ – เชียงราย แจ้งวันและเวลาเดินทาง เราจองที่นั่งให้",dur_en:"One way · approx. 3 hrs",dur_th:"เที่ยวเดียว · ประมาณ 3 ชม."}));
+      if(!has(/pai|ปาย/i)) A.push(mk({c1:"#6A4C93",c2:"#2A1B3D",title_en:"Bus to Pai (hotel pick-up)",title_th:"รถตู้ไปปาย (รับจากโรงแรม)",desc_en:"Minivan from Chiang Mai to Pai with pick-up from your hotel.",desc_th:"รถตู้เชียงใหม่ – ปาย รับถึงโรงแรมที่พัก",dur_en:"One way · approx. 3 hrs",dur_th:"เที่ยวเดียว · ประมาณ 3 ชม."}));
+      if(!has(/night safari|ไนท์ซาฟารี/i)) A.push(mk({c1:"#1B3A4B",c2:"#0B1820",title_en:"Chiang Mai Night Safari ticket",title_th:"บัตรเชียงใหม่ไนท์ซาฟารี",desc_en:"Entrance ticket to Chiang Mai Night Safari — tram safari rides and night shows.",desc_th:"บัตรเข้าเชียงใหม่ไนท์ซาฟารี นั่งรถชมสัตว์ยามค่ำคืนและชมโชว์",dur_en:"Evening",dur_th:"ช่วงเย็น – ค่ำ"}));
+      if(!has(/bua ?tong|บัวตอง|sticky/i)) A.push(mk({c1:"#2E8B7A",c2:"#103530",title_en:"Bua Tong Sticky Waterfall",title_th:"ตั๋วน้ำตกบัวตอง (น้ำตกเดินได้)",desc_en:"Trip to the famous Sticky Waterfall where you can climb up the limestone cascades.",desc_th:"เที่ยวน้ำตกบัวตอง น้ำตกหินปูนที่เดินปีนขึ้นได้",dur_en:"Half day",dur_th:"ครึ่งวัน"}));
+      data._ticketsSeeded=true;
+    }
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

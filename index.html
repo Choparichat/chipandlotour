@@ -578,6 +578,7 @@
   .grp-more:hover{text-decoration:underline}
 
   button,input,select,textarea{font-family:inherit}
+  .tours-grid.sorted .drag-h{display:none!important}
 </style>
 </head>
 <body>
@@ -1179,7 +1180,16 @@
       H+='</div>';
       if(destSub!=="all") ix=ix.filter(function(i){ return data.tours[i].sub===destSub; });
     }
-    H+='<div class="tours-grid">'; ix.forEach(function(i){ H+=itemCard("tours",i,data.tours[i]); }); H+='</div>';
+    var so=function(tr){ if(!tr.sub) return 0; for(var q=0;q<subs.length;q++) if(subs[q].id===tr.sub) return q+1; return subs.length+1; };
+    var pfx=function(tr){ return String(tr.code||"").trim().toUpperCase().replace(/[-\s]*\d+[A-Z]?$/,""); }, prank={};
+    ix.forEach(function(i){ var tr=data.tours[i], c=String(tr.code||"").trim(); if(!c) return; var k=pfx(tr), r=so(tr); if(prank[k]==null||r<prank[k]) prank[k]=r; });
+    ix=ix.slice().sort(function(a,b){ var A=data.tours[a], B=data.tours[b];
+      var ca=String(A.code||"").trim(), cb=String(B.code||"").trim();
+      if(!ca||!cb){ if(ca||cb) return (!ca)-(!cb); return so(A)-so(B)||a-b; }
+      var pa=pfx(A), pb=pfx(B); if(pa!==pb) return (prank[pa]-prank[pb])||pa.localeCompare(pb);
+      return ca.localeCompare(cb,"en",{numeric:true,sensitivity:"base"})||a-b; });
+    H+='<div class="tours-grid sorted">'; ix.forEach(function(i){ H+=itemCard("tours",i,data.tours[i]); }); H+='</div>';
+    if(editing&&ix.length) H+='<p class="td-hint" style="margin-top:12px">'+(th?"ในหน้านี้ทัวร์จะเรียงตามรหัสทัวร์อัตโนมัติ เช่น CLM → CLM-EH → CLM-DI แล้วเรียงเลขในแต่ละกลุ่ม (ทัวร์ที่ยังไม่มีรหัสจะอยู่ท้ายสุด)":"Tours here are sorted by tour code automatically, e.g. CLM → CLM-EH → CLM-DI, then by number (tours without a code go last)")+'</p>';
     if(!ix.length) H+='<p class="empty-note">'+(th?"ยังไม่มีโปรแกรมทัวร์ในหมวดนี้":"No tour programs here yet")+'</p>';
     H+='<button class="btn btn-ghost addbtn" data-add="tours">'+ICON.plus+(th?"เพิ่มโปรแกรมทัวร์":"Add a tour program")+'</button>';
     return H+'</div></section>';

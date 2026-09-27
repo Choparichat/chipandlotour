@@ -2361,7 +2361,32 @@
     (data.tours||[]).forEach(function(tr){ if(tr.dest!=="chiangmai"||(tr.sub&&ok[tr.sub])) return; var x=(tr.title_en||"")+" "+(tr.title_th||"");
       if(/yi ?peng|lantern|loy ?krathong|ยี่เป็ง|ลอยกระทง|โคมลอย/i.test(x)) tr.sub="festival"; });
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureRecat1(){
+    if(data._recat1) return; data._recat1=true;
+    var A=data.activities=data.activities||[], T=data.tours=data.tours||[];
+    var fa=function(re){ for(var i=0;i<A.length;i++) if(re.test(A[i].title_en||"")) return i; return -1; };
+    var ft=function(re){ for(var i=0;i<T.length;i++) if(re.test(T[i].title_en||"")) return i; return -1; };
+    var toTour=function(re,sub){ var i=fa(re); if(i<0) return; var x=A.splice(i,1)[0]; x.id=newId("t"); x.cat="thai"; x.dest="chiangmai"; x.sub=sub||""; x.code=x.code||""; x.region_en="Chiang Mai"; x.region_th="เชียงใหม่"; T.push(x); };
+    var toAct=function(re,cat){ var i=ft(re); if(i<0) return; var x=T.splice(i,1)[0], old=x.id; x.id=newId("a"); x.cat=cat; delete x.dest; delete x.sub;
+      if(data.top5) data.top5=data.top5.filter(function(id){ return id!==old; }); A.push(x); };
+    // activities that are really multi-stop guided tours
+    toTour(/sticky waterfall/i); toTour(/doi suthep\s*&\s*hmong/i); toTour(/^overnight jungle trek/i); toTour(/^jungle trekking$/i);
+    // a single activity sitting in tours
+    toAct(/paramotor/i,"adventure");
+    // titles whose Thai / English don't match each other
+    var fix=function(L,re,o){ for(var i=0;i<L.length;i++) if(re.test(L[i].title_en||"")){ for(var k in o) L[i][k]=o[k]; return; } };
+    fix(A,/^night safari/i,{title_th:"ตั๋วไนท์ซาฟารี เชียงใหม่"});
+    fix(T,/sticky waterfall/i,{title_th:"น้ำตกบัวตอง + คาเฟ่ + วัดบ้านเด่น + Elephant Cafe"});
+    fix(A,/paramotor/i,{title_th:"พารามอเตอร์ เชียงใหม่"});
+    fix(T,/^doi suthep\s*&\s*wat pa/i,{title_th:"ดอยสุเทพ + วัดผาลาด"});
+    for(var i=0;i<T.length;i++){ var t=T[i], en=t.title_en||"";
+      if(/^doi intanon with 2/i.test(en)){ t.title_th="ดอยอินทนนท์ + เดินป่าผาดอกเสี้ยว 2 ชั่วโมง"; if(!t.sub) t.sub="inthanon"; }
+      if(/white temple, blue temple, black temple/i.test(en)) t.title_th="วัดร่องขุ่น วัดร่องเสือเต้น บ้านดำ และหมู่บ้านกะเหรี่ยงคอยาว";
+      if(/^siem reap/i.test(en)&&t.dest==="chiangrai"){ t.title_en="White Temple, Blue & Red Temple + Lalita Café & Long Neck Village"; t.dur_en="Full day"; t.dur_th="เต็มวัน"; }
+      if(/^1\/2 day elephant sanctuary/i.test(en)) t.title_th="ช้างครึ่งวัน ปางช้างแบบอนุรักษ์";
+    }
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

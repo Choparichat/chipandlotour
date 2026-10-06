@@ -913,9 +913,20 @@
     document.getElementById("app").innerHTML=html;
     if(view==="home") orderHome();
     var slot=document.getElementById("rv-live-slot"), rvs=document.getElementById("reviews");
-    if(lw && slot && rvs && lw.querySelector("*") && !editing){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); }
+    if(lw && slot && rvs && lw.querySelector("*") && !editing && !widgetDead){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); watchWidget(); }
     try{ bind(); applyEditing(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); }
     try{ updateNavActive(); }catch(e){}
+  }
+  var widgetDead=false, widgetTimers=[];
+  function watchWidget(){
+    widgetTimers.forEach(clearTimeout); widgetTimers=[];
+    [1500,4000,9000,20000].forEach(function(ms){ widgetTimers.push(setTimeout(function(){
+      var lw=document.getElementById("live-reviews"); if(!lw||widgetDead) return;
+      if(/trial period has expired|subscription plans|widget (is )?(disabled|deactivated|expired)|upgrade your plan/i.test(lw.textContent||"")){
+        widgetDead=true; lw.hidden=true; document.body.appendChild(lw);
+        var rv=document.getElementById("reviews"); if(rv) rv.classList.remove("has-live");
+      }
+    },ms)); });
   }
   function orderHome(){
     var app=document.getElementById("app"), ft=app.querySelector("footer.site"); if(!ft||ft.parentNode!==app) ft=null;

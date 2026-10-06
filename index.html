@@ -195,6 +195,16 @@
   .tcard .body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
   .tcard h3{font-size:1.28rem}
   .tcard .desc{color:var(--muted);font-size:.96rem;margin:0;flex:1}
+  body:not(.editing) .tcard .desc{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;line-clamp:4;overflow:hidden;flex:0 1 auto;margin-bottom:auto}
+  .dcardp.is-soon .dp-date{background:#FFD23F}
+  .dp-left.soon{color:#B45309}
+  .dpreview{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 0;padding:10px 14px;border:1px dashed var(--border);border-radius:12px;font-size:.92rem}
+  .dpreview input{width:76px;padding:.35em .5em;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:inherit}
+  .veh-title{font-family:var(--serif);font-size:1.35rem;margin:30px 0 16px}
+  .veh-title.first{margin-top:0}
+  .veh-add{display:flex;flex-wrap:wrap;gap:10px}
+  .btype{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);margin-top:8px}
+  .btype select{font:inherit;padding:.25em .4em;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink)}
   .tcard .meta{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:4px;padding-top:14px;border-top:1px solid var(--border)}
   .tcard .dur{color:var(--muted);font-size:.88rem;display:inline-flex;align-items:center;gap:.4em}
   .tcard .dur svg{width:14px;height:14px;opacity:.7;flex:none}
@@ -416,7 +426,7 @@
     .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px;gap:6px}
   }
   .bcard .meta{flex-wrap:wrap;row-gap:6px} .bcard .meta .dur,.bcard .meta .price{white-space:nowrap}
-  .tours-grid.bikes-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .tours-grid.bikes-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
   .rental-note{margin:22px 0 0;color:var(--muted);font-size:.95rem;text-align:center}
   .bcard .act{margin-top:4px} .bcard .act .btn{width:100%;justify-content:center}
   .tcard.dragging{opacity:.55;outline:2px dashed var(--primary);outline-offset:4px}
@@ -746,8 +756,14 @@
       H.push('<div class="sec-head"><div class="eyebrow"'+ed("rental.eyebrow")+'>'+esc(t(rt,"eyebrow"))+'</div>');
       H.push('<h2'+ed("rental.title")+'>'+esc(t(rt,"title"))+'</h2>');
       H.push('<p'+ed("rental.sub")+'>'+esc(t(rt,"sub"))+'</p></div>');
+      var VT=[["bike","มอเตอร์ไซค์","Motorbikes"],["car","รถยนต์","Cars"],["van","รถตู้","Vans"]], vty=function(b){ return (b.type==="car"||b.type==="van")?b.type:"bike"; };
+      var vUsed=VT.filter(function(v){ return d.bikes.some(function(b){ return vty(b)===v[0]; }); }), vFirst=true;
+      VT.forEach(function(v){
+      if(!d.bikes.some(function(b){ return vty(b)===v[0]; })) return;
+      if(vUsed.length>1){ H.push('<h3 class="veh-title'+(vFirst?' first':'')+'">'+(lang==="th"?v[1]:v[2])+'</h3>'); } vFirst=false;
       H.push('<div class="tours-grid bikes-grid">');
       d.bikes.forEach(function(bk,i){
+        if(vty(bk)!==v[0]) return; var bt=v[0];
         var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.name||"");
         var href=wab?wab+"?text="+encodeURIComponent(msg):"#contact";
         H.push('<article class="tcard bcard"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>');
@@ -755,15 +771,17 @@
         H.push('<div class="media" data-open="bikes:'+i+'">'+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
         H.push('<div class="body"><h3'+ed("bikes."+i+".name")+'>'+esc(bk.name||"")+'</h3>');
         H.push('<p class="desc"'+ed("bikes."+i+".desc")+'>'+esc(t(bk,"desc"))+'</p>');
+        if(editing) H.push('<label class="btype">'+(lang==="th"?"ประเภท":"Type")+' <select data-btype="'+i+'">'+VT.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===bt?' selected':'')+'>'+(lang==="th"?o[1]:o[2])+'</option>'; }).join("")+'</select></label>');
         if(editing){ var PH='<div class="iph">'; bph.forEach(function(src,k){ PH+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="bikes:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; }); H.push(PH+'<button class="iph-add" type="button" data-iphadd="bikes:'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div>'); }
-        H.push('<div class="meta"><span class="dur">'+ICON.bike+'<span'+ed("bikes."+i+".spec")+'>'+esc(t(bk,"spec")||(lang==="th"?"ค่าเช่า":"Rental"))+'</span></span>'
-          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(lang==="th"?" / 24 ชม.":" / 24 Hours")+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
-        H.push('<div class="act"><a class="btn btn-primary btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"จองรถคันนี้":"Book this bike")+'</a></div>');
+        H.push('<div class="meta"><span class="dur">'+(bt==="bike"?ICON.bike:ICON.car)+'<span'+ed("bikes."+i+".spec")+'>'+esc(t(bk,"spec")||(lang==="th"?"ค่าเช่า":"Rental"))+'</span></span>'
+          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(bt==="van"?(lang==="th"?" / วัน":" / day"):(lang==="th"?" / 24 ชม.":" / 24 Hours"))+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
+        H.push('<div class="act"><a class="btn btn-primary btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"จองรถคันนี้":(bt==="bike"?"Book this bike":"Book this vehicle"))+'</a></div>');
         H.push('</div></article>');
       });
       H.push('</div>');
+      });
       H.push('<p class="rental-note"'+ed("rental.note")+'>'+esc(t(rt,"note"))+'</p>');
-      H.push('<button class="btn btn-ghost addbtn" data-add="bikes">'+ICON.plus+(lang==="th"?"เพิ่มรถ":"Add a bike")+'</button>');
+      H.push('<div class="veh-add"><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="bike">'+ICON.plus+(lang==="th"?"เพิ่มมอเตอร์ไซค์":"Add a motorbike")+'</button><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="car">'+ICON.plus+(lang==="th"?"เพิ่มรถยนต์":"Add a car")+'</button><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="van">'+ICON.plus+(lang==="th"?"เพิ่มรถตู้":"Add a van")+'</button></div>');
       H.push('</div></section>');
     }
 
@@ -791,10 +809,10 @@
       H.push('<p'+ed("services.sub")+'>'+esc(t(sv,"sub"))+'</p></div>');
       H.push('<div class="fgrid">');
       sv.cards.forEach(function(c,i){
-        H.push('<article class="fcard"><div class="ico">'+(c.link==="#rental"?ICON.bike:sico[i%3])+'</div>');
+        H.push('<article class="fcard"><div class="ico">'+(c.link==="#rental"?ICON.car:(c.link==="#/activities"?ICON.star:sico[i%3]))+'</div>');
         H.push('<h3'+ed("services.cards."+i+".title")+'>'+esc(t(c,"title"))+'</h3>');
         H.push('<p'+ed("services.cards."+i+".body")+'>'+esc(t(c,"body"))+'</p>');
-        H.push('<a class="btn btn-ghost btn-sm" href="'+esc(c.link||"#contact")+'"'+ed("services.cards."+i+".cta")+'>'+esc(t(c,"cta"))+'</a></article>');
+        H.push('<a class="btn btn-ghost btn-sm" href="'+esc(c.link||"#contact")+'"'+(/^#\//.test(c.link||"")?' data-nav':'')+ed("services.cards."+i+".cta")+'>'+esc(t(c,"cta"))+'</a></article>');
       });
       H.push('</div></div></section>');
     }
@@ -1089,6 +1107,9 @@
   function pad2(n){ return (n<10?"0":"")+n; }
   function todayStr(){ var d=new Date(); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
   function promoState(it){ if(!it||!String(it.promo_price||"").trim()) return ""; var td=todayStr(); if(it.promo_start&&td<it.promo_start) return "soon"; if(it.promo_end&&td>it.promo_end) return "ended"; return "on"; }
+  function previewDays(){ var v=(data.dealsSection||{}).preview_days; v=(v===undefined||v===null||v==="")?7:+v; return (isFinite(v)&&v>=0)?v:7; }
+  function daysToStart(it){ if(!it.promo_start) return 0; var st=new Date(it.promo_start+"T00:00:00"), n=new Date(); n.setHours(0,0,0,0); return Math.round((st-n)/864e5); }
+  function inPreview(it){ return promoState(it)==="soon"&&daysToStart(it)<=previewDays(); }
   function daysLeft(it){ if(!it.promo_end) return null; var e=new Date(it.promo_end+"T23:59:59"); return Math.max(0,Math.ceil((e-new Date())/864e5)); }
   function fmtDate(s){ if(!s) return ""; var p=String(s).split("-"); if(p.length<3) return s; var y=+p[0], m=+p[1]-1, dd=+p[2];
     var MT=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."], ME=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -1293,7 +1314,7 @@
   }
   function dealItems(all){
     var out=[];
-    ["tours","activities"].forEach(function(arr){ (data[arr]||[]).forEach(function(it,i){ var s=promoState(it); if(s==="on"||(all&&s)) out.push({arr:arr,i:i,it:it,s:s}); }); });
+    ["tours","activities"].forEach(function(arr){ (data[arr]||[]).forEach(function(it,i){ var s=promoState(it); if(s==="on"||(s==="soon"&&inPreview(it))||(all&&s)) out.push({arr:arr,i:i,it:it,s:s}); }); });
     var rank={on:0,soon:1,ended:2};
     out.sort(function(a,b){ return rank[a.s]-rank[b.s]||((daysLeft(a.it)==null?999:daysLeft(a.it))-(daysLeft(b.it)==null?999:daysLeft(b.it))); });
     return out;
@@ -1317,15 +1338,18 @@
     var det=(arr==="tours"&&it.id)?"#/tour/"+encodeURIComponent(it.id):"";
     var wab=waLink(data.contact&&data.contact.whatsapp);
     var href=det||(wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจโปร ":"Hi! I'm interested in the deal ")+(it.code?it.code+" ":"")+t(it,"title")):"#contact");
+    var pv=inPreview(it);
+    if(pv){ var w0=it.price||it.price_full||""; pi={now:it.promo_price,was:(numP(w0)>numP(it.promo_price))?w0:"",promo:true}; }
     var off=pi.was?numP(pi.was)-numP(pi.now):0;
-    var H='<article class="dcardp'+(ps!=="on"?' is-off':'')+'"'+(th?' lang="th"':'')+'><div class="dp" data-dp="'+esc(href)+'">';
+    var H='<article class="dcardp'+(pv?' is-soon':(ps!=="on"?' is-off':''))+'"'+(th?' lang="th"':'')+'><div class="dp" data-dp="'+esc(href)+'">';
     if(it.poster){ H+='<img class="dp-poster" src="'+esc(it.poster)+'" alt="">'; }
     else {
       H+='<div class="dp-img">'+media(it)+'</div><div class="dp-shade"></div>';
       H+='<div class="dp-top">'+(it.code?'<span class="dp-code">'+esc(it.code)+'</span>':'')+(t(it,"dur")?'<span class="dp-dur">'+esc(t(it,"dur").split("·")[0].trim())+'</span>':'')+'</div>';
       if(off>0) H+='<div class="dp-off"><small>'+(th?"ลดเลย":"Save")+'</small><b>'+fmtN(off)+'</b><small>'+(th?"บาท":"THB")+'</small></div>';
       H+='<div class="dp-bot"><div class="dp-title">'+esc(t(it,"title"))+'</div>';
-      if(it.promo_end) H+='<div class="dp-date">'+(th?"ถึง ":"Until ")+esc(fmtDate(it.promo_end))+'</div>';
+      if(pv) H+='<div class="dp-date">'+(th?"เริ่ม ":"Starts ")+esc(fmtDate(it.promo_start))+'</div>';
+      else if(it.promo_end) H+='<div class="dp-date">'+(th?"ถึง ":"Until ")+esc(fmtDate(it.promo_end))+'</div>';
       H+='<div class="dp-price">'+(pi.was?'<span class="dp-was">'+(th?"ปกติ ":"Was ")+esc(pi.was)+'.-</span>':'')+'<span class="dp-now">'+esc(pi.now||"")+'</span><span class="dp-unit">'+(th?"บาท":"THB")+'</span></div></div>';
     }
     if(editing) H+='<label class="imgedit" data-img="'+esc(P+"poster")+'"><span>'+ICON.cam+(th?(it.poster?"เปลี่ยนโปสเตอร์":"ใส่โปสเตอร์"):(it.poster?"Change poster":"Add poster"))+'</span><input type="file" accept="image/*" hidden></label>';
@@ -1336,6 +1360,7 @@
     } else {
       H+='<a class="dp-btn" href="'+esc(href)+'"'+(det?'':(wab?' target="_blank" rel="noopener"':''))+'>'+(det?(th?"คลิกเข้าชม<b>โปรแกรม</b>":"View <b>program</b>"):(th?"สอบถาม / <b>จอง</b>":"Enquire / <b>Book</b>"))+'</a>';
       if(ps==="on"&&daysLeft(it)!=null) H+='<div class="dp-left">⏰ '+esc(promoLine(it))+'</div>';
+      else if(pv) H+='<div class="dp-left soon">🔜 '+(th?"เร็ว ๆ นี้ · ":"Coming soon · ")+esc(promoLine(it))+'</div>';
     }
     return H+'</article>';
   }
@@ -1354,6 +1379,7 @@
     H+='<h1 class="page-title dp-h1"'+ed("dealsSection.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</h1>';
     H+=dealBanner();
     if(editing) H+='<p class="td-hint" style="margin-top:14px">'+(th?"แตะ “ใส่โปสเตอร์” เพื่อใช้ภาพโปสเตอร์โปรของคุณเอง (แนวตั้ง) · ถ้าไม่ใส่ ระบบจะทำโปสเตอร์จากรูปทัวร์ให้อัตโนมัติ · โปรขึ้นและหายเองตามวันที่":"Tap “Add poster” to use your own portrait promo poster · without one, a poster is built from the tour photo · deals appear and disappear by date")+'</p>';
+    if(editing) H+='<label class="dpreview">'+(th?"โชว์โปรล่วงหน้าบนหน้าเว็บ":"Show upcoming deals")+' <input type="number" min="0" max="365" step="1" id="dpreview" value="'+previewDays()+'"> '+(th?"วัน ก่อนวันเริ่มโปร (7 = 1 สัปดาห์ · 30 = 1 เดือน · 0 = ไม่โชว์ล่วงหน้า)":"days before the start date (7 = 1 week · 30 = 1 month · 0 = don't show early)")+'</label>';
     H+=dealGrid(L);
     if(!L.length) H+='<p class="empty-note">'+(th?"ยังไม่มีโปรตอนนี้ — แวะมาดูใหม่เร็ว ๆ นี้ หรือทักสอบถามได้เลย":"No deals right now — check back soon or message us")+'</p>';
     H+='<button class="btn btn-ghost addbtn" type="button" id="dealadd">'+ICON.plus+(th?"เพิ่มโปรไฟไหม้":"Add a hot deal")+'</button>';
@@ -1669,6 +1695,8 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-promo]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-promo").split(":"); openPromoForm(v[0],+v[1]); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tc]"),function(a){ a.addEventListener("click",function(){ tourCat=a.getAttribute("data-tc"); if(view==="tours") render(); }); });
     var da=document.getElementById("dealadd"); if(da) da.onclick=function(){ openPromoForm(); };
+    var dpv=document.getElementById("dpreview"); if(dpv) dpv.onchange=function(){ syncEdits(); var v=Math.max(0,Math.min(365,parseInt(dpv.value,10)||0)); data.dealsSection=data.dealsSection||{}; data.dealsSection.preview_days=v; render(); };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-btype]"),function(sel){ sel.onchange=function(){ syncEdits(); var b=data.bikes[+sel.getAttribute("data-btype")]; if(b){ b.type=sel.value; render(); } }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-dp]"),function(el){ el.onclick=function(e){ if(editing||e.target.closest("label,button")) return; var h=el.getAttribute("data-dp"); if(h.charAt(0)==="#") location.hash=h; else window.open(h,"_blank","noopener"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-posterdel]"),function(b){ b.onclick=function(){ syncEdits(); var v=b.getAttribute("data-posterdel").split(":"); data[v[0]][+v[1]].poster=""; render(); }; });
     var dbr=document.getElementById("dbrm"); if(dbr) dbr.onclick=function(){ syncEdits(); data.dealsSection.banner=""; render(); };
@@ -1697,7 +1725,7 @@
         else if(which==="destinations"){ var dc=tourCat==="intl"?"intl":"thai"; data.destinations.push({id:newId("d"),cat:dc,name_en:dc==="intl"?"New country":"New province",name_th:dc==="intl"?"ประเทศใหม่":"จังหวัดใหม่",img:"",c1:"#2E6B6B",c2:"#123B3B",subs:[],_trAll:true}); }
         else if(which==="tickets") data.activities.push({id:newId("a"),cat:"tickets",code:"",region_en:"",region_th:"",title_en:"New ticket",title_th:"ตั๋วใหม่",desc_en:"Describe this ticket...",desc_th:"รายละเอียดตั๋ว...",dur_en:"One way",dur_th:"เที่ยวเดียว",price:"",img:"",c1:"#2E6B6B",c2:"#123B3B",photos:[],_trAll:true});
         else if(which==="tours_intl_legacy") data.tours.push({cat:"intl",img:"",c1:"#123B4E",c2:"#0B2330",region_en:"Country",region_th:"ประเทศ",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน",price:""});
-        else if(which==="bikes") data.bikes.push({name:"New bike",price:"300",desc_en:"Describe this bike...",desc_th:"รายละเอียดรถ...",img:"",c1:"#2E6B6B",c2:"#123B3B"});
+        else if(which==="bikes"){ var vt=b.getAttribute("data-vt")||"bike"; data.bikes.push({type:vt,name:vt==="car"?"New car":(vt==="van"?"New van":"New bike"),price:vt==="bike"?"300":"",desc_en:"Describe this vehicle...",desc_th:"รายละเอียดรถ...",img:"",c1:vt==="bike"?"#2E6B6B":(vt==="car"?"#2E5E8A":"#6B4E2E"),c2:vt==="bike"?"#123B3B":(vt==="car"?"#122A3E":"#2A1D10"),photos:[]}); }
         else if(which==="tours"){ var dd=(view==="dest"&&destById(route.id))||dests().filter(function(x){ return x.cat===(tourCat==="intl"?"intl":"thai"); })[0]||{};
           data.tours.push({id:newId("t"),cat:dd.cat||"thai",dest:dd.id||"",sub:(view==="dest"&&destSub&&destSub!=="all"&&destSub!=="other")?destSub:"",code:"",img:"",photos:[],c1:"#0F6E5C",c2:"#123B4E",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"Full day",dur_th:"เต็มวัน",price:"",_trAll:true}); }
         else if(which==="reviews"){ data.reviews=data.reviews||[]; data.reviews.push({name:(lang==="th"?"ชื่อผู้รีวิว":"Reviewer name"),date:(lang==="th"?"วันที่":"Date"),rating:5,text:(lang==="th"?"วางข้อความรีวิวจาก Google Maps ที่นี่":"Paste the review text from Google Maps here")}); }
@@ -2154,7 +2182,7 @@
         {name:"Honda PCX 160",price:"400",desc_en:"Premium scooter with extra storage for longer rides.",desc_th:"รถรุ่นพรีเมียม ใต้เบาะกว้าง เหมาะกับการเดินทางไกล",img:"",c1:"#123B4E",c2:"#0B2330"}];
     }
     var sv=data.services;
-    if(sv&&sv.cards&&!sv.cards.some(function(c){ return c.link==="#rental"; })){
+    if(!data._oct6&&sv&&sv.cards&&!sv.cards.some(function(c){ return c.link==="#rental"; })){
       sv.cards.push({title_en:"Motorbike rental",title_th:"เช่ารถมอเตอร์ไซค์",
         body_en:"Prefer to ride yourself? Rent a well-maintained scooter with helmets included, by the day, week or month.",
         body_th:"อยากขับเที่ยวเอง? เช่ามอเตอร์ไซค์สภาพดีพร้อมหมวกกันน็อก ได้ทั้งรายวัน รายสัปดาห์ และรายเดือน",
@@ -2442,7 +2470,37 @@
       dur_th:"1 วัน",dur_en:"1 day",
       hl_th:"เจ้าแม่กวนอิมรีพัลส์เบย์ · วัดเจ้าแม่กวนอิมฮองฮำ · วัดแชกงหมิว",hl_en:"Repulse Bay Kwun Yum · Hung Hom Kwun Yum · Che Kung Temple"}));
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureOct6(){
+    if(data._oct6) return; data._oct6=true;
+    // rentals: add cars & vans
+    var B=data.bikes=data.bikes||[], R=data.rental;
+    if(R){
+      if(/^motorbike rental$/i.test(R.eyebrow_en||"")){ R.eyebrow_en="Vehicle rental"; R.eyebrow_th="เช่ารถ"; }
+      if(/two wheels/i.test(R.title_en||"")){ R.title_en="Motorbikes, cars & vans for rent"; R.title_th="เช่ามอเตอร์ไซค์ รถยนต์ และรถตู้"; }
+      if(/^well-maintained scooters/i.test(R.sub_en||"")){ R.sub_en="Well-maintained motorbikes, cars and vans — rent by the day, week or month."; R.sub_th="มอเตอร์ไซค์ รถยนต์ และรถตู้สภาพดี เช่าได้ทั้งรายวัน รายสัปดาห์ และรายเดือน"; }
+      if(/^passport required · helmets included/i.test(R.note_en||"")){ R.note_en="Passport required · Driving licence needed for cars · Helmets included with motorbikes · Ask us about weekly and monthly rates"; R.note_th="ใช้พาสปอร์ตหรือบัตรประชาชน · เช่ารถยนต์ต้องมีใบขับขี่ · มอเตอร์ไซค์มีหมวกกันน็อกให้ · สอบถามราคารายสัปดาห์/รายเดือนได้"; }
+    }
+    if(!B.some(function(b){ return b.type==="car"; })){
+      B.push({type:"car",name:"Sedan · 4 seats",price:"",spec_en:"Automatic · self-drive",spec_th:"เกียร์ออโต้ · ขับเอง",desc_en:"A comfortable automatic sedan for couples and small families — easy to drive around the city and out to the mountains.",desc_th:"รถเก๋งเกียร์ออโต้ นั่งสบาย เหมาะกับคู่รักและครอบครัวเล็ก ขับง่ายทั้งในเมืองและขึ้นดอย",img:"",c1:"#2E5E8A",c2:"#122A3E",photos:[]});
+      B.push({type:"car",name:"SUV · 7 seats",price:"",spec_en:"Automatic · self-drive",spec_th:"เกียร์ออโต้ · ขับเอง",desc_en:"More room and power for families and mountain roads, with space for luggage.",desc_th:"กว้างขวาง แรงดี เหมาะกับครอบครัวและเส้นทางขึ้นเขา มีที่วางกระเป๋า",img:"",c1:"#3E6B3A",c2:"#1E3A22",photos:[]});
+    }
+    if(!B.some(function(b){ return b.type==="van"; })){
+      B.push({type:"van",name:"Van · up to 10 seats",price:"",spec_en:"With driver",spec_th:"พร้อมคนขับ",desc_en:"A private air-conditioned van with a local driver — ideal for groups, airport transfers and day trips. Fuel and route are quoted to match your plan.",desc_th:"รถตู้ส่วนตัวปรับอากาศ พร้อมคนขับท้องถิ่น เหมาะกับหมู่คณะ รับส่งสนามบิน และเที่ยววันเดียว เสนอราคาตามเส้นทางของคุณ",img:"",c1:"#6B4E2E",c2:"#2A1D10",photos:[]});
+    }
+    // services: Customizing, Special Interest, Transportation (rental merged in)
+    var C=data.services&&data.services.cards;
+    if(C){
+      var pick=function(re){ for(var i=0;i<C.length;i++) if(re.test(C[i].title_en||"")) return C[i]; return null; };
+      var cu=pick(/custom/i), sp=pick(/special/i), tr=pick(/transport/i);
+      if(sp){ sp.cta_en="Activities"; sp.cta_th="กิจกรรม"; sp.link="#/activities"; }
+      if(tr){ tr.cta_en="Rentals"; tr.cta_th="เช่ารถ"; tr.link="#rental";
+        if(!/rent/i.test(tr.body_en||"")){ tr.body_en=(tr.body_en||"")+" Prefer to drive yourself? Rent a motorbike, car or van from us."; tr.body_th=(tr.body_th||"")+" หรือถ้าอยากขับเอง เรามีมอเตอร์ไซค์ รถยนต์ และรถตู้ให้เช่า"; } }
+      var keep=[cu,sp,tr].filter(Boolean);
+      C.forEach(function(c){ if(keep.indexOf(c)<0&&!(c.link==="#rental"||/motorbike|rental/i.test(c.title_en||""))) keep.push(c); });
+      data.services.cards=keep;
+    }
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

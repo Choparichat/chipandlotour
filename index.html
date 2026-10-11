@@ -479,6 +479,43 @@
     body:not(.editing) #top5 .tours-grid>*, body:not(.editing) #activities:not(.page-top) .tours-grid>*, body:not(.editing) #services .fgrid>*, body:not(.editing) #about .points>*, body:not(.editing) #rental.compact .bikes-grid>*{scroll-snap-align:start;min-width:0}
     .pmedia{aspect-ratio:16/9}
   }
+  /* ===== travel card ===== */
+  .tcard.trv{position:relative;display:block;min-height:440px;aspect-ratio:4/5.2;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#111;color:#fff;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.28);transition:transform .3s ease,box-shadow .3s ease}
+  .tcard.trv:hover{transform:translateY(-8px);box-shadow:0 22px 48px rgba(0,0,0,.45)}
+  .trv-img{position:absolute;inset:0;overflow:hidden}
+  .trv-img>img,.trv-img>.ph{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+  .trv-img>.ph{display:grid;place-items:center}
+  .tcard.trv:hover .trv-img>img{transform:scale(1.1)}
+  .trv-shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.45) 45%,rgba(0,0,0,0) 75%);pointer-events:none}
+  .trv-top{position:absolute;left:14px;right:14px;top:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;z-index:2}
+  .trv-code{background:rgba(0,0,0,.45);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35);color:#fff;font-weight:700;font-size:.74rem;letter-spacing:.03em;padding:.35em .8em;border-radius:999px}
+  .trv-badges{display:flex;gap:6px;align-items:center}
+  .trv-hot{background:#E5372B;color:#fff;font-weight:700;font-size:.74rem;padding:.35em .8em;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  .trv-ph{display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,.5);color:#fff;font-size:.74rem;font-weight:700;padding:.3em .65em;border-radius:999px}.trv-ph svg{width:13px;height:13px}
+  .trv-rank{position:absolute;left:14px;top:52px;z-index:2;background:var(--gold,#D6A64A);color:#231a06;font-family:var(--serif);font-weight:700;font-size:1.1rem;padding:.15em .55em;border-radius:10px}
+  .trv-body{position:absolute;left:0;right:0;bottom:0;padding:22px;z-index:2}
+  .trv-info{transition:transform .5s ease}
+  .trv-info h3{font-family:var(--serif);font-size:1.55rem;line-height:1.2;margin:0 0 4px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+  .trv-loc{display:flex;align-items:center;gap:5px;margin:0 0 12px;font-size:.84rem;color:rgba(255,255,255,.82)}.trv-loc svg{width:14px;height:14px;flex:none}
+  .trv-ov h4{margin:0 0 4px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.92);font-family:var(--sans)}
+  .trv-ov p{margin:0;font-size:.88rem;line-height:1.55;color:rgba(255,255,255,.75);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  .trv-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:16px;transition:opacity .45s ease,transform .45s ease}
+  .trv-price{display:flex;flex-direction:column;line-height:1.1}
+  .trv-price small{font-size:.75rem;color:rgba(255,255,255,.75)}
+  .trv-price s{font-size:.8rem;color:rgba(255,255,255,.6)}
+  .trv-price b{font-size:1.9rem;font-weight:800;color:#fff}.trv-price b.hot{color:#FFD23F}.trv-price b.ask{font-size:1.05rem}
+  .trv-price span{font-size:.8rem;color:rgba(255,255,255,.75);margin-top:2px}
+  .trv-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;color:#111;font-weight:700;font-size:.92rem;padding:.75em 1.25em;border-radius:10px;text-decoration:none;white-space:nowrap;transition:background .2s}
+  .trv-btn:hover{background:rgba(255,255,255,.88)}
+  .trv-left{position:absolute;left:0;right:0;bottom:0;z-index:3;background:rgba(192,38,10,.92);color:#fff;font-size:.75rem;font-weight:700;text-align:center;padding:.35em}
+  .tcard.trv.is-hot .trv-body{padding-bottom:34px}
+  @media (hover:hover) and (pointer:fine){
+    .trv-foot{opacity:0;transform:translateY(24px);pointer-events:none;position:absolute;left:22px;right:22px;bottom:22px;margin:0}
+    .tcard.trv.is-hot .trv-foot{bottom:34px}
+    .tcard.trv:hover .trv-foot,.tcard.trv:focus-within .trv-foot{opacity:1;transform:none;pointer-events:auto}
+    .tcard.trv:hover .trv-info,.tcard.trv:focus-within .trv-info{transform:translateY(-64px)}
+  }
+  @media (max-width:560px){ .tcard.trv{min-height:400px} .trv-info h3{font-size:1.35rem} }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
   /* ===== destinations / tour detail / deals ===== */
   .dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
@@ -1223,9 +1260,34 @@
   function thaiOnly(arr,it){ return arr==="tours"&&it&&it.cat==="intl"; }
   function itemCard(arr,i,it,opt){
     if(!thaiOnly(arr,it)) return itemCard0(arr,i,it,opt);
-    var lg=lang; lang="th"; try{ return itemCard0(arr,i,it,opt).replace('<article class="tcard"','<article lang="th" class="tcard"'); } finally{ lang=lg; }
+    var lg=lang; lang="th"; try{ return itemCard0(arr,i,it,opt).replace('<article class="tcard','<article lang="th" class="tcard'); } finally{ lang=lg; }
+  }
+  function cardStyle(){ return ((data.design||{}).cards==="classic")?"classic":"travel"; }
+  function travelCard(arr,i,it,opt){
+    opt=opt||{};
+    var isTour=arr==="tours", th=lang==="th", ph=(it.photos||[]).filter(Boolean), nph=ph.length+(it.img?1:0), ps=promoState(it);
+    var wab=waLink(data.contact&&data.contact.whatsapp), title=t(it,"title");
+    var href=wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+(it.code?it.code+" ":"")+title):"#contact";
+    var det=(isTour&&it.id)?"#/tour/"+encodeURIComponent(it.id):"", p=priceInfo(it);
+    var h='<article class="tcard trv'+(ps==="on"?' is-hot':'')+'" data-ti="'+i+'" data-arr="'+arr+'" data-dg="arr:'+arr+'" data-di="'+i+'" data-open="'+arr+':'+i+'"'+(det?' data-det="'+esc(det)+'"':'')+(title?' aria-label="'+esc(title)+'"':'')+'>';
+    h+='<div class="trv-img">'+media(it)+imgOverlay(arr+"."+i+".img")+'</div><div class="trv-shade"></div>';
+    h+='<div class="trv-top">'+(it.code?'<span class="trv-code">'+esc(it.code)+'</span>':(!isTour&&t(it,"region")?'<span class="trv-code">'+esc(t(it,"region"))+'</span>':''))+'<span class="trv-badges">'+(ps==="on"?'<span class="trv-hot">🔥 '+(th?"โปรไฟไหม้":"Hot deal")+'</span>':'')+(nph>1?'<span class="trv-ph">'+ICON.cam+nph+'</span>':'')+'</span></div>';
+    if(opt.rank) h+='<span class="trv-rank">#'+opt.rank+'</span>';
+    h+='<div class="trv-body"><div class="trv-info">';
+    h+='<h3>'+esc(title)+'</h3><p class="trv-loc">'+ICON.pin+'<span>'+esc(catLabel(arr,it))+'</span></p>';
+    if(t(it,"desc")) h+='<div class="trv-ov"><h4>'+(th?"ภาพรวม":"Overview")+'</h4><p>'+esc(t(it,"desc"))+'</p></div>';
+    h+='</div><div class="trv-foot"><div class="trv-price">';
+    if(p.now) h+=(p.was?'<s>฿'+esc(p.was)+'</s>':'<small>'+(th?"เริ่ม":"from")+'</small>')+'<b'+(p.promo?' class="hot"':'')+'>฿'+esc(p.now)+'</b>'+(t(it,"dur")?'<span>'+esc(t(it,"dur").split("·")[0].trim())+'</span>':'');
+    else h+='<b class="ask">'+(th?"สอบถามราคา":"Ask for price")+'</b>'+(t(it,"dur")?'<span>'+esc(t(it,"dur").split("·")[0].trim())+'</span>':'');
+    h+='</div>';
+    if(det) h+='<a class="trv-btn" href="'+esc(det)+'">'+(th?"ดูโปรแกรม":"Book now")+' <span aria-hidden="true">→</span></a>';
+    else h+='<a class="trv-btn"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"จองเลย":"Book now")+' <span aria-hidden="true">→</span></a>';
+    h+='</div></div>';
+    if(ps==="on"&&daysLeft(it)!=null) h+='<div class="trv-left">⏰ '+esc(promoLine(it))+'</div>';
+    return h+'</article>';
   }
   function itemCard0(arr,i,it,opt){
+    if(!editing&&cardStyle()==="travel"&&(arr==="tours"||arr==="activities")) return travelCard(arr,i,it,opt);
     opt=opt||{};
     var isTour=arr==="tours", th=lang==="th", ph=(it.photos||[]).filter(Boolean), nph=ph.length+(it.img?1:0), ps=promoState(it);
     var wab=waLink(data.contact&&data.contact.whatsapp), title=t(it,"title");
@@ -1881,7 +1943,7 @@
         var v=sel.getAttribute("data-catsel").split(":"), it=data[v[0]][+v[1]]; it.cat=sel.value;
         if(v[0]==="tours"&&tourCat!=="all") tourCat=it.cat; if(v[0]==="activities"&&actCat!=="all") actCat=it.cat; render();
         toast(lang==="th"?"ย้ายหมวดแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Category changed — tap “Save & publish”"); }; });
-    Array.prototype.forEach.call(document.querySelectorAll("[data-open]"),function(m){ m.onclick=function(e){ if(editing||e.target.closest("label,button")) return;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-open]"),function(m){ m.onclick=function(e){ if(editing||e.target.closest("label,button,a")) return;
       if(m.getAttribute("data-det")){ location.hash=m.getAttribute("data-det"); return; }
       var v=m.getAttribute("data-open").split(":"), it=data[v[0]][+v[1]]; var list=[it.img].concat(it.photos||[]).filter(Boolean); if(list.length) openLB(list,0); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphdel]"),function(b){ b.onclick=function(e){ e.stopPropagation(); syncEdits(); var v=b.getAttribute("data-iphdel").split(":"); data[v[0]][+v[1]].photos.splice(+v[2],1); render(); }; });
@@ -2090,9 +2152,10 @@
       document.getElementById("ab-edit").onclick=function(){ try{ editing=true; editEnteredAt=Date.now(); render(); renderAdminBar(); toast(lang==="th"?"โหมดแก้ไข: แตะข้อความหรือรูปเพื่อเปลี่ยน":"Edit mode: tap any text or photo to change it"); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
     } else {
       msg.innerHTML='<strong>'+(lang==="th"?"โหมดแก้ไข":"Editing")+'</strong> <small>'+(lang==="th"?"— แตะข้อความ/รูป · สลับ EN·TH เพื่อแก้อีกภาษา":"— tap text/photos · switch EN·TH to edit each language")+'</small>';
-      btns.innerHTML='<button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
+      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
       document.getElementById("ab-cancel").onclick=function(){ if(confirm(lang==="th"?"ยกเลิกการเปลี่ยนแปลงที่ยังไม่บันทึก?":"Discard unsaved changes?")) location.reload(); };
       document.getElementById("ab-save").onclick=save;
+      var abc=document.getElementById("ab-cards"); if(abc) abc.onchange=function(){ data.design=data.design||{}; data.design.cards=abc.value; toast(lang==="th"?"เปลี่ยนรูปแบบการ์ดแล้ว — กดบันทึกแล้วออกจากโหมดแก้ไขเพื่อดูผล":"Card style changed — save, then leave edit mode to see it"); };
     }
   }
 

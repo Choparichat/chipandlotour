@@ -785,7 +785,16 @@
   function ed(path){ return ' data-edit="'+esc(path)+'" '; }
 
   // ---------- render ----------
-  function render(){
+  // Block unsafe link types (javascript:, data:, vbscript:) that could be typed into any link field
+  function sanitizeLinks(root){
+    try{ Array.prototype.forEach.call((root||document).querySelectorAll("a[href],iframe[src]"),function(a){
+      if(a.closest&&a.closest("#rv-live-slot,#rvwidget,#live-reviews")) return;
+      var at=a.tagName==="IFRAME"?"src":"href", v=(a.getAttribute(at)||"").replace(/[\s\u0000-\u001f]+/g,"").toLowerCase();
+      if(/^(javascript|vbscript):/.test(v)||(/^data:/.test(v)&&!/^data:(image\/(png|jpe?g|webp|gif)|application\/pdf)[;,]/.test(v))) a.setAttribute(at,a.tagName==="IFRAME"?"about:blank":"#");
+    }); }catch(e){}
+  }
+  function render(){ renderInner(); sanitizeLinks(); }
+  function renderInner(){
     applyTheme();
     try{ var bn=(data.brand&&data.brand.name)||"Chip' n Lo Tour"; document.title=bn; }catch(e){}
     var d=data, H=[];
@@ -2250,14 +2259,29 @@
       return files;
     });
   }
-  function ghCommitFiles(cfg,files){
+  // ---- overwrite protection: remember which version of data.json this page started from ----
+  var loadedDataSha=null;
+  function gitBlobSha(text){
+    var b=new TextEncoder().encode(text), h=new TextEncoder().encode("blob "+b.length+"\0"), all=new Uint8Array(h.length+b.length);
+    all.set(h,0); all.set(b,h.length);
+    return crypto.subtle.digest("SHA-1",all).then(function(d){ return Array.prototype.map.call(new Uint8Array(d),function(x){ return ("0"+x.toString(16)).slice(-2); }).join(""); });
+  }
+  function ghCommitFiles(cfg,files,force){
     var br=cfg.branch||"main", head, base, tree=[];
     return gh(cfg,"GET","/git/ref/heads/"+encodeURIComponent(br)).then(function(r){ head=r.object.sha; return gh(cfg,"GET","/git/commits/"+head); })
       .then(function(c){ base=c.tree.sha;
+        if(force||!loadedDataSha) return;
+        return gh(cfg,"GET","/git/trees/"+base).then(function(t){
+          var e=(t.tree||[]).filter(function(x){ return x.path==="data.json"; })[0];
+          if(e && e.sha!==loadedDataSha){ var err=new Error("stale"); err.status="stale"; throw err; }
+        });
+      })
+      .then(function(){
         return files.reduce(function(p,f){ return p.then(function(){ return gh(cfg,"POST","/git/blobs",{content:f.b64,encoding:"base64"}).then(function(b){ tree.push({path:f.path,mode:"100644",type:"blob",sha:b.sha}); }); }); },Promise.resolve()); })
       .then(function(){ return gh(cfg,"POST","/git/trees",{base_tree:base,tree:tree}); })
       .then(function(t){ var d=new Date(); return gh(cfg,"POST","/git/commits",{message:"Edit from website "+d.toISOString().slice(0,16).replace("T"," "),tree:t.sha,parents:[head]}); })
-      .then(function(c){ return gh(cfg,"PATCH","/git/refs/heads/"+encodeURIComponent(br),{sha:c.sha}); });
+      .then(function(c){ return gh(cfg,"PATCH","/git/refs/heads/"+encodeURIComponent(br),{sha:c.sha}); })
+      .then(function(r){ var e=tree.filter(function(x){ return x.path==="data.json"; })[0]; if(e) loadedDataSha=e.sha; return r; });
   }
   function ghCommit(cfg,content){
     var br=cfg.branch||"main", head, base;
@@ -2267,13 +2291,13 @@
       .then(function(t){ var d=new Date(); return gh(cfg,"POST","/git/commits",{message:"Edit from website "+d.toISOString().slice(0,16).replace("T"," "),tree:t.sha,parents:[head]}); })
       .then(function(c){ return gh(cfg,"PATCH","/git/refs/heads/"+encodeURIComponent(br),{sha:c.sha}); });
   }
-  function ghSave(html,bar){
+  function ghSave(html,bar,force){
     var cfg=ghCfg();
     if(!cfg){ bar.classList.remove("busy"); renderAdminBar(); openAdminLogin(); return; }
     if(data._fallback){ bar.classList.remove("busy"); renderAdminBar(); toast(lang==="th"?"โหลดข้อมูลเว็บไม่ครบ กรุณารีเฟรชหน้าแล้วลองใหม่ (ยังไม่ได้บันทึก)":"Site data didn't load — refresh and try again (not saved)"); return; }
     document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังบันทึกขึ้นเว็บ...":"Publishing...");
     var nImg=0;
-    flushTr().then(prepareSave).then(function(files){ nImg=files.length-1; if(nImg) document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังอัปโหลดรูป "+nImg+" รูป...":"Uploading "+nImg+" photos..."); return ghCommitFiles(cfg,files); }).then(function(){
+    flushTr().then(prepareSave).then(function(files){ nImg=files.length-1; if(nImg) document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังอัปโหลดรูป "+nImg+" รูป...":"Uploading "+nImg+" photos..."); return ghCommitFiles(cfg,files,force); }).then(function(){
       editing=false; bar.classList.remove("busy"); try{ mountWidget(); }catch(e){}
       try{ render(); }catch(e){}
       renderAdminBar();
@@ -2281,6 +2305,14 @@
     }).catch(function(err){
       bar.classList.remove("busy"); renderAdminBar();
       var st=err&&err.status;
+      if(st==="stale"){
+        var th=lang==="th";
+        if(confirm(th?"⚠ มีการแก้ไขเว็บจากเครื่องอื่น (หรือแท็บอื่น) หลังจากที่คุณเปิดหน้านี้\n\nถ้ากด \"ตกลง\" = บันทึกทับ (สิ่งที่แก้จากที่อื่นจะหายไป)\nถ้ากด \"ยกเลิก\" = ยังไม่บันทึก ให้คัดลอกสิ่งที่แก้ไว้ก่อน แล้วรีเฟรชหน้าเพื่อโหลดเวอร์ชันล่าสุด"
+                  :"⚠ The site was edited somewhere else after you opened this page.\n\nOK = overwrite (the other changes will be lost)\nCancel = don't save yet; note your changes, then refresh to load the latest version")){
+          bar.classList.add("busy"); ghSave(html,bar,true); return;
+        }
+        toast(th?"ยังไม่ได้บันทึก — รีเฟรชหน้าเพื่อโหลดเวอร์ชันล่าสุดก่อน":"Not saved — refresh to load the latest version first"); editing=true; applyEditing(); renderAdminBar(); return;
+      }
       if(st===401||st===403){ toast(lang==="th"?"หมดเวลาเข้าสู่ระบบ กรุณาเข้าสู่ระบบใหม่ (การแก้ไขยังอยู่ อย่าเพิ่งปิดหน้านี้)":"Session expired — please sign in again (your edits are still here)"); editing=true; applyEditing(); renderAdminBar(); if(cfg.pw){ try{ localStorage.removeItem(LS_PW); }catch(e){} openPwLogin(); } else openGhLogin(); }
       else if(st===409||st===422){ toast(lang==="th"?"มีการแก้ไขจากที่อื่นพร้อมกัน ลองกดบันทึกอีกครั้ง":"The site changed elsewhere — try saving again"); editing=true; applyEditing(); renderAdminBar(); }
       else { toast((lang==="th"?"บันทึกไม่สำเร็จ: ":"Save failed: ")+((err&&err.message)||"error")); editing=true; applyEditing(); renderAdminBar(); }
@@ -2836,8 +2868,10 @@
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
-    fetch("data.json?v="+Date.now(),{cache:"no-store"}).then(function(r){ return r.ok?r.json():null; })
-      .then(function(j){ if(j && typeof j==="object" && j.brand) data=j; fin(); }).catch(fin);
+    fetch("data.json?v="+Date.now(),{cache:"no-store"}).then(function(r){ return r.ok?r.text():null; })
+      .then(function(txt){ var j=null; try{ j=txt?JSON.parse(txt):null; }catch(e){}
+        if(j && typeof j==="object" && j.brand && !booted){ data=j; gitBlobSha(txt).then(function(h){ loadedDataSha=h; }).catch(function(){}); }
+        fin(); }).catch(fin);
     setTimeout(fin,6000);
   } else boot();
   try{

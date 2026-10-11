@@ -1,0 +1,11 @@
+# Security headers for every page (Cloudflare Pages reads this file automatically)
+/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+
+# Always fetch the latest content (the editor saves data.json several times a day)
+/data.json
+  Cache-Control: no-cache

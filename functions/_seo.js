@@ -69,7 +69,7 @@
         else { m.only=it.cat==="intl"; L=m.only?"th":lg; d=tourDest(data,it); T=clean(tx(it,"title",L)||it.title_th||it.code||"Tour"); nm=d?clean(d.cat==="intl"?(d.name_th||d.name_en):tx(d,"name",L)):"";
           title=T+((nm&&T.toLowerCase().indexOf(nm.toLowerCase())<0)?(L==="th"?" – ทัวร์"+nm:" – "+nm+" Tour"):"")+" | "+brand;
           var pn=priceNow(it,today), du=clean(tx(it,"dur",L)), bits=[]; if(pn) bits.push((L==="th"?"เริ่ม ฿":"From ฿")+fmt(pn)); if(du) bits.push(du);
-          desc=clean((bits.length?bits.join(" · ")+". ":"")+clean(tx(it,"desc",L)||tx(it,"hl",L)),165); img=abs(origin,it.img);
+          desc=clean((bits.length?bits.join(" · ")+". ":"")+clean(tx(it,"desc",L)||tx(it,"hl",L)||tx(it,"itin",L)),165); img=abs(origin,it.img);
           var pics=[it.img].concat(it.photos||[]).map(function(u){ return abs(origin,u); }).filter(Boolean).slice(0,6), cu=origin+path(data,r,L);
           var o={"@context":"https://schema.org","@type":pn?"Product":"TouristTrip","name":T,"description":clean(tx(it,"desc",L)||tx(it,"hl",L)||T,500),"url":cu};
           if(pics.length) o.image=pics;
@@ -116,7 +116,7 @@
         title=clean(S["title_"+lg])||(th?"ทัวร์เชียงใหม่ ดอยอินทนนท์ ปางช้าง ทัวร์ต่างประเทศ | "+brand:"Chiang Mai Tours, Elephants & Doi Inthanon | "+brand);
         desc=clean(S["desc_"+lg])||(th?"บริษัททัวร์เชียงใหม่ที่มีใบอนุญาต ทัวร์ดอยอินทนนท์ เชียงราย ปางช้าง เทศกาล ทัวร์ต่างประเทศ จองตั๋วรถและโชว์ เช่ามอเตอร์ไซค์ สอบถามทาง LINE และ WhatsApp":"Licensed local tour agency in Chiang Mai: Doi Inthanon and Chiang Rai day trips, elephant sanctuary visits, festival tours, tickets and motorbike rental.");
         var ag=agency(data,origin); ag["@context"]="https://schema.org"; m.ld.push(ag);
-        m.ld.push({"@context":"https://schema.org","@type":"WebSite","name":brand,"url":origin+"/","inLanguage":["en","th"]}); }
+        var ws={"@context":"https://schema.org","@type":"WebSite","name":brand,"url":origin+"/","inLanguage":["en","th"]}; if(/chip/i.test(brand)) ws.alternateName=["Chip'N Lo Tour","Chip n Lo Tour","Chip and Lo Tour"]; m.ld.push(ws); }
       if(m.notFound){ title=(th?"ไม่พบหน้านี้":"Page not found")+" | "+brand; desc=""; m.noindex=true; m.ld=[]; m.only=false; r={v:"home"}; }
       m.title=title; m.desc=desc;
       m.image=img||abs(origin,(data.hero||{}).img)||abs(origin,(data.brand||{}).logo);

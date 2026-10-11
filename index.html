@@ -595,7 +595,7 @@
   .point{display:flex;flex-direction:column}
   .pmedia{position:relative;margin:-26px -26px 20px;aspect-ratio:16/10;border-radius:var(--radius) var(--radius) 0 0;overflow:hidden}
   .pmedia img,.pmedia .ph{width:100%;height:100%;object-fit:cover}.pmedia img{display:block}
-  .fcard .flinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+  .fcard .flinks{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:auto}.fcard .flinks .btn{margin-top:0}
   .ord-reset{margin-left:8px}
   .gcard.gall .dmedia::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.35))}
   .chip-back{background:transparent;border-style:dashed}
@@ -817,12 +817,13 @@
       H.push('<h2'+ed("services.title")+'>'+esc(t(sv,"title"))+'</h2>');
       H.push('<p'+ed("services.sub")+'>'+esc(t(sv,"sub"))+'</p></div>');
       H.push('<div class="fgrid">');
-      sv.cards.forEach(function(c,i){
-        H.push('<article class="fcard"><div class="ico">'+(c.link==="#rental"?ICON.car:(c.link==="#/tours:intl"?ICON.globe:(c.link==="#/activities"||(c.links&&c.links.length)?ICON.star:(c.link==="#contact"||!c.link?ICON.sliders:sico[i%3]))))+'</div>');
+      sv.cards.forEach(function(c,i){ var lg0=lang; if(c.thaiOnly) lang="th"; try{
+        H.push('<article class="fcard"'+(c.thaiOnly?' lang="th"':'')+'><div class="ico">'+(c.link==="#rental"?ICON.car:(c.link==="#/tours:intl"?ICON.globe:(c.link==="#/activities"||(c.links&&c.links.length)?ICON.star:(c.link==="#contact"||!c.link?ICON.sliders:sico[i%3]))))+'</div>');
         H.push('<h3'+ed("services.cards."+i+".title")+'>'+esc(t(c,"title"))+'</h3>');
         H.push('<p'+ed("services.cards."+i+".body")+'>'+esc(t(c,"body"))+'</p>');
         if(c.links&&c.links.length){ H.push('<div class="flinks">'); c.links.forEach(function(l,q){ H.push('<a class="btn btn-ghost btn-sm" '+svcHref(l.link)+ed("services.cards."+i+".links."+q+".label")+'>'+esc(t(l,"label"))+'</a>'); }); H.push('</div></article>'); }
         else H.push('<a class="btn btn-ghost btn-sm" '+svcHref(c.link)+ed("services.cards."+i+".cta")+'>'+esc(t(c,"cta"))+'</a></article>');
+      } finally{ lang=lg0; }
       });
       H.push('</div></div></section>');
     }
@@ -1472,7 +1473,7 @@
         .then(function(r){ return r.ok?r.json():null; }).then(function(j){ return (j&&j[0])?j[0].map(function(x){ return x[0]; }).join(""):null; }).catch(function(){ return null; }); }));
     });
   }
-  function isThaiOnlyPath(path){ var m=String(path||"").match(/^(tours|destinations)\.(\d+)\./); if(!m) return false; var o=(data[m[1]]||[])[+m[2]]; return !!(o&&o.cat==="intl"); }
+  function isThaiOnlyPath(path){ var sm=String(path||"").match(/^services\.cards\.(\d+)\./); if(sm){ var sc=((data.services||{}).cards||[])[+sm[1]]; return !!(sc&&sc.thaiOnly); } var m=String(path||"").match(/^(tours|destinations)\.(\d+)\./); if(!m) return false; var o=(data[m[1]]||[])[+m[2]]; return !!(o&&o.cat==="intl"); }
   function forceTranslate(arr,i){
     syncEdits(); var o=data[arr][i], from=isThaiOnlyPath(arr+"."+i+".x")?"th":lang, to=from==="en"?"th":"en", n=0;
     ["title","desc","dur","hl","itin","name","spec","date"].forEach(function(key){ var v=o[key+"_"+from]; if(!v) return; var k=key+"_"+to;
@@ -1775,6 +1776,17 @@
   }
 
   // ---------- editing ----------
+  document.addEventListener("paste",function(e){
+    var el=e.target&&e.target.closest?e.target.closest("[data-edit][contenteditable]"):null; if(!el||!editing) return;
+    var cd=e.clipboardData||window.clipboardData; if(!cd) return;
+    var txt=cd.getData("text/plain"); if(txt==null) return;
+    e.preventDefault();
+    txt=String(txt).replace(/\r\n?/g,"\n").replace(/[\u00a0\u2007\u202f]/g," ").replace(/[\u200b-\u200d\ufeff]/g,"").replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n");
+    if(/^(H1|H2|H3|H4|SPAN|B|A|LABEL)$/.test(el.tagName)) txt=txt.replace(/\s*\n\s*/g," ");
+    txt=txt.replace(/^[ \t]+|[ \t]+$/g,"");
+    if(!document.execCommand||!document.execCommand("insertText",false,txt)){
+      var sel=window.getSelection(); if(!sel.rangeCount) return; var r=sel.getRangeAt(0); r.deleteContents(); var n=document.createTextNode(txt); r.insertNode(n); r.setStartAfter(n); r.collapse(true); sel.removeAllRanges(); sel.addRange(r); }
+  },true);
   function applyEditing(){
     document.body.classList.toggle("editing",editing);
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
@@ -2554,7 +2566,12 @@
                {label_en:"Asia Tours",label_th:"ทัวร์ต่างประเทศ",link:"#/tours:intl"},
                {label_en:"Activities",label_th:"กิจกรรม",link:"#/activities"}]; } });
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
+  function ensureOct11b(){
+    if(data._oct11b) return; data._oct11b=true;
+    var C=data.services&&data.services.cards; if(!C) return;
+    for(var i=0;i<C.length;i++) if(C[i].link==="#/tours:intl"){ var a=C.splice(i,1)[0]; a.thaiOnly=true; a.title_th=a.title_th||"ทัวร์ต่างประเทศ Asia Tour"; a.cta_th=a.cta_th||"ทัวร์ต่างประเทศ"; C.push(a); break; }
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

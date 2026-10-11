@@ -424,10 +424,15 @@
   .empty-note{color:var(--muted);text-align:center;margin:10px 0 0}
   .nav-links a.on{color:var(--ink);border-bottom-color:var(--primary)}
   @media (max-width:1240px){
-    .nav-links{display:none}
-    .menu-toggle{display:grid;place-items:center}
-    .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px;gap:6px}
+    .nav,.nav-links{gap:13px}
+    .nav-links{margin-left:2px}
+    .nav-links a{font-size:.9rem}
+    .brand{font-size:1.12rem}
   }
+  @media (max-width:1080px){ .nav-right .hide-sm{display:none} }
+  html.nav-collapse .nav-links{display:none}
+  html.nav-collapse .menu-toggle{display:grid;place-items:center}
+  html.nav-collapse .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border);padding:12px 20px;gap:6px}
   .bcard .meta{flex-wrap:wrap;row-gap:6px} .bcard .meta .dur,.bcard .meta .price{white-space:nowrap}
   .tours-grid.bikes-grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
   .rental-note{margin:22px 0 0;color:var(--muted);font-size:.95rem;text-align:center}
@@ -947,7 +952,19 @@
     if(lw && slot && rvs && lw.querySelector("*") && !editing && !widgetDead){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); watchWidget(); }
     try{ bind(); applyEditing(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); }
     try{ updateNavActive(); }catch(e){}
+    fitNav();
   }
+  // show the full menu whenever it fits; switch to ☰ only when it doesn't
+  function fitNav(){
+    var root=document.documentElement, nav=document.querySelector("header.site .nav"), links=document.getElementById("navlinks");
+    if(!nav||!links) return;
+    if(links.classList.contains("open")) return;
+    root.classList.remove("nav-collapse");
+    if(getComputedStyle(links).display==="none") return;
+    if(nav.scrollWidth>nav.clientWidth+1) root.classList.add("nav-collapse");
+  }
+  var fitT=null; window.addEventListener("resize",function(){ clearTimeout(fitT); fitT=setTimeout(fitNav,80); });
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ fitNav(); });
   var widgetDead=false, widgetTimers=[];
   function watchWidget(){
     widgetTimers.forEach(clearTimeout); widgetTimers=[];

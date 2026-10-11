@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#151210">
+<script>try{var _t=localStorage.getItem("cnl_theme");if(_t==="light"||_t==="dark")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chip' n Lo Tour</title>
 <meta name="description" content="“Saw that, done those” is such a common cliché among frequent fliers. But what if this turns out to be one of the most meaningful trips you've ever taken — where learning and experiencing open your eyes to a new vision that enriches your quality of life?">
@@ -44,6 +45,14 @@
     --ink:#F2ECE1; --muted:#A79C8B; --border:#372F26;
     --primary:#2FA187; --primary-ink:#4FBFA3; --gold:#D6A64A;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+  /* White minimalist theme (admin: Theme → White) */
+  :root[data-theme="light"]{
+    --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F6F7F9;
+    --ink:#15181D; --muted:#5E6570; --border:#E5E7EB;
+    --primary:#0F6E5C; --primary-ink:#0B5648; --gold:#A8761E;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 6px 18px rgba(16,24,40,.06);
+    color-scheme:light;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
@@ -107,6 +116,7 @@
 
   /* top bar */
   .topbar{background:var(--ink);color:var(--bg);font-size:.82rem}
+  :root[data-theme="light"] .topbar{background:var(--surface-2);color:var(--muted);border-bottom:1px solid var(--border)}
   .topbar .wrap{display:flex;justify-content:flex-end;align-items:center;gap:8px;height:34px}
   .topbar a{color:inherit;text-decoration:none;opacity:.9;display:inline-flex;align-items:center;gap:6px}
   .topbar a:hover{opacity:1}
@@ -776,6 +786,7 @@
 
   // ---------- render ----------
   function render(){
+    applyTheme();
     try{ var bn=(data.brand&&data.brand.name)||"Chip' n Lo Tour"; document.title=bn; }catch(e){}
     var d=data, H=[];
     // header
@@ -1262,6 +1273,8 @@
     if(!thaiOnly(arr,it)) return itemCard0(arr,i,it,opt);
     var lg=lang; lang="th"; try{ return itemCard0(arr,i,it,opt).replace('<article class="tcard','<article lang="th" class="tcard'); } finally{ lang=lg; }
   }
+  function themeStyle(){ return ((data.design||{}).theme==="light")?"light":"dark"; }
+  function applyTheme(){ try{ var t=themeStyle(); document.documentElement.setAttribute("data-theme",t); try{localStorage.setItem("cnl_theme",t);}catch(e){} var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",t==="light"?"#FFFFFF":"#151210"); }catch(e){} }
   function cardStyle(){ return ((data.design||{}).cards==="classic")?"classic":"travel"; }
   function travelCard(arr,i,it,opt){
     opt=opt||{};
@@ -2152,9 +2165,10 @@
       document.getElementById("ab-edit").onclick=function(){ try{ editing=true; editEnteredAt=Date.now(); render(); renderAdminBar(); toast(lang==="th"?"โหมดแก้ไข: แตะข้อความหรือรูปเพื่อเปลี่ยน":"Edit mode: tap any text or photo to change it"); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
     } else {
       msg.innerHTML='<strong>'+(lang==="th"?"โหมดแก้ไข":"Editing")+'</strong> <small>'+(lang==="th"?"— แตะข้อความ/รูป · สลับ EN·TH เพื่อแก้อีกภาษา":"— tap text/photos · switch EN·TH to edit each language")+'</small>';
-      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
+      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"ธีม":"Theme")+' <select id="ab-theme" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="dark"'+(themeStyle()==="dark"?" selected":"")+'>'+(lang==="th"?"สีดำ":"Dark")+'</option><option value="light"'+(themeStyle()==="light"?" selected":"")+'>'+(lang==="th"?"สีขาว มินิมอล":"White minimal")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
       document.getElementById("ab-cancel").onclick=function(){ if(confirm(lang==="th"?"ยกเลิกการเปลี่ยนแปลงที่ยังไม่บันทึก?":"Discard unsaved changes?")) location.reload(); };
       document.getElementById("ab-save").onclick=save;
+      var abt=document.getElementById("ab-theme"); if(abt) abt.onchange=function(){ data.design=data.design||{}; data.design.theme=abt.value; applyTheme(); toast(lang==="th"?"เปลี่ยนธีมแล้ว — กดบันทึกเพื่อเผยแพร่":"Theme changed — save to publish"); };
       var abc=document.getElementById("ab-cards"); if(abc) abc.onchange=function(){ data.design=data.design||{}; data.design.cards=abc.value; toast(lang==="th"?"เปลี่ยนรูปแบบการ์ดแล้ว — กดบันทึกแล้วออกจากโหมดแก้ไขเพื่อดูผล":"Card style changed — save, then leave edit mode to see it"); };
     }
   }
@@ -2180,7 +2194,7 @@
     var ttl=escAttr((data.brand&&data.brand.name)||"Website"), icon=(data.brand&&data.brand.logo)||"";
     var meta='<meta name="description" content="'+desc+'">\n<meta property="og:type" content="website">\n<meta property="og:title" content="'+ttl+'">\n<meta property="og:description" content="'+desc+'">\n'+(icon?'<link rel="icon" href="'+escAttr(icon)+'">\n':'');
     var live='<!-- วิดเจ็ตรีวิว Google: วางโค้ดวิดเจ็ตไว้ใน div ด้านล่างนี้ -->\n<div id="live-reviews" hidden>'+LIVE_SRC+'</div>\n';
-    return "<!doctype html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n<meta charset=\"utf-8\">\n"
+    return "<!doctype html>\n<html lang=\"en\" data-theme=\""+themeStyle()+"\">\n<head>\n<meta charset=\"utf-8\">\n"
       +"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n"
       +"<title>"+title+"<\/title>\n"+meta
       +fonts+"\n"+style+"\n</head>\n<body>\n"

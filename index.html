@@ -125,7 +125,7 @@
   .lic-img img,.lic-img .ph{width:100%;height:100%;object-fit:cover}
   .lic-img>span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);color:#fff;font-size:.68rem;font-weight:600;text-align:center;padding:4px 2px}
   body.editing .lic-img{cursor:default}
-  @media (max-width:560px){ .lic{flex-wrap:wrap} .lic-img{width:100%;height:auto;aspect-ratio:3/4;max-width:220px;margin:0 auto} }
+  @media (max-width:560px){ .lic{gap:12px;padding:16px;align-items:flex-start} .lic-ico{display:none} .lic-img{width:72px;height:96px} }
   section.events{padding-block:56px 20px}
   .ev-grid{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
   .ev-grid.ev-n1{grid-template-columns:1fr} .ev-grid.ev-n2{grid-template-columns:1fr 1fr}
@@ -473,6 +473,12 @@
     #adminbar .ab-msg{flex-basis:100%}
     .hide-sm{display:none}
   }
+  @media (max-width:560px){
+    body:not(.editing) #top5 .tours-grid, body:not(.editing) #activities:not(.page-top) .tours-grid, body:not(.editing) #services .fgrid, body:not(.editing) #about .points, body:not(.editing) #rental.compact .bikes-grid{
+      display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:84%;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;margin-inline:-20px;padding:4px 20px 14px;scroll-padding-inline:20px;scrollbar-width:thin}
+    body:not(.editing) #top5 .tours-grid>*, body:not(.editing) #activities:not(.page-top) .tours-grid>*, body:not(.editing) #services .fgrid>*, body:not(.editing) #about .points>*, body:not(.editing) #rental.compact .bikes-grid>*{scroll-snap-align:start;min-width:0}
+    .pmedia{aspect-ratio:16/9}
+  }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
   /* ===== destinations / tour detail / deals ===== */
   .dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
@@ -683,6 +689,7 @@
     if(h.indexOf("#/deals")===0) return {v:"deals"};
     if(h.indexOf("#/tickets")===0) return {v:"tickets"};
     if(h.indexOf("#/top5")===0) return {v:"top5"};
+    if(h.indexOf("#/rentals")===0) return {v:"rentals"};
     return {v:"home"}; }
   function getView(){ route=parseRoute(); destSub=route.sub||""; return route.v; }
   view=getView();
@@ -746,7 +753,7 @@
     H.push('<a href="#/tours" data-nav'+(isT?' class="on"':'')+'>'+(lang==="th"?"ทัวร์":"Tours")+'</a>');
     H.push('<a href="#/activities" data-nav'+(view==="activities"?' class="on"':'')+'>'+(lang==="th"?"กิจกรรม":"Activities")+'</a>');
     H.push('<a href="#/tickets" data-nav'+(view==="tickets"?' class="on"':'')+'>'+(lang==="th"?"ซื้อตั๋ว":"Tickets")+'</a>');
-    if(d.bikes&&(d.bikes.length||editing)) H.push('<a href="#rental">'+(lang==="th"?"เช่ารถ":"Rentals")+'</a>');
+    if(d.bikes&&(d.bikes.length||editing)) H.push('<a href="#/rentals" data-nav'+(view==="rentals"?' class="on"':'')+'>'+(lang==="th"?"เช่ารถ":"Rentals")+'</a>');
     H.push('<a href="#/deals" data-nav class="navhot'+(view==="deals"?' on':'')+'">🔥 '+(lang==="th"?"โปรไฟไหม้":"Hot Deals")+'</a>');
     H.push('<a href="#contact">'+(lang==="th"?"ติดต่อ":"Contact")+'</a>');
     H.push('</nav>');
@@ -803,44 +810,11 @@
     else if(view==="deals") H.push(dealsPage());
     else if(view==="tickets") H.push(ticketsPage());
     else if(view==="top5") H.push(top5Page());
+    else if(view==="rentals") H.push(rentalSection(true));
     else if(view==="activities") H.push(listSection("activities","activitiesSection","activities",true));
 
     if(view==="home"){
-    // motorbike rental
-    if(d.rental&&d.bikes&&(d.bikes.length||editing)){
-      var rt=d.rental, wab=waLink(d.contact&&d.contact.whatsapp);
-      H.push('<section class="blk" id="rental" style="background:var(--surface-2)"><div class="wrap">');
-      H.push('<div class="sec-head"><div class="eyebrow"'+ed("rental.eyebrow")+'>'+esc(t(rt,"eyebrow"))+'</div>');
-      H.push('<h2'+ed("rental.title")+'>'+esc(t(rt,"title"))+'</h2>');
-      H.push('<p'+ed("rental.sub")+'>'+esc(t(rt,"sub"))+'</p></div>');
-      var VT=[["bike","มอเตอร์ไซค์","Motorbikes"],["car","รถยนต์","Cars"],["van","รถตู้","Vans"]], vty=function(b){ return (b.type==="car"||b.type==="van")?b.type:"bike"; };
-      var vUsed=VT.filter(function(v){ return d.bikes.some(function(b){ return vty(b)===v[0]; }); }), vFirst=true;
-      VT.forEach(function(v){
-      if(!d.bikes.some(function(b){ return vty(b)===v[0]; })) return;
-      if(vUsed.length>1){ H.push('<h3 class="veh-title'+(vFirst?' first':'')+'">'+(lang==="th"?v[1]:v[2])+'</h3>'); } vFirst=false;
-      H.push('<div class="tours-grid bikes-grid">');
-      d.bikes.forEach(function(bk,i){
-        if(vty(bk)!==v[0]) return; var bt=v[0];
-        var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.name||"");
-        var href=wab?wab+"?text="+encodeURIComponent(msg):"#contact";
-        H.push('<article class="tcard bcard" data-dg="arr:bikes" data-di="'+i+'"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+dragBtn());
-        var bph=(bk.photos||[]).filter(Boolean), bn=bph.length+(bk.img?1:0);
-        H.push('<div class="media" data-open="bikes:'+i+'">'+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
-        H.push('<div class="body"><h3'+ed("bikes."+i+".name")+'>'+esc(bk.name||"")+'</h3>');
-        H.push('<p class="desc"'+ed("bikes."+i+".desc")+'>'+esc(t(bk,"desc"))+'</p>');
-        if(editing) H.push('<label class="btype">'+(lang==="th"?"ประเภท":"Type")+' <select data-btype="'+i+'">'+VT.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===bt?' selected':'')+'>'+(lang==="th"?o[1]:o[2])+'</option>'; }).join("")+'</select></label>');
-        if(editing){ var PH='<div class="iph">'; bph.forEach(function(src,k){ PH+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="bikes:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; }); H.push(PH+'<button class="iph-add" type="button" data-iphadd="bikes:'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div>'); }
-        H.push('<div class="meta"><span class="dur">'+(bt==="bike"?ICON.bike:ICON.car)+'<span'+ed("bikes."+i+".spec")+'>'+esc(t(bk,"spec")||(lang==="th"?"ค่าเช่า":"Rental"))+'</span></span>'
-          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(bt==="van"?(lang==="th"?" / วัน":" / day"):(lang==="th"?" / 24 ชม.":" / 24 Hours"))+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
-        H.push('<div class="act"><a class="btn btn-primary btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"จองรถคันนี้":(bt==="bike"?"Book this bike":"Book this vehicle"))+'</a></div>');
-        H.push('</div></article>');
-      });
-      H.push('</div>');
-      });
-      H.push('<p class="rental-note"'+ed("rental.note")+'>'+esc(t(rt,"note"))+'</p>');
-      H.push('<div class="veh-add"><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="bike">'+ICON.plus+(lang==="th"?"เพิ่มมอเตอร์ไซค์":"Add a motorbike")+'</button><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="car">'+ICON.plus+(lang==="th"?"เพิ่มรถยนต์":"Add a car")+'</button><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="van">'+ICON.plus+(lang==="th"?"เพิ่มรถตู้":"Add a van")+'</button></div>');
-      H.push('</div></section>');
-    }
+    H.push(rentalSection(false));
 
     // gallery
     H.push('<section class="blk" id="gallery"><div class="wrap">');
@@ -866,7 +840,7 @@
       H.push('<p'+ed("services.sub")+'>'+esc(t(sv,"sub"))+'</p></div>');
       H.push('<div class="fgrid">');
       sv.cards.forEach(function(c,i){ var lg0=lang; if(c.thaiOnly) lang="th"; try{
-        H.push('<article class="fcard"'+(c.thaiOnly?' lang="th"':'')+'><div class="ico">'+(c.link==="#rental"?ICON.car:(c.link==="#/tours:intl"?ICON.globe:(c.link==="#/activities"||(c.links&&c.links.length)?ICON.star:(c.link==="#contact"||!c.link?ICON.sliders:sico[i%3]))))+'</div>');
+        H.push('<article class="fcard"'+(c.thaiOnly?' lang="th"':'')+'><div class="ico">'+(c.link==="#rental"||c.link==="#/rentals"?ICON.car:(c.link==="#/tours:intl"?ICON.globe:(c.link==="#/activities"||(c.links&&c.links.length)?ICON.star:(c.link==="#contact"||!c.link?ICON.sliders:sico[i%3]))))+'</div>');
         H.push('<h3'+ed("services.cards."+i+".title")+'>'+esc(t(c,"title"))+'</h3>');
         H.push('<p'+ed("services.cards."+i+".body")+'>'+esc(t(c,"body"))+'</p>');
         if(c.links&&c.links.length){ H.push('<div class="flinks">'); c.links.forEach(function(l,q){ H.push('<a class="btn btn-ghost btn-sm" '+svcHref(l.link)+ed("services.cards."+i+".links."+q+".label")+'>'+esc(t(l,"label"))+'</a>'); }); H.push('</div></article>'); }
@@ -1122,6 +1096,51 @@
     return list.slice().sort(function(a,b){ var pa=pos[data.tours[a].id], pb=pos[data.tours[b].id];
       if(pa!=null||pb!=null){ if(pa==null) return 1; if(pb==null) return -1; return pa-pb; }
       return byCode(a,b); });
+  }
+  function rentalSection(full){
+    var H=[], d=data, compact=!full&&!editing;
+    // motorbike rental
+    if(d.rental&&d.bikes&&(d.bikes.length||editing)){
+      var rt=d.rental, wab=waLink(d.contact&&d.contact.whatsapp);
+      var allB=d.bikes.length, shown={}, keepB=function(b){ if(!compact) return true; var ty=(b.type==="car"||b.type==="van")?b.type:"bike"; if(shown[ty]) return false; shown[ty]=1; return true; }, keepIx={};
+      d.bikes.forEach(function(b,i){ if(keepB(b)) keepIx[i]=1; });
+      H.push('<section class="blk'+(full?' page-top':'')+(compact?' compact':'')+'" id="rental" style="background:var(--surface-2)"><div class="wrap">');
+      if(full) H.push('<a class="back" href="#top" data-nav>← '+(lang==="th"?"กลับหน้าแรก":"Back to home")+'</a>');
+      H.push('<div class="sec-head"><div class="eyebrow"'+ed("rental.eyebrow")+'>'+esc(t(rt,"eyebrow"))+'</div>');
+      H.push('<h2'+ed("rental.title")+'>'+esc(t(rt,"title"))+'</h2>');
+      H.push('<p'+ed("rental.sub")+'>'+esc(t(rt,"sub"))+'</p></div>');
+      var VT=[["bike","มอเตอร์ไซค์","Motorbikes"],["car","รถยนต์","Cars"],["van","รถตู้","Vans"]], vty=function(b){ return (b.type==="car"||b.type==="van")?b.type:"bike"; };
+      var vOpen=false, vUsed=VT.filter(function(v){ return d.bikes.some(function(b){ return vty(b)===v[0]; }); }), vFirst=true;
+      VT.forEach(function(v){
+      if(!d.bikes.some(function(b){ return vty(b)===v[0]; })) return;
+      if(vUsed.length>1&&!compact){ H.push('<h3 class="veh-title'+(vFirst?' first':'')+'">'+(lang==="th"?v[1]:v[2])+'</h3>'); } vFirst=false;
+      if(!compact||!vOpen){ H.push('<div class="tours-grid bikes-grid">'); vOpen=true; }
+      d.bikes.forEach(function(bk,i){
+        if(vty(bk)!==v[0]||!keepIx[i]) return; var bt=v[0];
+        var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.name||"");
+        var href=wab?wab+"?text="+encodeURIComponent(msg):"#contact";
+        H.push('<article class="tcard bcard" data-dg="arr:bikes" data-di="'+i+'"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+dragBtn());
+        var bph=(bk.photos||[]).filter(Boolean), bn=bph.length+(bk.img?1:0);
+        H.push('<div class="media" data-open="bikes:'+i+'">'+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
+        H.push('<div class="body"><h3'+ed("bikes."+i+".name")+'>'+esc(bk.name||"")+'</h3>');
+        H.push('<p class="desc"'+ed("bikes."+i+".desc")+'>'+esc(t(bk,"desc"))+'</p>');
+        if(editing) H.push('<label class="btype">'+(lang==="th"?"ประเภท":"Type")+' <select data-btype="'+i+'">'+VT.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===bt?' selected':'')+'>'+(lang==="th"?o[1]:o[2])+'</option>'; }).join("")+'</select></label>');
+        if(editing){ var PH='<div class="iph">'; bph.forEach(function(src,k){ PH+='<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="bikes:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'; }); H.push(PH+'<button class="iph-add" type="button" data-iphadd="bikes:'+i+'">'+ICON.plus+(lang==="th"?"เพิ่มรูป":"Add photos")+'</button></div>'); }
+        H.push('<div class="meta"><span class="dur">'+(bt==="bike"?ICON.bike:ICON.car)+'<span'+ed("bikes."+i+".spec")+'>'+esc(t(bk,"spec")||(lang==="th"?"ค่าเช่า":"Rental"))+'</span></span>'
+          +((bk.price||editing)?'<span class="price">฿<b'+ed("bikes."+i+".price")+'>'+esc(bk.price||"")+'</b>'+(bt==="van"?(lang==="th"?" / วัน":" / day"):(lang==="th"?" / 24 ชม.":" / 24 Hours"))+'</span>':'<span class="price ask">'+(lang==="th"?"สอบถามราคา":"Ask for price")+'</span>')+'</div>');
+        H.push('<div class="act"><a class="btn btn-primary btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(lang==="th"?"จองรถคันนี้":(bt==="bike"?"Book this bike":"Book this vehicle"))+'</a></div>');
+        H.push('</div></article>');
+      });
+      if(!compact) H.push('</div>');
+      });
+      if(compact&&vOpen) H.push('</div>');
+      if(compact&&allB>Object.keys(keepIx).length) H.push('<div class="seeall"><a class="btn btn-primary" href="#/rentals" data-nav>'+(lang==="th"?"ดูรถทั้งหมด":"See all vehicles")+' ('+allB+') →</a></div>');
+      H.push('<p class="rental-note"'+ed("rental.note")+'>'+esc(t(rt,"note"))+'</p>');
+      H.push('<div class="veh-add"><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="bike">'+ICON.plus+(lang==="th"?"เพิ่มมอเตอร์ไซค์":"Add a motorbike")+'</button><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="car">'+ICON.plus+(lang==="th"?"เพิ่มรถยนต์":"Add a car")+'</button><button class="btn btn-ghost addbtn" data-add="bikes" data-vt="van">'+ICON.plus+(lang==="th"?"เพิ่มรถตู้":"Add a van")+'</button></div>');
+      H.push('</div></section>');
+    }
+
+    return H.join("");
   }
   function svcHref(link){ link=link||"#contact";
     if(link==="#/tours:intl") return 'href="#/tours" data-nav data-tc="intl"';
@@ -2353,9 +2372,9 @@
   function updateNavActive(){
     var links=document.querySelectorAll("#navlinks a"); if(!links.length) return;
     var cur;
-    if(view==="tours"||view==="dest"||view==="tour") cur="#/tours"; else if(view==="activities") cur="#/activities"; else if(view==="deals") cur="#/deals"; else if(view==="tickets") cur="#/tickets"; else if(view==="top5") cur="#/top5";
+    if(view==="tours"||view==="dest"||view==="tour") cur="#/tours"; else if(view==="activities") cur="#/activities"; else if(view==="deals") cur="#/deals"; else if(view==="tickets") cur="#/tickets"; else if(view==="top5") cur="#/top5"; else if(view==="rentals") cur="#/rentals";
     else {
-      var map=[["top","#top"],["services","#services"],["about","#services"],["deals","#/deals"],["tours","#/tours"],["activities","#/activities"],["rental","#rental"],["gallery","#rental"],["events","#top"],["reviews","#reviews"],["contact","#contact"]];
+      var map=[["top","#top"],["services","#services"],["about","#services"],["deals","#/deals"],["tours","#/tours"],["activities","#/activities"],["rental","#/rentals"],["gallery","#/rentals"],["events","#top"],["reviews","#reviews"],["contact","#contact"]];
       cur="#top";
       var best=-1e9; map.forEach(function(m){ var el=document.getElementById(m[0]); if(!el) return; var tp=el.getBoundingClientRect().top; if(tp<=150&&tp>best){ best=tp; cur=m[1]; } });
       if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4) cur="#contact";
@@ -2390,7 +2409,7 @@
         {name:"Honda PCX 160",price:"400",desc_en:"Premium scooter with extra storage for longer rides.",desc_th:"รถรุ่นพรีเมียม ใต้เบาะกว้าง เหมาะกับการเดินทางไกล",img:"",c1:"#123B4E",c2:"#0B2330"}];
     }
     var sv=data.services;
-    if(!data._oct6&&sv&&sv.cards&&!sv.cards.some(function(c){ return c.link==="#rental"; })){
+    if(!data._oct6&&sv&&sv.cards&&!sv.cards.some(function(c){ return c.link==="#rental"||c.link==="#/rentals"; })){
       sv.cards.push({title_en:"Motorbike rental",title_th:"เช่ารถมอเตอร์ไซค์",
         body_en:"Prefer to ride yourself? Rent a well-maintained scooter with helmets included, by the day, week or month.",
         body_th:"อยากขับเที่ยวเอง? เช่ามอเตอร์ไซค์สภาพดีพร้อมหมวกกันน็อก ได้ทั้งรายวัน รายสัปดาห์ และรายเดือน",
@@ -2732,7 +2751,11 @@
     if(data._oct11c) return; data._oct11c=true;
     (data.events||[]).forEach(function(ev){ if(!ev.start&&/loy ?krathong|yi ?peng|ลอยกระทง|ยี่เป็ง/i.test((ev.title_en||"")+" "+(ev.title_th||""))){ ev.start="2026-11-24"; ev.end="2026-11-25"; } });
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); render(); mountWidget(); maybeFestPopup(); }
+  function ensureOct11d(){
+    if(data._oct11d) return; data._oct11d=true;
+    ((data.services||{}).cards||[]).forEach(function(c){ if(c.link==="#rental") c.link="#/rentals"; });
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureOct11d(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); render(); mountWidget(); maybeFestPopup(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

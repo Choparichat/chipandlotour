@@ -562,6 +562,11 @@
   .fpop-nav.p{left:10px} .fpop-nav.n{right:10px}
   .ev-popset{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 18px;padding:12px 14px;border:1px dashed var(--border);border-radius:12px;font-size:.92rem}
   .ev-popset label{display:flex;align-items:center;gap:8px;cursor:pointer}
+  .ev-popset input[type=number]{width:70px;padding:.3em .5em;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:inherit}
+  .ev-dates{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0}
+  .ev-dates input{font:inherit;padding:.3em .5em;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink)}
+  .ev-win{font-size:.82rem;color:var(--primary-ink,var(--primary));margin:2px 0 10px}
+  .fpop-soon{display:inline-block;background:#FFD23F;color:#3a2a00;font-weight:700;font-size:.8rem;padding:.25em .7em;border-radius:999px;margin-bottom:8px}
   .mshell{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:flex;align-items:center;justify-content:center;padding:16px}
   .mbox{background:var(--surface);color:var(--ink);border-radius:16px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
   .mbox.wide{max-width:560px}
@@ -769,7 +774,7 @@
     if((evs.length&&!popOn)||editing){
       var es=d.eventsSection||{};
       H.push('<section class="blk events" id="events"><div class="wrap"><div class="sec-head"><div class="eyebrow"'+ed("eventsSection.eyebrow")+'>'+esc(t(es,"eyebrow"))+'</div><h2'+ed("eventsSection.title")+'>'+esc(t(es,"title"))+'</h2></div>');
-      if(editing) H.push('<div class="ev-popset"><label><input type="checkbox" id="evpop"'+(popOn?' checked':'')+'> '+(lang==="th"?"แสดงเป็นป๊อปอัปเมื่อลูกค้าเข้าหน้าแรก (ซ่อนส่วนนี้จากหน้าเว็บ)":"Show as a pop-up when visitors open the home page (hides this section)")+'</label><button class="btn btn-ghost btn-sm" type="button" id="evpopprev">'+(lang==="th"?"ดูตัวอย่างป๊อปอัป":"Preview pop-up")+'</button></div>');
+      if(editing) H.push('<div class="ev-popset"><label><input type="checkbox" id="evpop"'+(popOn?' checked':'')+'> '+(lang==="th"?"แสดงเป็นป๊อปอัปเมื่อลูกค้าเข้าหน้าแรก (ซ่อนส่วนนี้จากหน้าเว็บ)":"Show as a pop-up when visitors open the home page (hides this section)")+'</label><label>'+(lang==="th"?"ขึ้นล่วงหน้า":"Show")+' <input type="number" min="0" max="365" id="evlead" value="'+popLead()+'"> '+(lang==="th"?"วัน ก่อนวันงาน (30 = 1 เดือน · 60 = 2 เดือน)":"days before the event (30 = 1 month · 60 = 2 months)")+'</label><button class="btn btn-ghost btn-sm" type="button" id="evpopprev">'+(lang==="th"?"ดูตัวอย่างป๊อปอัป":"Preview pop-up")+'</button></div>');
       H.push('<div class="ev-grid ev-n'+Math.min(evs.length,3)+'">');
       evs.forEach(function(ev,i){
         H.push('<article class="ev-card" data-ev="'+i+'"><button class="card-del" data-del="events" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>');
@@ -778,6 +783,7 @@
           +(editing?'':'<span class="ev-more">'+(lang==="th"?"ดูรายละเอียด":"View details")+' →</span>')+'</div></div>');
         if(editing){
           H.push('<div class="ev-edit"><label>'+(lang==="th"?"รายละเอียด":"Details")+'</label><p'+ed("events."+i+".desc")+'>'+esc(t(ev,"desc"))+'</p>');
+          H.push('<label>'+(lang==="th"?"วันงาน (เริ่ม – จบ) · ใช้กำหนดช่วงที่ป๊อปอัปขึ้น":"Event dates (start – end) · controls when the pop-up shows")+'</label><div class="ev-dates"><input type="date" data-evd="'+i+':start" value="'+esc(ev.start||"")+'"> – <input type="date" data-evd="'+i+':end" value="'+esc(ev.end||"")+'"></div><p class="ev-win">'+esc(evWindowText(ev))+'</p>');
           H.push('<label>'+(lang==="th"?"ราคา (฿) — เว้นว่าง = สอบถามราคา":"Price (฿) — leave empty = ask for price")+'</label><p class="ev-price"><b'+ed("events."+i+".price")+'>'+esc(ev.price||"")+'</b></p>');
           var ph=(ev.photos||[]); H.push('<label>'+(lang==="th"?"รูปเพิ่มเติม":"More photos")+'</label><div class="iph">');
           ph.forEach(function(src,k){ H.push('<div class="iph-t"><img src="'+esc(src)+'" alt=""><button class="x" type="button" data-iphdel="events:'+i+':'+k+'" title="Delete">'+ICON.trash+'</button></div>'); });
@@ -991,10 +997,17 @@
     fitNav();
   }
   // ---------- festival pop-up ----------
+  function popLead(){ var v=(data.eventsSection||{}).popup_lead; v=(v===undefined||v===null||v==="")?60:+v; return (isFinite(v)&&v>=0)?v:60; }
+  function addDays(ds,n){ var d=new Date(ds+"T00:00:00"); d.setDate(d.getDate()+n); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+  function evInWindow(ev){ if(!ev||!ev.start) return true; var td=todayStr(), from=addDays(ev.start,-popLead()), to=ev.end||ev.start; return td>=from&&td<=to; }
+  function evWindowText(ev){ var th=lang==="th"; if(!ev.start) return th?"ยังไม่ได้ใส่วันงาน → ป๊อปอัปขึ้นตลอด":"No dates set → the pop-up always shows";
+    var from=addDays(ev.start,-popLead()), to=ev.end||ev.start; return (th?"ป๊อปอัปขึ้นช่วง ":"Pop-up shows ")+fmtDate(from)+" – "+fmtDate(to)+(evInWindow(ev)?(th?" · กำลังแสดงอยู่":" · showing now"):""); }
+  function evDaysTo(ev){ if(!ev.start) return null; var st=new Date(ev.start+"T00:00:00"), n=new Date(); n.setHours(0,0,0,0); return Math.round((st-n)/864e5); }
   function popupOn(){ var es=data.eventsSection||{}; return es.popup!==false; }
   function festLink(){ var cm=destById("chiangmai"); if(cm&&(cm.subs||[]).some(function(s){ return s.id==="festival"; })&&(data.tours||[]).some(function(t){ return t.dest==="chiangmai"&&t.sub==="festival"; })) return "#/tours/chiangmai/festival"; return "#/tours"; }
   function openFestPopup(force){
-    var evs=(data.events||[]).filter(function(e){ return e&&(e.title_en||e.title_th); }); if(!evs.length) return;
+    var all=(data.events||[]).filter(function(e){ return e&&(e.title_en||e.title_th); }), evs=all.filter(evInWindow);
+    if(!evs.length){ if(!force) return; evs=all; } if(!evs.length) return;
     if(document.querySelector(".fpop")) return;
     var th=lang==="th", es=data.eventsSection||{}, k=0, wab=waLink(data.contact&&data.contact.whatsapp);
     var v=document.createElement("div"); v.className="fpop"; v.setAttribute("role","dialog"); v.setAttribute("aria-modal","true");
@@ -1004,7 +1017,8 @@
       var ev=evs[k], link=ev.link||festLink(), ext=/^https?:/i.test(link);
       var H='<div class="fpop-box"><button class="fpop-x" type="button" aria-label="Close">×</button>';
       H+='<div class="fpop-media">'+media(ev)+'<span class="fpop-tag">🏮 '+esc(t(es,"eyebrow")||(th?"อีเวนต์พิเศษ":"Special event"))+'</span>'+(evs.length>1?'<button class="fpop-nav p" type="button">‹</button><button class="fpop-nav n" type="button">›</button>':'')+'</div>';
-      H+='<div class="fpop-body"><div class="fpop-eyebrow">'+esc(t(es,"title"))+'</div><h3>'+esc(t(ev,"title"))+'</h3>';
+      var dl=evDaysTo(ev);
+      H+='<div class="fpop-body">'+(dl!=null&&dl>0?'<span class="fpop-soon">🔜 '+(th?"อีก "+dl+" วัน":"In "+dl+" day"+(dl===1?"":"s"))+'</span>':(dl!=null&&dl<=0&&evInWindow(ev)?'<span class="fpop-soon">🎉 '+(th?"กำลังจัดงานอยู่ตอนนี้":"Happening now")+'</span>':''))+'<div class="fpop-eyebrow">'+esc(t(es,"title"))+'</div><h3>'+esc(t(ev,"title"))+'</h3>';
       if(t(ev,"date")) H+='<div class="fpop-date">📅 '+esc(t(ev,"date"))+(ev.price?' · ฿'+esc(ev.price):'')+'</div>';
       if(t(ev,"desc")) H+='<p>'+esc(t(ev,"desc"))+'</p>';
       H+='<div class="fpop-act"><a class="btn btn-primary fpop-go" href="'+esc(link)+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+(th?"ไปดูทัวร์ต่อ →":"See the tours →")+'</a>';
@@ -1027,6 +1041,7 @@
   var festShown=false;
   function maybeFestPopup(){
     if(festShown||editing||view!=="home"||!popupOn()) return; festShown=true;
+    if(!(data.events||[]).some(function(e){ return e&&(e.title_en||e.title_th)&&evInWindow(e); })) return;
     try{ if(sessionStorage.getItem("cnl_fest_seen")) return; sessionStorage.setItem("cnl_fest_seen","1"); }catch(e){}
     setTimeout(function(){ if(!editing&&view==="home") openFestPopup(); },700);
   }
@@ -1873,6 +1888,8 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-tc]"),function(a){ a.addEventListener("click",function(){ tourCat=a.getAttribute("data-tc"); if(view==="tours") render(); }); });
     var da=document.getElementById("dealadd"); if(da) da.onclick=function(){ openPromoForm(); };
     var evp=document.getElementById("evpop"); if(evp) evp.onchange=function(){ syncEdits(); data.eventsSection=data.eventsSection||{}; data.eventsSection.popup=evp.checked; render(); toast(lang==="th"?"อย่าลืมกดบันทึก":"Remember to save"); };
+    var evl=document.getElementById("evlead"); if(evl) evl.onchange=function(){ syncEdits(); data.eventsSection=data.eventsSection||{}; data.eventsSection.popup_lead=Math.max(0,Math.min(365,parseInt(evl.value,10)||0)); render(); };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-evd]"),function(inp){ inp.onchange=function(){ syncEdits(); var a=inp.getAttribute("data-evd").split(":"), ev=data.events[+a[0]]; if(!ev) return; if(inp.value) ev[a[1]]=inp.value; else delete ev[a[1]]; if(ev.start&&ev.end&&ev.end<ev.start) ev.end=ev.start; render(); }; });
     var evpp=document.getElementById("evpopprev"); if(evpp) evpp.onclick=function(){ syncEdits(); openFestPopup(true); };
     Array.prototype.forEach.call(document.querySelectorAll('a[href="#events"]'),function(a){ a.addEventListener("click",function(e){ if(editing) return; if(popupOn()||!document.getElementById("events")){ e.preventDefault(); openFestPopup(true); } }); });
     var dpv=document.getElementById("dpreview"); if(dpv) dpv.onchange=function(){ syncEdits(); var v=Math.max(0,Math.min(365,parseInt(dpv.value,10)||0)); data.dealsSection=data.dealsSection||{}; data.dealsSection.preview_days=v; render(); };
@@ -2711,7 +2728,11 @@
     var C=data.services&&data.services.cards; if(!C) return;
     for(var i=0;i<C.length;i++) if(C[i].link==="#/tours:intl"){ var a=C.splice(i,1)[0]; a.thaiOnly=true; a.title_th=a.title_th||"ทัวร์ต่างประเทศ Asia Tour"; a.cta_th=a.cta_th||"ทัวร์ต่างประเทศ"; C.push(a); break; }
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureSocial(); ensureEvents(); ensureLicense(); render(); mountWidget(); maybeFestPopup(); }
+  function ensureOct11c(){
+    if(data._oct11c) return; data._oct11c=true;
+    (data.events||[]).forEach(function(ev){ if(!ev.start&&/loy ?krathong|yi ?peng|ลอยกระทง|ยี่เป็ง/i.test((ev.title_en||"")+" "+(ev.title_th||""))){ ev.start="2026-11-24"; ev.end="2026-11-25"; } });
+  }
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); render(); mountWidget(); maybeFestPopup(); }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };

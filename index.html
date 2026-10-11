@@ -383,6 +383,16 @@
   body.editing .hero [data-edit]:hover,body.editing .hero [data-edit]:focus{background:rgba(255,255,255,.14)}
 
   .imgedit{position:absolute;right:10px;bottom:10px;z-index:20;display:none;cursor:pointer}
+  .imgpos-btn{position:absolute;left:10px;bottom:10px;z-index:20;display:none;align-items:center;gap:.4em;background:#fff;color:#241F19;font:600 .8rem/1.2 var(--sans);padding:.55em 1em;border-radius:999px;border:1px solid rgba(0,0,0,.06);box-shadow:0 2px 12px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}
+  .imgpos-btn:hover{background:#f3efe6}
+  body.editing .imgpos-btn{display:inline-flex}
+  .ipz-frame{position:relative;overflow:hidden;border-radius:12px;margin:6px auto 14px;background:#000;cursor:grab;touch-action:none;user-select:none;max-width:100%}
+  .ipz-frame.grab{cursor:grabbing}
+  .ipz-frame img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  .ipz-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;font-size:.92rem}
+  .ipz-row input[type=range]{flex:1;accent-color:var(--btn,#1E88E5)}
+  .ipz-arrows{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:4px 0 10px}
+  .ipz-arrows button{min-width:42px}
   body.editing .imgedit{display:inline-flex}
   .imgedit span{background:#fff;color:#241F19;font-size:.8rem;font-weight:600;padding:.55em 1em;border-radius:999px;box-shadow:0 2px 12px rgba(0,0,0,.35);display:inline-flex;gap:.45em;align-items:center;white-space:nowrap;border:1px solid rgba(0,0,0,.06)}
   .imgedit span:hover{background:#f3efe6}
@@ -952,7 +962,50 @@
     if(lw && slot && rvs && lw.querySelector("*") && !editing && !widgetDead){ slot.appendChild(lw); lw.hidden=false; rvs.classList.add("has-live"); watchWidget(); }
     try{ bind(); applyEditing(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); }
     try{ updateNavActive(); }catch(e){}
+    try{ applyImgPos(); }catch(e){}
     fitNav();
+  }
+  // ---------- image framing (zoom / move) ----------
+  function getPos(path){ try{ var r=ref(path); var v=r.obj&&r.obj[r.key+"_pos"]; return (v&&typeof v==="object")?v:null; }catch(e){ return null; } }
+  function posImgOf(label){ var box=label.parentNode; if(!box) return null; var im=box.querySelector(":scope > img")||box.querySelector("img:not(.qr img)"); return im; }
+  function styleImg(im,pos){ if(!im) return; if(pos){ var x=+pos.x, y=+pos.y, z=+pos.z||1; im.style.objectPosition=x+"% "+y+"%"; im.style.scale=String(z); im.style.transformOrigin=x+"% "+y+"%"; } else { im.style.objectPosition=""; im.style.scale=""; im.style.transformOrigin=""; } }
+  function applyImgPos(){
+    Array.prototype.forEach.call(document.querySelectorAll("label.imgedit[data-img]"),function(lab){
+      var path=lab.getAttribute("data-img"), im=posImgOf(lab); if(!im) return;
+      styleImg(im,getPos(path));
+      if(editing&&!lab.parentNode.querySelector(":scope > .imgpos-btn")){
+        var b=document.createElement("button"); b.type="button"; b.className="imgpos-btn"; b.setAttribute("data-imgpos",path);
+        b.innerHTML="⤢ "+(lang==="th"?"ปรับรูป":"Adjust photo");
+        b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); openImgPos(path,im); };
+        lab.parentNode.appendChild(b);
+      }
+    });
+  }
+  function openImgPos(path,im){
+    syncEdits(); var th=lang==="th", box=im.parentNode, bw=box.clientWidth||400, bh=box.clientHeight||300;
+    var maxW=Math.min(560,window.innerWidth-60), fw=maxW, fh=Math.round(maxW*bh/bw); if(fh>420){ fh=420; fw=Math.round(420*bw/bh); }
+    var cur=getPos(path)||{x:50,y:50,z:1}, st={x:+cur.x,y:+cur.y,z:+cur.z||1};
+    var w=modalShell('<h3>'+(th?"ปรับรูป":"Adjust photo")+'</h3><p class="mhint">'+(th?"ลากรูปเพื่อเลื่อน ซ้าย/ขวา/ขึ้น/ลง · ใช้แถบเลื่อนเพื่อขยาย":"Drag the photo to move it · use the slider to zoom")+'</p>'
+      +'<div class="ipz-frame" style="width:'+fw+'px;height:'+fh+'px"><img src="'+esc(im.getAttribute("src"))+'" alt=""></div>'
+      +'<div class="ipz-row"><span>'+(th?"ขยาย":"Zoom")+'</span><input type="range" min="1" max="3" step="0.01" id="ipz-z"><b id="ipz-zv"></b></div>'
+      +'<div class="ipz-arrows"><button class="btn btn-ghost btn-sm" type="button" data-mv="0,-5">↑</button><button class="btn btn-ghost btn-sm" type="button" data-mv="0,5">↓</button><button class="btn btn-ghost btn-sm" type="button" data-mv="-5,0">←</button><button class="btn btn-ghost btn-sm" type="button" data-mv="5,0">→</button></div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" type="button" id="ipz-reset">'+(th?"รีเซ็ต":"Reset")+'</button><span><button class="btn btn-ghost" type="button" id="ipz-cancel">'+(th?"ยกเลิก":"Cancel")+'</button> <button class="btn btn-primary" type="button" id="ipz-ok">'+(th?"ตกลง":"Done")+'</button></span></div>');
+    var fr=w.querySelector(".ipz-frame"), pi=fr.querySelector("img"), zr=w.querySelector("#ipz-z"), zv=w.querySelector("#ipz-zv");
+    var clamp=function(v){ return Math.max(0,Math.min(100,v)); };
+    var draw=function(){ st.x=clamp(st.x); st.y=clamp(st.y); styleImg(pi,st); zr.value=st.z; zv.textContent=Math.round(st.z*100)+"%"; };
+    draw();
+    zr.oninput=function(){ st.z=+zr.value; draw(); };
+    fr.addEventListener("pointerdown",function(e){ e.preventDefault(); fr.classList.add("grab"); var sx=e.clientX, sy=e.clientY, ox=st.x, oy=st.y;
+      var mv=function(ev){ st.x=ox-(ev.clientX-sx)/fw*100/st.z*1.6; st.y=oy-(ev.clientY-sy)/fh*100/st.z*1.6; draw(); };
+      var up=function(){ fr.classList.remove("grab"); window.removeEventListener("pointermove",mv); window.removeEventListener("pointerup",up); window.removeEventListener("pointercancel",up); };
+      window.addEventListener("pointermove",mv); window.addEventListener("pointerup",up); window.addEventListener("pointercancel",up); });
+    Array.prototype.forEach.call(w.querySelectorAll("[data-mv]"),function(b){ b.onclick=function(){ var d=b.getAttribute("data-mv").split(","); st.x+=+d[0]; st.y+=+d[1]; draw(); }; });
+    w.querySelector("#ipz-reset").onclick=function(){ st={x:50,y:50,z:1}; draw(); };
+    w.querySelector("#ipz-cancel").onclick=function(){ w.remove(); };
+    w.onclick=function(e){ if(e.target===w) w.remove(); };
+    w.querySelector("#ipz-ok").onclick=function(){ var r=ref(path), k=r.key+"_pos";
+      if(st.x===50&&st.y===50&&st.z===1) delete r.obj[k]; else r.obj[k]={x:Math.round(st.x*10)/10,y:Math.round(st.y*10)/10,z:Math.round(st.z*100)/100};
+      w.remove(); render(); toast(th?"ปรับรูปแล้ว อย่าลืมกดบันทึก":"Photo adjusted — remember to save"); };
   }
   // show the full menu whenever it fits; switch to ☰ only when it doesn't
   function fitNav(){
@@ -1831,7 +1884,7 @@
   }
   function handleImg(path,file){
     compress(file,(path.indexOf("hero")===0||/banner$/.test(path))?2000:1400,0.82).then(function(uri){
-      syncEdits(); setPlain(path,uri); render();
+      syncEdits(); setPlain(path,uri); try{ var r=ref(path); delete r.obj[r.key+"_pos"]; }catch(e){} render();
     }).catch(function(){ toast(lang==="th"?"อัปโหลดรูปไม่สำเร็จ":"Could not load image"); });
   }
   function openReviewForm(){

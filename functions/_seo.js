@@ -75,7 +75,7 @@
           if(pics.length) o.image=pics;
           if(pn){ o.category="Tours"; if(it.code) o.sku=clean(it.code); o.brand={"@type":"Brand","name":brand};
             o.offers={"@type":"Offer","url":cu,"priceCurrency":"THB","price":String(pn),"availability":"https://schema.org/InStock","seller":{"@id":origin+"/#agency"}};
-            if(promoOn(it,today)&&it.promo_end) o.offers.priceValidUntil=it.promo_end; m.type="product"; }
+            if(promoOn(it,today)&&it.promo_end) o.offers.priceValidUntil=it.promo_end; var vf=(promoOn(it,today)&&it.promo_start)?it.promo_start:today; if(vf) o.offers.validFrom=vf; m.type="product"; }
           else o.provider={"@id":origin+"/#agency"};
           m.ld.push(o);
           var C=[[L==="th"?"หน้าแรก":"Home",P({v:"home"},L)],[L==="th"?"ทัวร์":"Tours",P({v:"tours"},L)]]; if(d) C.push([nm,P({v:"dest",id:d.id},L)]); C.push([T,cu]); m.ld.push(crumbs(C)); }

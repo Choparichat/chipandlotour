@@ -558,7 +558,7 @@
   .grp-title{font-family:var(--serif);font-size:clamp(1.4rem,2.6vw,1.9rem);margin:34px 0 20px}
   .grp-title.first{margin-top:6px}
   a.chip{text-decoration:none;display:inline-block}
-  .chips-sm{margin-bottom:14px}
+  .chips-sm{margin-bottom:14px} .depsw .chip{font-size:.86rem}
   .catctl{display:flex;flex-wrap:wrap;gap:6px}
   .tcard h3 a.tlink{text-decoration:none} .tcard h3 a.tlink:hover{color:var(--primary-ink)}
   .tcard .media[data-det]{cursor:pointer}
@@ -1604,8 +1604,17 @@
     if(dl===null) return th?"โปรไฟไหม้ มีจำนวนจำกัด":"Hot deal — limited time";
     return (dl<=1?(th?"วันสุดท้าย! ":"Last day! "):(th?"เหลืออีก "+dl+" วัน · ":dl+" days left · "))+(th?"ถึง ":"until ")+fmtDate(it.promo_end);
   }
+  // International tours: where the flight leaves from. Set in edit mode (tours[].dep = "cnx" | "bkk");
+  // when not set, it is guessed from the tour code / title / highlights (CNX, _BK, ดอนเมือง, "บินตรงเชียงใหม่" ...)
+  var DEP={cnx:["บินตรงจากเชียงใหม่","Direct from Chiang Mai","บินตรงเชียงใหม่"],bkk:["บินตรงจากกรุงเทพ","Direct from Bangkok","บินตรงกรุงเทพ"]};
+  function depGuess(tr){ var s=[tr.code,tr.title_th,tr.title_en,tr.hl_th,tr.hl_en].join(" ");
+    if(/CNX|บินตรง\s*(จาก)?\s*เชียงใหม่|ออกจาก\s*เชียงใหม่|from Chiang ?Mai/i.test(s)) return "cnx";
+    if(/_BKK?\b|\bBKK\b|\bDMK\b|ดอนเมือง|สุวรรณภูมิ|บินตรง\s*(จาก)?\s*กรุงเทพ|ออกจาก\s*กรุงเทพ|from Bangkok/i.test(s)) return "bkk"; return ""; }
+  function depOf(tr){ if(!tr||tr.cat!=="intl") return ""; var v=tr.dep; if(v==="cnx"||v==="bkk") return v; return depGuess(tr); }
+  function depName(v,short){ var x=DEP[v]; if(!x) return ""; return short?x[2]:(lang==="th"?x[0]:x[1]); }
+  var depF="", depFor="";
   function catLabel(arr,it){
-    if(arr==="tours"){ var d=tourDest(it); if(d) return dname(d)+(it.sub&&subName(d,it.sub)?" · "+subName(d,it.sub):""); }
+    if(arr==="tours"){ var d=tourDest(it), dp=depOf(it); if(d) return dname(d)+(it.sub&&subName(d,it.sub)?" · "+subName(d,it.sub):"")+(dp?" · ✈ "+depName(dp,true):""); }
     var c=catOf(arr,it); return lang==="th"?c[1]:c[2];
   }
   function catControls(arr,i,it){
@@ -1626,6 +1635,10 @@
       d.subs.forEach(function(s){ h+='<option value="'+esc(s.id)+'"'+(it.sub===s.id?' selected':'')+'>'+esc(subName(d,s.id))+'</option>'; });
       h+='</select></label>';
     }
+    if(cat==="intl"){ var g=depGuess(it), cur=(it.dep==="cnx"||it.dep==="bkk")?it.dep:"";
+      h+='<label class="catbtn">'+(th?"ออกเดินทาง:":"Departs:")+' <select data-tdep="'+i+'"><option value="">'+(g?(th?"อัตโนมัติ: ":"Auto: ")+esc(depName(g,true)):(th?"— ยังไม่ระบุ —":"— not set —"))+'</option>';
+      ["cnx","bkk"].forEach(function(v){ h+='<option value="'+v+'"'+(cur===v?' selected':'')+'>'+esc(DEP[v][0])+'</option>'; });
+      h+='</select></label>'; }
     return h+'</div>';
   }
   function destCard(d,k){
@@ -1682,11 +1695,18 @@
     if(!d) return H+'<p class="empty-note">'+(th?"ไม่พบหน้านี้":"Page not found")+'</p></div></section>';
     var k=dests().indexOf(d), intl=d.cat==="intl";
     var ix=toursOf(d.id);
+    if(depFor!==d.id){ depF=""; depFor=d.id; }
+    var depN={cnx:0,bkk:0}; if(intl) ix.forEach(function(i){ var v=depOf(data.tours[i]); if(v) depN[v]++; });
+    var depOn=intl&&(depN.cnx+depN.bkk>0||editing), depAll=ix.length;
+    if(!depOn) depF=""; else if(depF) ix=ix.filter(function(i){ return depOf(data.tours[i])===depF; });
     H+='<div class="sec-head"><div class="eyebrow">'+esc(intl?TOUR_CATS[1][1]:(th?TOUR_CATS[0][1]:TOUR_CATS[0][2]))+'</div>';
     var hPos=H.length; // the heading is added below, once the group labels are known
     H+='<div class="chips chips-sm">';
     dests().filter(function(x){ return x.cat===d.cat; }).forEach(function(x){ H+='<a class="chip'+(x.id===d.id?' on':'')+'" href="#/tours/'+encodeURIComponent(x.id)+'" data-nav>'+esc(dname(x))+' <span>'+toursOf(x.id).length+'</span></a>'; });
     H+='</div>';
+    if(depOn){ H+='<div class="chips chips-sm depsw" role="group" aria-label="'+(th?"สนามบินที่ออกเดินทาง":"Departure airport")+'"><button type="button" class="chip'+(depF?'':' on')+'" data-depf="">✈ '+(th?"ทุกเที่ยวบิน":"All flights")+' <span>'+depAll+'</span></button>';
+      ["cnx","bkk"].forEach(function(v){ if(!depN[v]&&!editing) return; H+='<button type="button" class="chip'+(depF===v?' on':'')+'" data-depf="'+v+'">'+esc(depName(v))+' <span>'+depN[v]+'</span></button>'; });
+      H+='</div>'; }
     var subs=d.subs||[], base="#/tours/"+encodeURIComponent(d.id);
     var inSub=function(i,sid){ var tr=data.tours[i]; if(sid==="other") return !tr.sub||!subs.some(function(s){ return s.id===tr.sub; }); return tr.sub===sid; };
     var sc=function(sid){ return ix.filter(function(i){ return inSub(i,sid); }).length; }, nOther=sc("other");
@@ -1758,6 +1778,7 @@
     if(it.code||editing) H+='<div class="td-code">'+(th?"ทัวร์โค้ด ":"Tour code ")+'<b'+ed(P+"code")+'>'+esc(it.code||"")+'</b></div>';
     H+='<div class="td-rows">';
     H+='<div class="td-row">'+ICON.clock+'<span'+ed(P+"dur")+'>'+esc(t(it,"dur"))+'</span></div>';
+    if(depOf(it)&&!editing) H+='<div class="td-row">'+ICON.globe+'<span>'+esc(depName(depOf(it)))+'</span></div>';
     if(t(it,"hl")||editing) H+='<div class="td-row">'+ICON.tag+'<span'+ed(P+"hl")+'>'+esc(t(it,"hl"))+'</span></div>';
     if(it.stars||editing) H+='<div class="td-row">'+ICON.bed+'<span><span'+ed(P+"stars")+'>'+esc(it.stars||"")+'</span>'+(th?" ดาว":"-star hotel")+'</span></div>';
     H+='</div>';
@@ -2178,6 +2199,8 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-tcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tcat")]; it.cat=sel.value;
       var f=dests().filter(function(x){ return x.cat===it.cat; })[0]; it.dest=f?f.id:""; it.sub=""; render(); toast(lang==="th"?"ย้ายหมวดแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tdest]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tdest")], d=destById(sel.value); it.dest=sel.value; if(d) it.cat=d.cat; it.sub=""; render(); toast(lang==="th"?"ย้ายแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-depf]"),function(b){ b.onclick=function(){ syncEdits(); depF=b.getAttribute("data-depf"); render(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tdep]"),function(sel){ sel.onclick=function(e){ e.stopPropagation(); }; sel.onchange=function(){ syncEdits(); var tr=data.tours[+sel.getAttribute("data-tdep")]; if(!tr) return; if(sel.value) tr.dep=sel.value; else delete tr.dep; render(); toast(lang==="th"?"ตั้งสนามบินแล้ว อย่าลืมกดบันทึก":"Departure set — remember to save"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tsub]"),function(sel){ sel.onchange=function(){ syncEdits(); data.tours[+sel.getAttribute("data-tsub")].sub=sel.value; render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tdimg]"),function(el){ el.onclick=function(e){ if(editing||e.target.closest("label,button")) return; var it=data.tours[tourIdx(route.id)]; if(!it) return;
       var pics=[it.img].concat(it.photos||[]).filter(Boolean); if(pics.length) openLB(pics,+el.getAttribute("data-tdimg")||0); }; });

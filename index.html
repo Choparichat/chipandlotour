@@ -1689,7 +1689,10 @@
     H+='<button class="btn btn-ghost addbtn" data-add="destinations">'+ICON.plus+(th?"เพิ่มจังหวัด / ประเทศ":"Add a province / country")+'</button>';
     return H+'</div></section>';
   }
-  function destPage(){
+  // International countries are shown in Thai only (like their tour pages), whatever language is selected
+  function destPage(){ var d0=destById(route.id); if(!d0||d0.cat!=="intl") return destPage0();
+    var lg=lang; lang="th"; try{ return destPage0(); } finally{ lang=lg; } }
+  function destPage0(){
     var th=lang==="th", d=destById(route.id);
     var H='<section class="blk page-top" id="tours"><div class="wrap"><a class="back" href="#/tours" data-nav>← '+(th?"ทัวร์ทั้งหมด":"All tours")+'</a>';
     if(!d) return H+'<p class="empty-note">'+(th?"ไม่พบหน้านี้":"Page not found")+'</p></div></section>';

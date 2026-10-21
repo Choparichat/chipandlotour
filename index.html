@@ -1629,6 +1629,7 @@
     TOUR_CATS.forEach(function(c){ h+='<option value="'+c[0]+'"'+(c[0]===cat?' selected':'')+'>'+esc(th?c[1]:c[2])+'</option>'; });
     h+='</select></label><label class="catbtn">'+(cat==="intl"?(th?"ประเทศ:":"Country:"):(th?"จังหวัด:":"Province:"))+' <select data-tdest="'+i+'">';
     dests().filter(function(x){ return x.cat===cat; }).forEach(function(x){ h+='<option value="'+esc(x.id)+'"'+(d&&x.id===d.id?' selected':'')+'>'+esc(dname(x))+'</option>'; });
+    h+='<option value="__new">'+(cat==="intl"?(th?"＋ เพิ่มประเทศใหม่…":"＋ Add a new country…"):(th?"＋ เพิ่มจังหวัดใหม่…":"＋ Add a new province…"))+'</option>';
     h+='</select></label>';
     if(d){
       h+='<label class="catbtn">'+(cat==="intl"?(th?"เมือง:":"City:"):(th?"โปรแกรม:":"Program:"))+' <select data-tsub="'+i+'"><option value="">'+(th?"— ไม่ระบุ —":"— none —")+'</option>';
@@ -1989,6 +1990,24 @@
       toast(th?"ตั้งโปรแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Deal set — tap “Save & publish”"); };
   }
   // Add a new city / program group straight from a tour's "City:" menu, and put the tour in it
+  // Add a new country / province straight from a tour's "Country:" menu, and move the tour there
+  function openNewDestForm(i){
+    var tr=data.tours[i]; if(!tr) return; var cd=tourDest(tr), cat=(cd&&cd.cat)||tr.cat||"thai", th=lang==="th", intl=cat==="intl";
+    var w=modalShell('<h3>'+(intl?(th?"เพิ่มประเทศใหม่":"New country"):(th?"เพิ่มจังหวัดใหม่":"New province"))+'</h3>'
+      +'<p class="mhint">'+(th?"ทัวร์นี้จะถูกย้ายไปอยู่ประเทศ/จังหวัดใหม่ทันที เปลี่ยนรูปปกหรือเพิ่มเมืองย่อยได้ที่การ์ดประเทศในหน้าทัวร์":"This tour moves to the new destination. Add a cover photo or cities from its card on the Tours page.")+'</p>'
+      +'<div class="mrow"><input id="nd-th" placeholder="'+(intl?"ชื่อประเทศ (ไทย) เช่น เกาหลีใต้":"ชื่อจังหวัด (ไทย) เช่น น่าน")+'"><input id="nd-en" placeholder="English name (optional) e.g. '+(intl?"South Korea":"Nan")+'"></div>'
+      +'<div class="mbtns"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="nd-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="nd-ok">'+(th?"เพิ่ม":"Add")+'</button></div>');
+    var ti=w.querySelector("#nd-th"), te=w.querySelector("#nd-en"); setTimeout(function(){ ti.focus(); },30);
+    var close=function(){ w.remove(); };
+    w.onclick=function(e){ if(e.target===w) close(); }; w.querySelector("#nd-cancel").onclick=close;
+    var ok=function(){ var nt=ti.value.trim(), ne=te.value.trim(); if(!nt&&!ne){ ti.focus(); return; }
+      data.destinations=data.destinations||[]; var low=function(s){ return String(s||"").trim().toLowerCase(); };
+      var ex=data.destinations.filter(function(x){ return (nt&&low(x.name_th)===low(nt))||(ne&&low(x.name_en)===low(ne)); })[0];
+      if(!ex){ var id=SEO.slugify(ne).replace(/-/g,""); if(!id||destById(id)) id=newId("d");
+        ex={id:id,cat:cat,name_th:nt||ne,name_en:ne||nt,img:"",c1:"#2E6B6B",c2:"#123B3B",subs:[]}; data.destinations.push(ex); }
+      tr.dest=ex.id; tr.cat=ex.cat; tr.sub=""; close(); render(); toast(th?"เพิ่ม “"+(ex.name_th||ex.name_en)+"” แล้ว อย่าลืมกดบันทึก":"Added — remember to save"); };
+    w.querySelector("#nd-ok").onclick=ok; w.addEventListener("keydown",function(e){ if(e.key==="Enter") ok(); if(e.key==="Escape") close(); });
+  }
   function openNewSubForm(i){
     var tr=data.tours[i], d=tr&&tourDest(tr); if(!d) return; var th=lang==="th", intl=d.cat==="intl";
     var w=modalShell('<h3>'+(intl?(th?"เพิ่มเมืองใหม่ใน ":"New city in "):(th?"เพิ่มหมวดใหม่ใน ":"New group in "))+esc(dname(d))+'</h3>'
@@ -2220,7 +2239,9 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-dsub]"),function(b){ b.onclick=function(){ syncEdits(); destSub=b.getAttribute("data-dsub"); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tcat")]; it.cat=sel.value;
       var f=dests().filter(function(x){ return x.cat===it.cat; })[0]; it.dest=f?f.id:""; it.sub=""; render(); toast(lang==="th"?"ย้ายหมวดแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
-    Array.prototype.forEach.call(document.querySelectorAll("[data-tdest]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tdest")], d=destById(sel.value); it.dest=sel.value; if(d) it.cat=d.cat; it.sub=""; render(); toast(lang==="th"?"ย้ายแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tdest]"),function(sel){ sel.onclick=function(e){ e.stopPropagation(); }; sel.onchange=function(){ syncEdits();
+      if(sel.value==="__new"){ var ti=+sel.getAttribute("data-tdest"); sel.value=(data.tours[ti]||{}).dest||""; openNewDestForm(ti); return; }
+      var it=data.tours[+sel.getAttribute("data-tdest")], d=destById(sel.value); it.dest=sel.value; if(d) it.cat=d.cat; it.sub=""; render(); toast(lang==="th"?"ย้ายแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-depf]"),function(b){ b.onclick=function(){ syncEdits(); depF=b.getAttribute("data-depf"); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tdep]"),function(sel){ sel.onclick=function(e){ e.stopPropagation(); }; sel.onchange=function(){ syncEdits(); var tr=data.tours[+sel.getAttribute("data-tdep")]; if(!tr) return; if(sel.value) tr.dep=sel.value; else delete tr.dep; render(); toast(lang==="th"?"ตั้งสนามบินแล้ว อย่าลืมกดบันทึก":"Departure set — remember to save"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tsub]"),function(sel){ sel.onclick=function(e){ e.stopPropagation(); }; sel.onchange=function(){ syncEdits(); var i=+sel.getAttribute("data-tsub");

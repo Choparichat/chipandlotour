@@ -218,7 +218,7 @@
   /* tours */
   .tours-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
   .tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative}
-  .tcard .media{aspect-ratio:4/3;position:relative;overflow:hidden}
+  .tcard .media{aspect-ratio:1/1;position:relative;overflow:hidden}
   .tcard .media .ph,.tcard .media img{width:100%;height:100%;object-fit:cover}
   .tcard .region{position:absolute;top:12px;left:12px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-size:.74rem;font-weight:600;letter-spacing:.04em;padding:.32em .7em;border-radius:999px;backdrop-filter:blur(4px)}
   .tcard .body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
@@ -547,7 +547,7 @@
   .dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
   .dcard{position:relative;cursor:pointer;display:flex;flex-direction:column;gap:14px}
   body.editing .dcard{cursor:default}
-  .dmedia{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:6px;background:var(--surface-2);box-shadow:var(--shadow)}
+  .dmedia{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:var(--surface-2);box-shadow:var(--shadow)}
   .dmedia>img,.dmedia>.ph{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
   .dcard:hover .dmedia>img{transform:scale(1.04)}
   .dcap{text-align:center}
@@ -1630,9 +1630,10 @@
     h+='</select></label><label class="catbtn">'+(cat==="intl"?(th?"ประเทศ:":"Country:"):(th?"จังหวัด:":"Province:"))+' <select data-tdest="'+i+'">';
     dests().filter(function(x){ return x.cat===cat; }).forEach(function(x){ h+='<option value="'+esc(x.id)+'"'+(d&&x.id===d.id?' selected':'')+'>'+esc(dname(x))+'</option>'; });
     h+='</select></label>';
-    if(d&&d.subs&&d.subs.length){
+    if(d){
       h+='<label class="catbtn">'+(cat==="intl"?(th?"เมือง:":"City:"):(th?"โปรแกรม:":"Program:"))+' <select data-tsub="'+i+'"><option value="">'+(th?"— ไม่ระบุ —":"— none —")+'</option>';
-      d.subs.forEach(function(s){ h+='<option value="'+esc(s.id)+'"'+(it.sub===s.id?' selected':'')+'>'+esc(subName(d,s.id))+'</option>'; });
+      (d.subs||[]).forEach(function(s){ h+='<option value="'+esc(s.id)+'"'+(it.sub===s.id?' selected':'')+'>'+esc(subName(d,s.id))+'</option>'; });
+      h+='<option value="__new">'+(cat==="intl"?(th?"＋ เพิ่มเมืองใหม่…":"＋ Add a new city…"):(th?"＋ เพิ่มหมวดใหม่…":"＋ Add a new group…"))+'</option>';
       h+='</select></label>';
     }
     if(cat==="intl"){ var g=depGuess(it), cur=(it.dep==="cnx"||it.dep==="bkk")?it.dep:"";
@@ -1987,6 +1988,24 @@
       if(b) x.price=b; x.promo_price=p; x.promo_start=s; x.promo_end=e; w.remove(); render();
       toast(th?"ตั้งโปรแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Deal set — tap “Save & publish”"); };
   }
+  // Add a new city / program group straight from a tour's "City:" menu, and put the tour in it
+  function openNewSubForm(i){
+    var tr=data.tours[i], d=tr&&tourDest(tr); if(!d) return; var th=lang==="th", intl=d.cat==="intl";
+    var w=modalShell('<h3>'+(intl?(th?"เพิ่มเมืองใหม่ใน ":"New city in "):(th?"เพิ่มหมวดใหม่ใน ":"New group in "))+esc(dname(d))+'</h3>'
+      +'<p class="mhint">'+(th?"ทัวร์นี้จะถูกย้ายเข้าไปอยู่ในหมวดใหม่ทันที เปลี่ยนชื่อหรือลบทีหลังได้ที่ปุ่ม “เมืองย่อย / หมวดโปรแกรม” บนการ์ดประเทศ":"This tour moves into the new group. Rename or delete it later from the country card.")+'</p>'
+      +'<div class="mrow"><input id="ns-th" placeholder="'+(intl?"ชื่อเมือง (ไทย) เช่น คุนหมิง":"ชื่อหมวด (ไทย)")+'"><input id="ns-en" placeholder="English name (optional) e.g. Kunming"></div>'
+      +'<div class="mbtns"><span style="flex:1"></span><button class="btn btn-ghost btn-sm" type="button" id="ns-cancel">'+(th?"ยกเลิก":"Cancel")+'</button><button class="btn btn-primary btn-sm" type="button" id="ns-ok">'+(th?"เพิ่ม":"Add")+'</button></div>');
+    var ti=w.querySelector("#ns-th"), te=w.querySelector("#ns-en"); setTimeout(function(){ ti.focus(); },30);
+    var close=function(){ w.remove(); };
+    w.onclick=function(e){ if(e.target===w) close(); }; w.querySelector("#ns-cancel").onclick=close;
+    var ok=function(){ var nt=ti.value.trim(), ne=te.value.trim(); if(!nt&&!ne){ ti.focus(); return; }
+      d.subs=d.subs||[]; var low=function(s){ return String(s||"").trim().toLowerCase(); };
+      var ex=d.subs.filter(function(s){ return (nt&&low(s.name_th)===low(nt))||(ne&&low(s.name_en)===low(ne)); })[0];
+      if(!ex){ var id=SEO.slugify(ne); if(!id||d.subs.some(function(s){ return s.id===id; })||id==="all"||id==="other") id=newId("c");
+        ex={id:id,name_th:nt||ne,name_en:ne||nt}; d.subs.push(ex); }
+      tr.sub=ex.id; close(); render(); toast(th?"เพิ่ม “"+(ex.name_th||ex.name_en)+"” แล้ว อย่าลืมกดบันทึก":"Added — remember to save"); };
+    w.querySelector("#ns-ok").onclick=ok; w.addEventListener("keydown",function(e){ if(e.key==="Enter") ok(); if(e.key==="Escape") close(); });
+  }
   function openSubsForm(k){
     syncEdits(); var th=lang==="th", d=dests()[k], rows=(d.subs||[]).map(function(s){ return {id:s.id,name_th:s.name_th||"",name_en:s.name_en||"",img:s.img||""}; });
     var intl=d.cat==="intl";
@@ -2204,7 +2223,8 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-tdest]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tdest")], d=destById(sel.value); it.dest=sel.value; if(d) it.cat=d.cat; it.sub=""; render(); toast(lang==="th"?"ย้ายแล้ว อย่าลืมกดบันทึก":"Moved — remember to save"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-depf]"),function(b){ b.onclick=function(){ syncEdits(); depF=b.getAttribute("data-depf"); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tdep]"),function(sel){ sel.onclick=function(e){ e.stopPropagation(); }; sel.onchange=function(){ syncEdits(); var tr=data.tours[+sel.getAttribute("data-tdep")]; if(!tr) return; if(sel.value) tr.dep=sel.value; else delete tr.dep; render(); toast(lang==="th"?"ตั้งสนามบินแล้ว อย่าลืมกดบันทึก":"Departure set — remember to save"); }; });
-    Array.prototype.forEach.call(document.querySelectorAll("[data-tsub]"),function(sel){ sel.onchange=function(){ syncEdits(); data.tours[+sel.getAttribute("data-tsub")].sub=sel.value; render(); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tsub]"),function(sel){ sel.onclick=function(e){ e.stopPropagation(); }; sel.onchange=function(){ syncEdits(); var i=+sel.getAttribute("data-tsub");
+      if(sel.value==="__new"){ sel.value=data.tours[i].sub||""; openNewSubForm(i); return; } data.tours[i].sub=sel.value; render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tdimg]"),function(el){ el.onclick=function(e){ if(editing||e.target.closest("label,button")) return; var it=data.tours[tourIdx(route.id)]; if(!it) return;
       var pics=[it.img].concat(it.photos||[]).filter(Boolean); if(pics.length) openLB(pics,+el.getAttribute("data-tdimg")||0); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-pdfadd]"),function(b){ b.onclick=function(){ var i=+b.getAttribute("data-pdfadd"); pickPdf(function(u){ syncEdits(); data.tours[i].pdf=u; render(); toast(lang==="th"?"แนบไฟล์แล้ว อย่าลืมกดบันทึก":"PDF attached — remember to save"); }); }; });

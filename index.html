@@ -400,6 +400,23 @@
   #adminbar .btn-ghost{color:var(--bg);border-color:rgba(255,255,255,.32)}
   #adminbar .btn-ghost:hover{border-color:var(--bg);color:var(--bg);background:rgba(255,255,255,.1)}
   #adminbar.busy{opacity:.7;pointer-events:none}
+  /* phones: the edit-bar buttons wrap onto their own rows so "Save & publish" is always on screen */
+  @media (max-width:760px){
+    #adminbar{flex-wrap:wrap;gap:8px;padding-top:8px}
+    #adminbar .ab-msg{flex-basis:100%;font-size:.82rem} #adminbar .ab-msg small{display:none}
+    #adminbar .ab-btns{flex:1 1 100%;flex-wrap:wrap;gap:6px;min-width:0}
+    #adminbar .ab-btns .ab-style{flex:1 1 calc(50% - 6px);min-width:0;margin-right:0!important;font-size:.74rem!important;gap:4px!important}
+    #adminbar .ab-btns .ab-style select{flex:1 1 auto;min-width:0;width:100%;font-size:.8rem!important}
+    #adminbar .ab-btns .btn{flex:1 1 0;min-width:0;justify-content:center;text-align:center;padding:.6em .5em;white-space:nowrap;font-size:.85rem}
+    #adminbar .ab-btns #ab-save{flex:1.6 1 0}
+    /* edit mode adds a delete-logo button and dashed boxes: let the shop name shrink instead of pushing the page wider than the screen */
+    header.site .nav .brand{min-width:0;flex:0 1 auto} header.site .nav .brand>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    header.site .nav .nav-right{flex:none}
+    .crow .cbody{min-width:0} .crow .val{overflow-wrap:anywhere;min-width:0}
+    .chat-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important} .chat-grid .crow{min-width:0}
+    .clist,.contact-cta{min-width:0;max-width:100%} .catbtn{max-width:100%;min-width:0} .catbtn select{max-width:100%;min-width:0}
+    #app .dgrid,#app .dgrid4{grid-template-columns:repeat(2,minmax(0,1fr))} .dedit{flex-wrap:wrap}
+  }
   body.editing{padding-bottom:64px}
 
   body.editing [data-edit]{outline:1.5px dashed color-mix(in srgb,var(--primary) 55%,transparent);outline-offset:3px;border-radius:3px;cursor:text;transition:background .12s}

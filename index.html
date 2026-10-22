@@ -639,6 +639,14 @@
   .mshell{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:flex;align-items:center;justify-content:center;padding:16px}
   .mbox{background:var(--surface);color:var(--ink);border-radius:16px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
   .mbox.wide{max-width:560px}
+  .mbox textarea{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;background:#fff;color:#241F19;-webkit-text-fill-color:#241F19;resize:vertical}
+  .popform .pf-lbl{display:block;font-weight:600;font-size:.88rem;margin:12px 0 5px}
+  .popform .pf-on{display:flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:1rem} .popform .pf-on input{width:20px;height:20px}
+  .popform .pf-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+  .popform .pf-ev{border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-top:12px}
+  .popform .pf-img{display:flex;align-items:center;gap:12px} .popform .pf-img img{width:120px;height:80px;object-fit:cover;border-radius:8px} .popform .pf-img span{width:120px;height:80px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--muted)}
+  .popform .pf-win{margin-top:6px;font-size:.85rem;color:var(--primary-ink,var(--primary));font-weight:600}
+  .popform .pf-del{margin-top:12px;color:#B4281E}
   .mbox h3{margin:0 0 6px;font-family:var(--serif);font-size:1.35rem}
   .mhint{color:var(--muted);font-size:.88rem;margin:0 0 12px} .mitem{font-weight:700;margin:4px 0 8px}
   .mbox label{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin:12px 0 5px}
@@ -1044,6 +1052,7 @@
         }
         H.push('</article>');
       });
+      if(editing) H.push('<button class="btn btn-primary btn-sm" type="button" id="evpopedit" style="margin:4px 8px 0 0">🏮 '+(lang==="th"?"แก้ป๊อปอัปแบบง่าย":"Edit pop-up (easy)")+'</button>');
       H.push('</div><button class="btn btn-ghost addbtn" data-add="events">'+ICON.plus+(lang==="th"?"เพิ่มอีเวนต์":"Add an event")+'</button></div></section>');
     }
 
@@ -1797,6 +1806,7 @@
       H+='<div>'+(th?"ราคาเต็มก่อนลด (โชว์ขีดฆ่า — เว้นว่างได้)":"Full price before discount (shown struck-through — optional)")+': <b'+ed(P+"price_full")+'>'+esc(it.price_full||"")+'</b></div>';
       if(ps) H+='<div class="promo-note">🔥 '+esc(promoLine(it))+' · ฿'+esc(it.promo_price)+'</div>';
       H+='<div class="td-ebtns"><button class="btn btn-ghost btn-sm" type="button" data-promo="tours:'+i+'">🔥 '+(th?(ps?"แก้โปรไฟไหม้":"ตั้งโปรไฟไหม้"):(ps?"Edit hot deal":"Set a hot deal"))+'</button>';
+      H+='<button class="btn btn-ghost btn-sm" type="button" data-poptour="'+esc(it.id)+'">🏮 '+(th?"ใส่ในป๊อปอัป":"Use in pop-up")+'</button>';
       H+='<label class="catbtn"><input type="checkbox" data-top5="'+esc(it.id)+'"'+((data.top5||[]).indexOf(it.id)>=0?' checked':'')+'> ⭐ Top 5</label>';
       H+='<button class="btn btn-ghost btn-sm" type="button" data-retr="tours:'+i+'">🌐 '+(th?"แปลอีกภาษาอัตโนมัติ":"Auto-translate other language")+'</button></div></div>';
     } else {
@@ -1990,6 +2000,64 @@
       toast(th?"ตั้งโปรแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Deal set — tap “Save & publish”"); };
   }
   // Add a new city / program group straight from a tour's "City:" menu, and put the tour in it
+  // ---------- festival pop-up: everything in one dialog (opened from the edit bar) ----------
+  function openPopupForm(tourId){
+    syncEdits(); var th=lang==="th", es=data.eventsSection||{};
+    var src=(data.events||[]).filter(function(e){ return e&&typeof e==="object"; });
+    var rows=src.map(function(e){ return {ref:e,title_th:e.title_th||"",title_en:e.title_en||"",date_th:e.date_th||"",date_en:e.date_en||"",desc_th:e.desc_th||"",desc_en:e.desc_en||"",price:e.price||"",start:e.start||"",end:e.end||"",link:e.link||"",img:e.img||""}; });
+    var on=es.popup!==false, lead=popLead(), cur=0;
+    if(tourId){ var tr=data.tours[tourIdx(tourId)];
+      if(!rows.length) rows.push({ref:null,title_th:(tr&&tr.title_th)||"",title_en:(tr&&tr.title_en)||"",date_th:"",date_en:"",desc_th:(tr&&tr.desc_th)||"",desc_en:(tr&&tr.desc_en)||"",price:(tr&&(tr.promo_price||tr.price))||"",start:"",end:"",link:"",img:(tr&&tr.img)||""});
+      rows.forEach(function(r){ r.link="#/tour/"+tourId; }); }
+    var tourOpts=function(sel){ var h='<option value=""'+(sel?'':' selected')+'>'+(th?"หน้ารวมทัวร์เทศกาล (ค่าเริ่มต้น)":"Festival tours page (default)")+'</option>';
+      h+='<option value="#/deals"'+(sel==="#/deals"?' selected':'')+'>🔥 '+(th?"หน้าโปรไฟไหม้":"Hot deals page")+'</option>';
+      (data.tours||[]).forEach(function(x){ var v="#/tour/"+x.id; h+='<option value="'+esc(v)+'"'+(sel===v?' selected':'')+'>'+esc((x.code?x.code+" · ":"")+(x.title_th||x.title_en||""))+'</option>'; });
+      if(sel&&!/^#\/(tour\/|deals$)/.test(sel)) h+='<option value="'+esc(sel)+'" selected>'+(th?"ลิงก์เดิม: ":"Current link: ")+esc(sel)+'</option>';
+      return h; };
+    var w=modalShell('<div id="pf"></div>',true); w.querySelector(".mbox").classList.add("popform");
+    var read=function(){ Array.prototype.forEach.call(w.querySelectorAll("[data-pf]"),function(inp){ var f=inp.getAttribute("data-pf"); if(f==="on") on=inp.checked; else if(f==="lead") lead=Math.max(0,Math.min(365,parseInt(inp.value,10)||0)); else if(rows[cur]) rows[cur][f]=inp.value; }); };
+    var win=function(r){ if(!r.start) return th?"ยังไม่ได้ใส่วันงาน — ป๊อปอัปจะขึ้นตลอด":"No dates — the pop-up always shows"; var a=addDays(r.start,-lead), b=r.end||r.start, td=todayStr();
+      var st=td<a?(th?"ยังไม่ถึงช่วงแสดง":"not showing yet"):(td>b?(th?"จบงานแล้ว — ไม่แสดง":"ended — hidden"):(th?"✅ กำลังแสดงอยู่ตอนนี้":"✅ showing now"));
+      return (th?"ป๊อปอัปขึ้นช่วง ":"Shows ")+fmtDate(a)+" – "+fmtDate(b)+" · "+st; };
+    function draw(){
+      var r=rows[cur], H='<h3>🏮 '+(th?"ป๊อปอัปเทศกาลหน้าแรก":"Festival pop-up")+'</h3><p class="mhint">'+(th?"ป๊อปอัปจะเด้งตอนลูกค้าเข้าหน้าแรก ในช่วงก่อนถึงวันงาน แก้เสร็จกด “ตกลง” แล้วกด “บันทึก & เผยแพร่”":"Shows when visitors open the home page, before the event. Press OK, then Save & publish.")+'</p>';
+      H+='<label class="pf-on"><input type="checkbox" data-pf="on"'+(on?' checked':'')+'> <b>'+(th?"เปิดป๊อปอัป":"Pop-up on")+'</b></label>';
+      H+='<label class="pf-lbl">'+(th?"ขึ้นก่อนวันงานกี่วัน":"Show how many days before")+' <input type="number" min="0" max="365" data-pf="lead" value="'+lead+'" style="width:90px;display:inline-block;margin-left:6px"> '+(th?"วัน":"days")+' <small>(30 = 1 '+(th?"เดือน":"month")+')</small></label>';
+      if(rows.length>1){ H+='<div class="pf-tabs">'; rows.forEach(function(x,j){ H+='<button type="button" class="chip'+(j===cur?' on':'')+'" data-pft="'+j+'">'+esc(x.title_th||x.title_en||(th?"เทศกาลใหม่":"New"))+'</button>'; }); H+='</div>'; }
+      if(r){
+        H+='<div class="pf-ev"><div class="pf-img">'+(r.img?'<img src="'+esc(r.img)+'" alt="">':'<span>'+(th?"ยังไม่มีรูป":"No photo")+'</span>')+'<button type="button" class="btn btn-ghost btn-sm" data-pfimg>📷 '+(th?"เปลี่ยนรูป":"Change photo")+'</button></div>';
+        H+='<label class="pf-lbl">'+(th?"ชื่อเทศกาล (ไทย / อังกฤษ)":"Name (Thai / English)")+'</label><div class="mrow"><input data-pf="title_th" value="'+esc(r.title_th)+'" placeholder="เช่น ลอยกระทง & ยี่เป็ง"><input data-pf="title_en" value="'+esc(r.title_en)+'" placeholder="e.g. Yi Peng Festival"></div>';
+        H+='<label class="pf-lbl">'+(th?"วันงานจริง (เริ่ม – จบ) — ใช้กำหนดว่าป๊อปอัปขึ้นเมื่อไหร่":"Event dates (start – end)")+'</label><div class="mrow"><input type="date" data-pf="start" value="'+esc(r.start)+'"><input type="date" data-pf="end" value="'+esc(r.end)+'"></div>';
+        H+='<div class="pf-win">'+esc(win(r))+'</div>';
+        H+='<label class="pf-lbl">'+(th?"ข้อความวันที่ที่ลูกค้าเห็น (ไทย / อังกฤษ)":"Date text shown (Thai / English)")+'</label><div class="mrow"><input data-pf="date_th" value="'+esc(r.date_th)+'" placeholder="เช่น 24–25 พ.ย. 2569"><input data-pf="date_en" value="'+esc(r.date_en)+'" placeholder="e.g. 24–25 Nov 2026"></div>';
+        H+='<label class="pf-lbl">'+(th?"ราคา (เว้นว่าง = สอบถามราคา)":"Price (blank = ask)")+'</label><input data-pf="price" value="'+esc(r.price)+'" placeholder="เช่น 1,999">';
+        H+='<label class="pf-lbl">'+(th?"รายละเอียด (ไทย)":"Details (Thai)")+'</label><textarea data-pf="desc_th" rows="3">'+esc(r.desc_th)+'</textarea>';
+        H+='<label class="pf-lbl">'+(th?"รายละเอียด (อังกฤษ)":"Details (English)")+'</label><textarea data-pf="desc_en" rows="3">'+esc(r.desc_en)+'</textarea>';
+        H+='<label class="pf-lbl">'+(th?"ปุ่ม “ไปดูทัวร์ต่อ” พาไปที่":"“See the tours” button goes to")+'</label><select data-pf="link">'+tourOpts(r.link)+'</select>';
+        H+='<button type="button" class="btn btn-ghost btn-sm pf-del" data-pfdel>🗑 '+(th?"ลบเทศกาลนี้":"Delete this event")+'</button></div>';
+      } else H+='<p class="empty-note">'+(th?"ยังไม่มีเทศกาล กด “+ เพิ่มเทศกาล”":"No events yet — add one")+'</p>';
+      H+='<div class="mbtns" style="flex-wrap:wrap"><button type="button" class="btn btn-ghost btn-sm" data-pfadd>＋ '+(th?"เพิ่มเทศกาล":"Add event")+'</button><button type="button" class="btn btn-ghost btn-sm" data-pfprev>👁 '+(th?"ดูตัวอย่าง":"Preview")+'</button><span style="flex:1"></span><button type="button" class="btn btn-ghost btn-sm" data-pfcancel>'+(th?"ยกเลิก":"Cancel")+'</button><button type="button" class="btn btn-primary btn-sm" data-pfok>'+(th?"ตกลง":"OK")+'</button></div>';
+      w.querySelector("#pf").innerHTML=H;
+      Array.prototype.forEach.call(w.querySelectorAll('[data-pf="start"],[data-pf="end"],[data-pf="lead"]'),function(x){ x.onchange=function(){ read(); var r2=rows[cur]; if(r2&&r2.start&&r2.end&&r2.end<r2.start) r2.end=r2.start; draw(); }; });
+    }
+    function apply(){ read();
+      data.eventsSection=data.eventsSection||{}; data.eventsSection.popup=on; data.eventsSection.popup_lead=lead;
+      var keep=[]; rows.forEach(function(r){ if(!(r.title_th||r.title_en)) return; var e=r.ref||{c1:"#B7791F",c2:"#2B1606",photos:[]};
+        ["title_th","title_en","date_th","date_en","desc_th","desc_en"].forEach(function(k){ if((e[k]||"")!==r[k]){ e[k]=r[k]; markManual(e,k); } });
+        e.price=r.price; if(r.start) e.start=r.start; else delete e.start; if(r.end) e.end=r.end; else delete e.end;
+        if(r.link) e.link=r.link; else delete e.link; if(r.img!==(e.img||"")){ e.img=r.img; delete e.img_pos; }
+        keep.push(e); });
+      data.events=keep; }
+    w.onclick=function(e){ var tg=e.target; if(tg===w){ w.remove(); return; }
+      var tb=tg.closest&&tg.closest("[data-pft]"); if(tb){ read(); cur=+tb.getAttribute("data-pft"); draw(); return; }
+      if(tg.closest("[data-pfadd]")){ read(); rows.push({ref:null,title_th:"",title_en:"",date_th:"",date_en:"",desc_th:"",desc_en:"",price:"",start:"",end:"",link:"",img:""}); cur=rows.length-1; draw(); var f=w.querySelector('[data-pf="title_th"]'); if(f) f.focus(); return; }
+      if(tg.closest("[data-pfdel]")){ read(); if(!confirm(th?"ลบเทศกาลนี้?":"Delete this event?")) return; rows.splice(cur,1); cur=Math.max(0,cur-1); draw(); return; }
+      if(tg.closest("[data-pfimg]")){ read(); pickFiles(function(fs){ compress(fs[0],1600,0.82).then(function(u){ if(rows[cur]){ rows[cur].img=u; draw(); } }).catch(function(){ toast(th?"เปิดรูปไม่สำเร็จ":"Could not load image"); }); }); return; }
+      if(tg.closest("[data-pfcancel]")){ w.remove(); return; }
+      if(tg.closest("[data-pfprev]")){ apply(); w.remove(); render(); openFestPopup(true); toast(th?"นี่คือตัวอย่าง — อย่าลืมกดบันทึก":"Preview — remember to save"); return; }
+      if(tg.closest("[data-pfok]")){ apply(); w.remove(); render(); toast(th?"ตั้งค่าป๊อปอัปแล้ว อย่าลืมกด “บันทึก & เผยแพร่”":"Pop-up updated — remember to save"); return; } };
+    draw();
+  }
   // Add a new country / province straight from a tour's "Country:" menu, and move the tour there
   function openNewDestForm(i){
     var tr=data.tours[i]; if(!tr) return; var cd=tourDest(tr), cat=(cd&&cd.cat)||tr.cat||"thai", th=lang==="th", intl=cat==="intl";
@@ -2257,6 +2325,8 @@
     var evl=document.getElementById("evlead"); if(evl) evl.onchange=function(){ syncEdits(); data.eventsSection=data.eventsSection||{}; data.eventsSection.popup_lead=Math.max(0,Math.min(365,parseInt(evl.value,10)||0)); render(); };
     Array.prototype.forEach.call(document.querySelectorAll("[data-evd]"),function(inp){ inp.onchange=function(){ syncEdits(); var a=inp.getAttribute("data-evd").split(":"), ev=data.events[+a[0]]; if(!ev) return; if(inp.value) ev[a[1]]=inp.value; else delete ev[a[1]]; if(ev.start&&ev.end&&ev.end<ev.start) ev.end=ev.start; render(); }; });
     var evpp=document.getElementById("evpopprev"); if(evpp) evpp.onclick=function(){ syncEdits(); openFestPopup(true); };
+    Array.prototype.forEach.call(document.querySelectorAll("[data-poptour]"),function(b){ b.onclick=function(){ openPopupForm(b.getAttribute("data-poptour")); }; });
+    var evpe=document.getElementById("evpopedit"); if(evpe) evpe.onclick=function(){ openPopupForm(); };
     Array.prototype.forEach.call(document.querySelectorAll('a[href="#events"]'),function(a){ a.addEventListener("click",function(e){ if(editing) return; if(popupOn()||!document.getElementById("events")){ e.preventDefault(); openFestPopup(true); } }); });
     var dpv=document.getElementById("dpreview"); if(dpv) dpv.onchange=function(){ syncEdits(); var v=Math.max(0,Math.min(365,parseInt(dpv.value,10)||0)); data.dealsSection=data.dealsSection||{}; data.dealsSection.preview_days=v; render(); };
     Array.prototype.forEach.call(document.querySelectorAll("[data-btype]"),function(sel){ sel.onchange=function(){ syncEdits(); var b=data.bikes[+sel.getAttribute("data-btype")]; if(b){ b.type=sel.value; render(); } }; });
@@ -2437,9 +2507,10 @@
       document.getElementById("ab-edit").onclick=function(){ try{ editing=true; editEnteredAt=Date.now(); render(); renderAdminBar(); toast(lang==="th"?"โหมดแก้ไข: แตะข้อความหรือรูปเพื่อเปลี่ยน":"Edit mode: tap any text or photo to change it"); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
     } else {
       msg.innerHTML='<strong>'+(lang==="th"?"โหมดแก้ไข":"Editing")+'</strong> <small>'+(lang==="th"?"— แตะข้อความ/รูป · สลับ EN·TH เพื่อแก้อีกภาษา":"— tap text/photos · switch EN·TH to edit each language")+'</small>';
-      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"ธีม":"Theme")+' <select id="ab-theme" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="dark"'+(themeStyle()==="dark"?" selected":"")+'>'+(lang==="th"?"สีดำ":"Dark")+'</option><option value="light"'+(themeStyle()==="light"?" selected":"")+'>'+(lang==="th"?"สีขาว มินิมอล":"White minimal")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
+      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"ธีม":"Theme")+' <select id="ab-theme" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="dark"'+(themeStyle()==="dark"?" selected":"")+'>'+(lang==="th"?"สีดำ":"Dark")+'</option><option value="light"'+(themeStyle()==="light"?" selected":"")+'>'+(lang==="th"?"สีขาว มินิมอล":"White minimal")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-pop" type="button" title="'+(lang==="th"?"ตั้งค่าป๊อปอัปเทศกาลหน้าแรก":"Festival pop-up settings")+'">🏮 '+(lang==="th"?"ป๊อปอัป":"Pop-up")+'</button><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
       document.getElementById("ab-cancel").onclick=function(){ if(confirm(lang==="th"?"ยกเลิกการเปลี่ยนแปลงที่ยังไม่บันทึก?":"Discard unsaved changes?")) location.reload(); };
       document.getElementById("ab-save").onclick=save;
+      var abp=document.getElementById("ab-pop"); if(abp) abp.onclick=function(){ openPopupForm(); };
       var abt=document.getElementById("ab-theme"); if(abt) abt.onchange=function(){ data.design=data.design||{}; data.design.theme=abt.value; applyTheme(); toast(lang==="th"?"เปลี่ยนธีมแล้ว — กดบันทึกเพื่อเผยแพร่":"Theme changed — save to publish"); };
       var abc=document.getElementById("ab-cards"); if(abc) abc.onchange=function(){ data.design=data.design||{}; data.design.cards=abc.value; toast(lang==="th"?"เปลี่ยนรูปแบบการ์ดแล้ว — กดบันทึกแล้วออกจากโหมดแก้ไขเพื่อดูผล":"Card style changed — save, then leave edit mode to see it"); };
     }

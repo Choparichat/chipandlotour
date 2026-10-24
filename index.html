@@ -2644,7 +2644,7 @@
   }
   function b64utf8(str){ var by=new TextEncoder().encode(str), bin="", CH=0x8000;
     for(var i=0;i<by.length;i+=CH) bin+=String.fromCharCode.apply(null,by.subarray(i,i+CH)); return btoa(bin); }
-  var uploadedImg={};
+  var uploadedImg={}, pendingImg=[]; // photos are only marked as uploaded after the save really went through
   function sha1hex(str){ return crypto.subtle.digest("SHA-1",new TextEncoder().encode(str)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b),function(x){ return ("0"+x.toString(16)).slice(-2); }).join(""); }); }
   function prepareSave(){
     // copy of data where every embedded image becomes a file under images/
@@ -2665,7 +2665,7 @@
     })).then(function(){
       function fix(o){ if(Array.isArray(o)) return o.map(fix); if(o&&typeof o==="object"){ if(o.__img) return o.__path; var r={}; for(var k in o) r[k]=fix(o[k]); return r; } return o; }
       var out=fix(copy);
-      jobs.forEach(function(ph){ uploadedImg[ph.__img]=ph.__path; });
+      pendingImg=jobs.map(function(ph){ return [ph.__img,ph.__path]; });
       files.push({path:"data.json",b64:b64utf8(JSON.stringify(out))});
       return files;
     });
@@ -2709,6 +2709,7 @@
     document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังบันทึกขึ้นเว็บ...":"Publishing...");
     var nImg=0;
     flushTr().then(prepareSave).then(function(files){ nImg=files.length-1; if(nImg) document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังอัปโหลดรูป "+nImg+" รูป...":"Uploading "+nImg+" photos..."); return ghCommitFiles(cfg,files,force); }).then(function(){
+      pendingImg.forEach(function(x){ uploadedImg[x[0]]=x[1]; }); pendingImg=[];
       editing=false; bar.classList.remove("busy"); try{ mountWidget(); }catch(e){}
       try{ render(); }catch(e){}
       renderAdminBar();

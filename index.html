@@ -597,7 +597,8 @@
   .tcard.is-hot{border-color:color-mix(in srgb,#E5372B 55%,var(--border))}
   .promo-left{font-size:.84rem;font-weight:600;color:#FF7B6E;margin-top:-2px}
   .promo-note{font-size:.82rem;font-weight:600;color:#FF7B6E;background:color-mix(in srgb,#E5372B 12%,transparent);border-radius:8px;padding:6px 10px}
-  body.editing .tcard .region:empty::before{content:attr(data-ph);opacity:.6}
+  body.editing .tcard .region:empty::before{content:attr(data-ph);opacity:.85}
+  body.editing .tcard .region:empty{background:#E5372B;outline:2px dashed #fff;outline-offset:-4px}
   body.editing .tcard .region{min-width:5em;min-height:1.6em}
   .deals-blk{background:linear-gradient(180deg,color-mix(in srgb,#E5372B 10%,var(--bg)),var(--bg))}
   .nav-links a.navhot{color:#FF7B6E} .nav-links a.navhot.on{color:#FF9A8F;border-bottom-color:#E5372B}
@@ -1007,6 +1008,10 @@
   function imgOverlay(path){
     return '<label class="imgedit" data-img="'+esc(path)+'"><span>'+ICON.cam+(lang==="th"?"เปลี่ยนรูป":"Change photo")+'</span><input type="file" accept="image/*" hidden></label>';
   }
+  // Program codes all follow one form: capitals, words split by a space, numbers with 3 digits (cnx-fv-1 -> CNX FV 001)
+  function normCode(v){ v=String(v||"").toUpperCase().replace(/[-_.\/,|]+/g," ").replace(/([A-Z฀-๿])(\d)/g,"$1 $2").replace(/(\d)([A-Z฀-๿])/g,"$1 $2").replace(/\s+/g," ").trim();
+    return v.split(" ").map(function(w){ return /^\d{1,2}$/.test(w)?("00"+w).slice(-3):w; }).join(" "); }
+  document.addEventListener("focusout",function(e){ var el=e.target; if(el&&el.getAttribute&&/\.code$/.test(el.getAttribute("data-edit")||"")){ var v=normCode(el.textContent); if(v!==el.textContent) el.textContent=v; } },true);
   function ed(path){ return ' data-edit="'+esc(path)+'" '; }
 
   // ---------- render ----------
@@ -1410,11 +1415,11 @@
       if(!compact||!vOpen){ H.push('<div class="tours-grid bikes-grid">'); vOpen=true; }
       d.bikes.forEach(function(bk,i){
         if(vty(bk)!==v[0]||!keepIx[i]) return; var bt=v[0];
-        var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.name||"");
+        var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.code?bk.code+" ":"")+(bk.name||"");
         var href=wab?wab+"?text="+encodeURIComponent(msg):"#contact";
         H.push('<article class="tcard bcard" data-dg="arr:bikes" data-di="'+i+'"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+dragBtn());
         var bph=(bk.photos||[]).filter(Boolean), bn=bph.length+(bk.img?1:0);
-        H.push('<div class="media" data-open="bikes:'+i+'">'+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
+        H.push('<div class="media" data-open="bikes:'+i+'">'+(editing?'<span class="region"'+ed("bikes."+i+".code")+' data-ph="'+(lang==="th"?"ใส่รหัส":"Code")+'">'+esc(bk.code||"")+'</span>':(bk.code?'<span class="region">'+esc(bk.code)+'</span>':''))+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
         H.push('<div class="body"><h3'+ed("bikes."+i+".name")+'>'+esc(bk.name||"")+'</h3>');
         H.push('<p class="desc"'+ed("bikes."+i+".desc")+'>'+esc(t(bk,"desc"))+'</p>');
         if(editing) H.push('<label class="btype">'+(lang==="th"?"ประเภท":"Type")+' <select data-btype="'+i+'">'+VT.map(function(o){ return '<option value="'+o[0]+'"'+(o[0]===bt?' selected':'')+'>'+(lang==="th"?o[1]:o[2])+'</option>'; }).join("")+'</select></label>');
@@ -1556,7 +1561,7 @@
     h+='<button class="drag-h" type="button" title="'+(th?"กดค้างแล้วลากเพื่อย้าย":"Hold and drag to reorder")+'"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>'+(th?"ลาก":"Drag")+'</button>';
     var badge=it.code||(!isTour?t(it,"region"):"");
     h+='<div class="media" data-open="'+arr+':'+i+'"'+(det?' data-det="'+esc(det)+'"':'')+'>';
-    if(editing) h+='<span class="region"'+ed(arr+"."+i+".code")+' data-ph="'+(th?"รหัสทัวร์":"Tour code")+'">'+esc(it.code||"")+'</span>';
+    if(editing) h+='<span class="region"'+ed(arr+"."+i+".code")+' data-ph="'+(th?"ใส่รหัส":"Code")+'">'+esc(it.code||"")+'</span>';
     else if(badge) h+='<span class="region">'+esc(badge)+'</span>';
     h+=media(it)+imgOverlay(arr+"."+i+".img");
     if(!editing&&ps==="on") h+='<span class="hotbadge">🔥 '+(th?"โปรไฟไหม้":"Hot deal")+'</span>';
@@ -2438,7 +2443,8 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
       var val=(/\.itin$/.test(path)?el.innerText:el.textContent).replace(/ /g," ").trim();
-      if(/\.(code|stars|price_full|promo_price)$/.test(path)){ setPlain(path,val); return; }
+      if(/\.code$/.test(path)){ setPlain(path,normCode(val)); return; }
+      if(/\.(stars|price_full|promo_price)$/.test(path)){ setPlain(path,val); return; }
       if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||path==="license.no"||/^social\.\d+\.name$/.test(path)||/^bikes\.\d+\.name$/.test(path)||path==="contact.line_link"||/^reviews\./.test(path)||/\.price$/.test(path)){
         setPlain(path,val);
       } else {
@@ -3279,6 +3285,11 @@
     if(data._oct11d) return; data._oct11d=true;
     ((data.services||{}).cards||[]).forEach(function(c){ if(c.link==="#rental") c.link="#/rentals"; });
   }
+  function ensureCode1(){
+    if(data._code1) return; data._code1=true;
+    (data.tours||[]).forEach(function(tr){ if(tr.cat==="intl"&&tr.dep!=="cnx"&&tr.dep!=="bkk"){ var g=depGuess(tr); if(g) tr.dep=g; } });
+    ["tours","activities","bikes"].forEach(function(a){ (data[a]||[]).forEach(function(x){ if(x&&x.code) x.code=normCode(x.code); }); });
+  }
   function ensureSeo1(){
     if(data._seo1) return; data._seo1=true;
     // only fills fields that are still empty; marked as automatic so a later edit of the Thai text re-translates them
@@ -3293,7 +3304,7 @@
     if((x=A("aqeshjo72"))){ fill(x,"title_en","Tandem skydiving"); fill(x,"desc_en","Jump from a plane with an expert instructor — the ultimate thrill."); }
     if((x=A("aqeshqbgk"))){ fill(x,"title_en","Doi Inthanon (with trekking)"); fill(x,"desc_en","Thailand's highest peak, the royal pagodas, waterfalls and a nature-trail walk."); }
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureOct11d(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); ensureSeo1(); render(); mountWidget(); maybeFestPopup();
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureOct11d(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); ensureSeo1(); ensureCode1(); render(); mountWidget(); maybeFestPopup();
     try{ var h0=location.hash||""; if(view==="home"&&h0.length>1&&h0.charAt(1)!=="/"){ var e0=document.getElementById(h0.slice(1)); if(e0) setTimeout(function(){ e0.scrollIntoView(); },80); } }catch(e){} }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";

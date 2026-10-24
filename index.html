@@ -272,6 +272,9 @@
   .rv-text{display:-webkit-box;-webkit-line-clamp:7;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;margin:0;color:var(--ink);font-size:.97rem;flex:1}
   .rv-card.open .rv-text,body.editing .rv-text{-webkit-line-clamp:unset;display:block}
   .rv-track{align-items:flex-start}
+  .rm-open{display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;overflow:visible!important}
+  .rm-btn{align-self:flex-start;border:0;background:none;padding:2px 0;margin:-4px 0 10px;color:var(--primary);font:600 .88rem var(--sans);cursor:pointer;text-align:left}
+  .rm-btn:hover{text-decoration:underline} body.editing .fcard .rm-btn,body.editing .tcard .rm-btn{display:none}
   .rv-toggle{display:none;align-self:flex-start;border:0;background:none;padding:0;color:var(--primary);font:600 .88rem var(--sans);cursor:pointer}
   .rv-toggle.show{display:inline}
   body.editing .rv-toggle{display:none}
@@ -1012,7 +1015,18 @@
       if(/^(javascript|vbscript):/.test(v)||(/^data:/.test(v)&&!/^data:(image\/(png|jpe?g|webp|gif)|application\/pdf)[;,]/.test(v))) a.setAttribute(at,a.tagName==="IFRAME"?"about:blank":"#");
     }); }catch(e){}
   }
-  function render(){ renderInner(); sanitizeLinks(); fixLinks(); fixImgs(); seoHead(); }
+  // Text cut at 4 lines on cards gets a "Read more" button that opens the rest in place (only when the text is really cut)
+  var RM_SEL="body:not(.editing) .fcard p, body:not(.editing) .tcard:not(.trv) .desc, .fpop-body p";
+  function readMore(root){ requestAnimationFrame(function(){ try{ Array.prototype.forEach.call((root||document).querySelectorAll(RM_SEL.split(", ").map(function(s){ return s.replace("body:not(.editing) ",""); }).join(",")),function(p){
+      if(editing&&!p.closest(".fpop-body")) return; var nx=p.nextElementSibling, has=nx&&nx.classList.contains("rm-btn");
+      if(p.classList.contains("rm-open")) return; var cut=p.scrollHeight>p.clientHeight+2;
+      if(cut&&!has){ var b=document.createElement("button"); b.type="button"; b.className="rm-btn"; b.textContent=(lang==="th"?"อ่านต่อ ▾":"Read more ▾");
+        b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); var o=p.classList.toggle("rm-open"); b.textContent=o?(lang==="th"?"ย่อ ▴":"Show less ▴"):(lang==="th"?"อ่านต่อ ▾":"Read more ▾"); };
+        p.parentNode.insertBefore(b,p.nextSibling); }
+      else if(!cut&&has) nx.remove(); }); }catch(e){} }); }
+  window.addEventListener("resize",function(){ readMore(); });
+  try{ document.fonts&&document.fonts.ready.then(function(){ readMore(); }); }catch(e){}
+  function render(){ renderInner(); sanitizeLinks(); fixLinks(); fixImgs(); seoHead(); readMore(); }
   function renderInner(){
     applyTheme();
     var d=data, H=[];
@@ -1275,7 +1289,7 @@
       H+='<button class="btn btn-ghost fpop-close" type="button">'+(th?"ไว้ทีหลัง":"Maybe later")+'</button></div>';
       if(evs.length>1){ H+='<div class="fpop-dots">'; evs.forEach(function(_,n){ H+='<button type="button" data-k="'+n+'"'+(n===k?' class="on"':'')+' aria-label="'+(n+1)+'"></button>'; }); H+='</div>'; }
       H+='</div></div>';
-      v.innerHTML=H; fixLinks(v);
+      v.innerHTML=H; fixLinks(v); readMore(v);
       try{ var r=ref("events."+data.events.indexOf(ev)+".img"); var im=v.querySelector(".fpop-media>img"); if(im) styleImg(im,r.obj[r.key+"_pos"]); }catch(e){}
     }
     draw();

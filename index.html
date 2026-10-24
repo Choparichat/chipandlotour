@@ -647,6 +647,8 @@
   .fpop-body h3{font-family:var(--serif);font-size:1.5rem;margin:6px 0 4px;line-height:1.25}
   .fpop-date{color:var(--muted);font-size:.92rem;margin-bottom:10px}
   .fpop-body p{color:var(--muted);margin:0 0 16px;font-size:.96rem;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;overflow:hidden}
+  .fpop-body p.idet-txt{display:block;-webkit-line-clamp:unset;overflow:visible;white-space:pre-line}
+  .idet .fpop-media img{cursor:zoom-in} .idet .fpop-nav.prev{left:10px} .idet .fpop-nav.next{right:10px} .idet-n{position:absolute;right:12px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:.78rem;padding:.2em .6em;border-radius:999px}
   .fpop-act{display:flex;gap:10px;flex-wrap:wrap}
   .fpop-act .btn{flex:1;justify-content:center;min-width:150px}
   .fpop-dots{display:flex;gap:6px;justify-content:center;margin-top:14px}
@@ -1017,7 +1019,7 @@
     }); }catch(e){}
   }
   // Text cut at 4 lines on cards gets a "Read more" button that opens the rest in place (only when the text is really cut)
-  var RM_SEL="body:not(.editing) .fcard p, body:not(.editing) .tcard:not(.trv) .desc, .fpop-body p";
+  var RM_SEL="body:not(.editing) .fcard p, .fpop-body p:not(.idet-txt)";
   function readMore(root){ requestAnimationFrame(function(){ try{ Array.prototype.forEach.call((root||document).querySelectorAll(RM_SEL.split(", ").map(function(s){ return s.replace("body:not(.editing) ",""); }).join(",")),function(p){
       if(editing&&!p.closest(".fpop-body")) return; var nx=p.nextElementSibling, has=nx&&nx.classList.contains("rm-btn");
       if(p.classList.contains("rm-open")) return; var cut=p.scrollHeight>p.clientHeight+2;
@@ -1582,7 +1584,7 @@
       h+='<div class="ebtns"><button class="btn btn-ghost btn-sm" type="button" data-promo="'+arr+':'+i+'">🔥 '+(ps?(th?"แก้โปร":"Edit deal"):(th?"ตั้งโปร":"Set deal"))+'</button><button class="btn btn-ghost btn-sm" type="button" data-retr="'+arr+':'+i+'">🌐 '+(th?"แปลอีกภาษา":"Translate")+'</button></div>';
     } else if(det){
       h+='<div class="act2"><a class="btn btn-primary btn-sm" href="'+esc(det)+'">'+(th?"ดูรายละเอียด":"View details")+'</a><a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a></div>';
-    } else h+='<a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a>';
+    } else h+='<div class="act2"><button class="btn btn-primary btn-sm" type="button" data-idet="'+arr+':'+i+'">'+(th?"ดูรายละเอียด":"View details")+'</button><a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a></div>';
     return h+'</div></div></article>';
   }
   function listSection(arr,secKey,sid,full){
@@ -2332,6 +2334,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-open]"),function(m){ m.onclick=function(e){ if(editing||e.target.closest("label,button,a")) return;
       if(m.getAttribute("data-det")){ go(m.getAttribute("data-det")); return; }
       var v=m.getAttribute("data-open").split(":"), it=data[v[0]][+v[1]]; var list=[it.img].concat(it.photos||[]).filter(Boolean); if(list.length) openLB(list,0); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-idet]"),function(b){ b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); var v=b.getAttribute("data-idet").split(":"); openItemDetail(v[0],+v[1]); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphdel]"),function(b){ b.onclick=function(e){ e.stopPropagation(); syncEdits(); var v=b.getAttribute("data-iphdel").split(":"); data[v[0]][+v[1]].photos.splice(+v[2],1); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-iphadd]"),function(b){ b.onclick=function(){ var v=b.getAttribute("data-iphadd").split(":");
       pickFiles(function(files){ var it=data[v[0]][+v[1]]; it.photos=it.photos||[]; var jobs=files.map(function(f){ return compress(f,1400,0.8); });
@@ -2483,6 +2486,31 @@
     });
     document.body.appendChild(v);
     setTimeout(function(){ var n=v.querySelector("#rw-name"); if(n) n.focus(); },30);
+  }
+  function openItemDetail(arr,i){
+    var it=(data[arr]||[])[i]; if(!it) return; var th=lang==="th";
+    var list=[it.img].concat(it.photos||[]).filter(Boolean), k=0, title=t(it,"title");
+    var wab=waLink(data.contact&&data.contact.whatsapp);
+    var href=wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+(it.code?it.code+" ":"")+title):"#contact";
+    var v=document.createElement("div"); v.className="fpop idet"; v.setAttribute("role","dialog"); v.setAttribute("aria-modal","true");
+    var price=it.price?((th?"เริ่ม ฿":"from ฿")+it.price):"";
+    v.innerHTML='<div class="fpop-box"><button class="fpop-x" type="button" aria-label="Close">×</button>'
+      +(list.length?'<div class="fpop-media"><img src="'+esc(list[0])+'" alt="'+esc(title)+'">'+(list.length>1?'<button class="fpop-nav prev" type="button" aria-label="Previous">‹</button><button class="fpop-nav next" type="button" aria-label="Next">›</button><span class="idet-n">1 / '+list.length+'</span>':'')+'</div>':'')
+      +'<div class="fpop-body">'+(it.code?'<div class="fpop-eyebrow">'+esc(it.code)+'</div>':'')+'<h3>'+esc(title)+'</h3>'
+      +((t(it,"dur")||price)?'<div class="fpop-date">'+(t(it,"dur")?'🕘 '+esc(t(it,"dur")):'')+(t(it,"dur")&&price?' · ':'')+esc(price)+'</div>':'')
+      +'<p class="idet-txt">'+esc(t(it,"desc"))+'</p>'
+      +'<div class="fpop-act"><a class="btn btn-primary"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a><button class="btn btn-ghost" type="button" data-x>'+(th?"ปิด":"Close")+'</button></div></div></div>';
+    function close(){ v.classList.remove("show"); document.removeEventListener("keydown",key); setTimeout(function(){ v.remove(); },250); }
+    function key(e){ if(e.key==="Escape") close(); }
+    function show(){ var im=v.querySelector(".fpop-media img"); if(im) im.src=list[k]; var n=v.querySelector(".idet-n"); if(n) n.textContent=(k+1)+" / "+list.length; }
+    v.onclick=function(e){ var tg=e.target;
+      if(tg===v||tg.closest(".fpop-x")||tg.closest("[data-x]")){ close(); return; }
+      if(tg.closest(".fpop-nav.prev")){ k=(k-1+list.length)%list.length; show(); return; }
+      if(tg.closest(".fpop-nav.next")){ k=(k+1)%list.length; show(); return; }
+      if(tg.closest(".fpop-media img")) openLB(list,k);
+      if(tg.closest("a")) close(); };
+    document.addEventListener("keydown",key);
+    document.body.appendChild(v); fixLinks&&fixLinks(); requestAnimationFrame(function(){ v.classList.add("show"); });
   }
   function openLB(list,k){
     if(!list||!list.length) return;

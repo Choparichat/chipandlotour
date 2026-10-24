@@ -275,6 +275,7 @@
   .rm-open{display:block!important;-webkit-line-clamp:unset!important;line-clamp:unset!important;overflow:visible!important}
   .rm-btn{align-self:flex-start;border:0;background:none;padding:2px 0;margin:-4px 0 10px;color:var(--primary);font:600 .88rem var(--sans);cursor:pointer;text-align:left}
   .rm-btn:hover{text-decoration:underline} body.editing .fcard .rm-btn,body.editing .tcard .rm-btn{display:none}
+  body:not(.editing) .fcard p:has(+ .rm-btn){margin-bottom:0} .fcard .rm-btn{margin-bottom:auto}
   .rv-toggle{display:none;align-self:flex-start;border:0;background:none;padding:0;color:var(--primary);font:600 .88rem var(--sans);cursor:pointer}
   .rv-toggle.show{display:inline}
   body.editing .rv-toggle{display:none}

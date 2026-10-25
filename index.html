@@ -1294,7 +1294,7 @@
       if(t(ev,"date")) H+='<div class="fpop-date">📅 '+esc(t(ev,"date"))+(ev.price?' · ฿'+esc(ev.price):'')+'</div>';
       if(t(ev,"desc")) H+='<p>'+esc(t(ev,"desc"))+'</p>';
       // a tour picked for this event -> go to that tour; otherwise open the event's own details (all photos, full text, price)
-      if(ev.link) H+='<div class="fpop-act"><a class="btn btn-primary fpop-go" href="'+esc(link)+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+(th?"ไปดูทัวร์ต่อ →":"See the tour →")+'</a>';
+      if(ev.link) H+='<div class="fpop-act"><a class="btn btn-primary fpop-go" href="'+esc(link)+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+(th?"ดูรายละเอียด →":"View details →")+'</a>';
       else H+='<div class="fpop-act"><button class="btn btn-primary fpop-det" type="button">'+(th?"ดูรายละเอียด →":"View details →")+'</button>';
       H+='<button class="btn btn-ghost fpop-close" type="button">'+(th?"ไว้ทีหลัง":"Maybe later")+'</button></div>';
       if(evs.length>1){ H+='<div class="fpop-dots">'; evs.forEach(function(_,n){ H+='<button type="button" data-k="'+n+'"'+(n===k?' class="on"':'')+' aria-label="'+(n+1)+'"></button>'; }); H+='</div>'; }
@@ -2056,7 +2056,7 @@
     if(tourId){ var tr=data.tours[tourIdx(tourId)];
       if(!rows.length) rows.push({ref:null,title_th:(tr&&tr.title_th)||"",title_en:(tr&&tr.title_en)||"",date_th:"",date_en:"",desc_th:(tr&&tr.desc_th)||"",desc_en:(tr&&tr.desc_en)||"",price:(tr&&(tr.promo_price||tr.price))||"",start:"",end:"",link:"",img:(tr&&tr.img)||""});
       rows.forEach(function(r){ r.link="#/tour/"+tourId; }); }
-    var tourOpts=function(sel){ var h='<option value=""'+(sel?'':' selected')+'>'+(th?"หน้ารวมทัวร์เทศกาล (ค่าเริ่มต้น)":"Festival tours page (default)")+'</option>';
+    var tourOpts=function(sel){ var h='<option value=""'+(sel?'':' selected')+'>'+(th?"หน้ารายละเอียดอีเวนต์ (ค่าเริ่มต้น)":"Event details (default)")+'</option>';
       h+='<option value="#/deals"'+(sel==="#/deals"?' selected':'')+'>🔥 '+(th?"หน้าโปรไฟไหม้":"Hot deals page")+'</option>';
       (data.tours||[]).forEach(function(x){ var v="#/tour/"+x.id; h+='<option value="'+esc(v)+'"'+(sel===v?' selected':'')+'>'+esc((x.code?x.code+" · ":"")+(x.title_th||x.title_en||""))+'</option>'; });
       if(sel&&!/^#\/(tour\/|deals$)/.test(sel)) h+='<option value="'+esc(sel)+'" selected>'+(th?"ลิงก์เดิม: ":"Current link: ")+esc(sel)+'</option>';

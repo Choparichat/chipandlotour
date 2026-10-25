@@ -16,7 +16,7 @@
     function tourDest(data,tr){ var D=data.destinations||[], d=byId(D,tr.dest); if(d) return d; for(var i=0;i<D.length;i++) if(D[i].cat===(tr.cat||"thai")) return D[i]; return null; }
     function toursOf(data,d){ return (data.tours||[]).filter(function(tr){ var x=tourDest(data,tr); return !!x&&x.id===d.id; }); }
     function inSub(d,tr,sid){ var subs=d.subs||[]; if(sid==="other") return !tr.sub||!subs.some(function(s){ return s.id===tr.sub; }); return tr.sub===sid; }
-    function tourId(data,seg){ seg=String(seg||""); if(byId(data&&data.tours,seg)) return seg; var k=seg.lastIndexOf("-"); return k<0?seg:seg.slice(k+1); }
+    function tourId(data,seg,arr){ seg=String(seg||""); if(byId(data&&data[arr||"tours"],seg)) return seg; var k=seg.lastIndexOf("-"); return k<0?seg:seg.slice(k+1); }
     function dec(s){ try{ return decodeURIComponent(s); }catch(e){ return s; } }
     // "/th/tours/chiangmai" -> "#/tours/chiangmai"; on the home page the real #hash is kept (old "#/..." links and "#contact")
     function vhash(pathname,hash){ var p=String(pathname||"/").replace(/^\/th(?=\/|$)/,"").replace(/\/+$/,""); if(!p||p==="/index.html") return hash||""; return "#"+p; }
@@ -26,6 +26,7 @@
       var q=h.slice(2).split(/[?#]/)[0].replace(/\/+$/,""), a=q?q.split("/"):[];
       if(!a.length) return {v:"home"};
       if(a[0]==="tour"&&a.length===2&&a[1]) return {v:"tour",id:tourId(data,dec(a[1]))};
+      if(a[0]==="activity"&&a.length===2&&a[1]) return {v:"act",id:tourId(data,dec(a[1]),"activities")};
       if(a[0]==="tours"&&a.length===1) return {v:"tours"};
       if(a[0]==="tours"&&a.length<=3&&a[1]) return {v:"dest",id:dec(a[1]),sub:a[2]?dec(a[2]):""};
       if(a.length===1&&/^(activities|deals|tickets|top5|rentals)$/.test(a[0])) return {v:a[0]};
@@ -36,6 +37,7 @@
       if(r.v==="tours") return pre+"/tours";
       if(r.v==="dest") return pre+"/tours/"+encodeURIComponent(r.id)+(r.sub?"/"+encodeURIComponent(r.sub):"");
       if(r.v==="tour"){ it=byId(data&&data.tours,r.id); return pre+"/tour/"+(it?tourSlug(it):encodeURIComponent(r.id)); }
+      if(r.v==="act"){ it=byId(data&&data.activities,r.id); return pre+"/activity/"+(it?tourSlug(it):encodeURIComponent(r.id)); }
       if(/^(activities|deals|tickets|top5|rentals)$/.test(r.v)) return pre+"/"+r.v;
       return pre+"/";
     }
@@ -79,6 +81,23 @@
           else o.provider={"@id":origin+"/#agency"};
           m.ld.push(o);
           var C=[[L==="th"?"หน้าแรก":"Home",P({v:"home"},L)],[L==="th"?"ทัวร์":"Tours",P({v:"tours"},L)]]; if(d) C.push([nm,P({v:"dest",id:d.id},L)]); C.push([T,cu]); m.ld.push(crumbs(C)); }
+      }
+      else if(r.v==="act"){
+        it=byId(data.activities,r.id);
+        if(!it) m.notFound=true;
+        else { L=lg; var tk=it.cat==="tickets"; T=clean(tx(it,"title",L)||it.title_th||it.code||"Activity");
+          title=T+(L==="th"?(tk?" – จองตั๋ว เชียงใหม่":" – กิจกรรมเชียงใหม่"):(/chiang ?mai/i.test(T)?"":" – Chiang Mai"))+" | "+brand;
+          var pa=priceNow(it,today), da=clean(tx(it,"dur",L)), ba=[]; if(pa) ba.push((L==="th"?"เริ่ม ฿":"From ฿")+fmt(pa)); if(da) ba.push(da);
+          desc=clean((ba.length?ba.join(" · ")+". ":"")+clean(tx(it,"desc",L)||tx(it,"itin",L)),165); img=abs(origin,it.img);
+          var pa2=[it.img].concat(it.photos||[]).map(function(u){ return abs(origin,u); }).filter(Boolean).slice(0,6), ca=origin+path(data,r,L);
+          var oa={"@context":"https://schema.org","@type":pa?"Product":"TouristTrip","name":T,"description":clean(tx(it,"desc",L)||T,500),"url":ca};
+          if(pa2.length) oa.image=pa2;
+          if(pa){ oa.category=tk?"Tickets":"Activities"; if(it.code) oa.sku=clean(it.code); oa.brand={"@type":"Brand","name":brand};
+            oa.offers={"@type":"Offer","url":ca,"priceCurrency":"THB","price":String(pa),"availability":"https://schema.org/InStock","seller":{"@id":origin+"/#agency"}};
+            if(promoOn(it,today)&&it.promo_end) oa.offers.priceValidUntil=it.promo_end; var va=(promoOn(it,today)&&it.promo_start)?it.promo_start:today; if(va) oa.offers.validFrom=va; m.type="product"; }
+          else oa.provider={"@id":origin+"/#agency"};
+          m.ld.push(oa);
+          m.ld.push(crumbs([[L==="th"?"หน้าแรก":"Home",P({v:"home"},L)],tk?[L==="th"?"ซื้อตั๋ว":"Tickets",P({v:"tickets"},L)]:[L==="th"?"กิจกรรม":"Activities",P({v:"activities"},L)],[T,ca]])); }
       }
       else if(r.v==="dest"){
         d=byId(data.destinations,r.id); sub=r.sub||"";
@@ -139,6 +158,8 @@
     function plain(data,r,lg,m){ var L=m.only?"th":lg, th=L==="th", H=[], it, d, a=function(x,l,label){ return '<a href="'+ea(path(data,x,l))+'">'+ea(label)+"</a>"; };
       H.push("<h1>"+ea(m.title.split(" | ")[0])+"</h1>"); if(m.desc) H.push("<p>"+ea(m.desc)+"</p>");
       if(r.v==="tour"&&(it=byId(data.tours,r.id))){ var body=clean(tx(it,"desc",L)), itin=String(tx(it,"itin",L)||"").slice(0,6000); if(body) H.push("<p>"+ea(body)+"</p>"); if(itin) H.push("<pre>"+ea(itin)+"</pre>"); }
+      if(r.v==="act"&&(it=byId(data.activities,r.id))){ var ab=clean(tx(it,"desc",L)), ai=String(tx(it,"itin",L)||"").slice(0,6000); if(ab) H.push("<p>"+ea(ab)+"</p>"); if(ai) H.push("<pre>"+ea(ai)+"</pre>"); }
+      if(r.v==="activities"||r.v==="tickets"||r.v==="act"){ var AL=(data.activities||[]).filter(function(x){ return x&&x.id&&(x.title_en||x.title_th)&&((r.v==="tickets")===(x.cat==="tickets")||r.v==="act"); }); if(AL.length) H.push("<ul>"+AL.slice(0,60).map(function(x){ var pn=priceNow(x,""); return "<li>"+a({v:"act",id:x.id},lg,clean(tx(x,"title",lg)))+(pn?" – ฿"+fmt(pn):"")+"</li>"; }).join("")+"</ul>"); }
       H.push("<p>"+[a({v:"home"},lg,th?"หน้าแรก":"Home"),a({v:"tours"},lg,th?"ทัวร์":"Tours"),a({v:"activities"},lg,th?"กิจกรรม":"Activities"),a({v:"tickets"},lg,th?"ซื้อตั๋ว":"Tickets"),a({v:"rentals"},lg,th?"เช่ารถ":"Rentals"),a({v:"deals"},lg,th?"โปรไฟไหม้":"Hot Deals")].join(" · ")+"</p>");
       var D=(data.destinations||[]).filter(function(x){ return toursOf(data,x).length; });
       if(D.length) H.push("<ul>"+D.map(function(x){ var l=x.cat==="intl"?"th":lg; return "<li>"+a({v:"dest",id:x.id},l,clean(x.cat==="intl"?(x.name_th||x.name_en):tx(x,"name",l)))+"</li>"; }).join("")+"</ul>");
@@ -153,6 +174,7 @@
         if((d.subs||[]).length){ add({v:"dest",id:d.id,sub:"all"},only); d.subs.forEach(function(s){ if(L.some(function(tr){ return tr.sub===s.id; })) add({v:"dest",id:d.id,sub:s.id},only); }); } });
       (data.tours||[]).forEach(function(tr){ if(tr&&tr.id&&(tr.title_en||tr.title_th)) add({v:"tour",id:tr.id},tr.cat==="intl"); });
       ["activities","tickets","rentals","deals"].forEach(function(v){ add({v:v}); });
+      (data.activities||[]).forEach(function(x){ if(x&&x.id&&(x.title_en||x.title_th)) add({v:"act",id:x.id}); });
       return U; }
     return {ORIGIN:ORIGIN,slugify:slugify,tourSlug:tourSlug,tourId:tourId,vhash:vhash,isTh:isTh,route:route,path:path,href:href,meta:meta,head:head,plain:plain,urls:urls,ea:ea};
   })();

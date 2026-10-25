@@ -7,7 +7,7 @@
     function clean(s,n){ s=String(s==null?"":s).replace(/\s+/g," ").trim(); if(n&&s.length>n){ s=s.slice(0,n-1); var k=s.lastIndexOf(" "); if(k>n*0.6) s=s.slice(0,k); s=s.replace(/[\s,;:·|–—-]+$/,"")+"…"; } return s; }
     function ea(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     function slugify(s){ return String(s||"").toLowerCase().replace(/['’]/g,"").replace(/&/g," and ").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60).replace(/-+$/,""); }
-    function tourSlug(it){ var s=slugify(it&&it.title_en); return (s?s+"-":"")+encodeURIComponent(String((it&&it.id)||"")); }
+    function tourSlug(it){ var s=slugify(it&&(it.title_en||it.name)); return (s?s+"-":"")+encodeURIComponent(String((it&&it.id)||"")); }
     function num(s){ var n=parseFloat(String(s==null?"":s).replace(/[^\d.]/g,"")); return isNaN(n)?0:n; }
     function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
     function promoOn(it,today){ var pp=String((it&&it.promo_price)||"").trim(); if(!pp) return false; if(it.promo_start&&today<it.promo_start) return false; if(it.promo_end&&today>it.promo_end) return false; return true; }
@@ -27,6 +27,7 @@
       if(!a.length) return {v:"home"};
       if(a[0]==="tour"&&a.length===2&&a[1]) return {v:"tour",id:tourId(data,dec(a[1]))};
       if(a[0]==="activity"&&a.length===2&&a[1]) return {v:"act",id:tourId(data,dec(a[1]),"activities")};
+      if(a[0]==="rental"&&a.length===2&&a[1]) return {v:"bike",id:tourId(data,dec(a[1]),"bikes")};
       if(a[0]==="tours"&&a.length===1) return {v:"tours"};
       if(a[0]==="tours"&&a.length<=3&&a[1]) return {v:"dest",id:dec(a[1]),sub:a[2]?dec(a[2]):""};
       if(a.length===1&&/^(activities|deals|tickets|top5|rentals)$/.test(a[0])) return {v:a[0]};
@@ -38,6 +39,7 @@
       if(r.v==="dest") return pre+"/tours/"+encodeURIComponent(r.id)+(r.sub?"/"+encodeURIComponent(r.sub):"");
       if(r.v==="tour"){ it=byId(data&&data.tours,r.id); return pre+"/tour/"+(it?tourSlug(it):encodeURIComponent(r.id)); }
       if(r.v==="act"){ it=byId(data&&data.activities,r.id); return pre+"/activity/"+(it?tourSlug(it):encodeURIComponent(r.id)); }
+      if(r.v==="bike"){ it=byId(data&&data.bikes,r.id); return pre+"/rental/"+(it?tourSlug(it):encodeURIComponent(r.id)); }
       if(/^(activities|deals|tickets|top5|rentals)$/.test(r.v)) return pre+"/"+r.v;
       return pre+"/";
     }
@@ -99,6 +101,19 @@
           m.ld.push(oa);
           m.ld.push(crumbs([[L==="th"?"หน้าแรก":"Home",P({v:"home"},L)],tk?[L==="th"?"ซื้อตั๋ว":"Tickets",P({v:"tickets"},L)]:[L==="th"?"กิจกรรม":"Activities",P({v:"activities"},L)],[T,ca]])); }
       }
+      else if(r.v==="bike"){
+        it=byId(data.bikes,r.id);
+        if(!it) m.notFound=true;
+        else { var vt=(it.type==="car"||it.type==="van")?it.type:"bike", vn=th?{bike:"เช่ามอเตอร์ไซค์",car:"เช่ารถยนต์",van:"เช่ารถตู้"}[vt]:{bike:"Motorbike rental",car:"Car rental",van:"Van rental"}[vt];
+          T=clean(it.name||"Vehicle"); title=T+" – "+vn+(th?" เชียงใหม่":" Chiang Mai")+" | "+brand;
+          var pb=num(it.price), sp=clean(tx(it,"spec",lg)), bb=[]; if(pb) bb.push("฿"+fmt(pb)+(vt==="van"?(th?" / วัน":" / day"):(th?" / 24 ชม.":" / 24 hours"))); if(sp) bb.push(sp);
+          desc=clean((bb.length?bb.join(" · ")+". ":"")+clean(tx(it,"desc",lg)),165); img=abs(origin,it.img);
+          var pc=[it.img].concat(it.photos||[]).map(function(u){ return abs(origin,u); }).filter(Boolean).slice(0,6), cb=origin+path(data,r,lg);
+          var ob={"@context":"https://schema.org","@type":"Product","name":T,"description":clean(tx(it,"desc",lg)||T,500),"url":cb,"category":vn,"brand":{"@type":"Brand","name":brand}};
+          if(pc.length) ob.image=pc; if(it.code) ob.sku=clean(it.code);
+          if(pb){ ob.offers={"@type":"Offer","url":cb,"priceCurrency":"THB","price":String(pb),"availability":"https://schema.org/InStock","seller":{"@id":origin+"/#agency"}}; if(today) ob.offers.validFrom=today; m.type="product"; m.ld.push(ob); }
+          m.ld.push(crumbs([home,[th?"เช่ารถ":"Rentals",P({v:"rentals"},lg)],[T,cb]])); }
+      }
       else if(r.v==="dest"){
         d=byId(data.destinations,r.id); sub=r.sub||"";
         if(!d||(sub&&sub!=="all"&&sub!=="other"&&!byId(d.subs,sub))) m.notFound=true;
@@ -159,6 +174,8 @@
       H.push("<h1>"+ea(m.title.split(" | ")[0])+"</h1>"); if(m.desc) H.push("<p>"+ea(m.desc)+"</p>");
       if(r.v==="tour"&&(it=byId(data.tours,r.id))){ var body=clean(tx(it,"desc",L)), itin=String(tx(it,"itin",L)||"").slice(0,6000); if(body) H.push("<p>"+ea(body)+"</p>"); if(itin) H.push("<pre>"+ea(itin)+"</pre>"); }
       if(r.v==="act"&&(it=byId(data.activities,r.id))){ var ab=clean(tx(it,"desc",L)), ai=String(tx(it,"itin",L)||"").slice(0,6000); if(ab) H.push("<p>"+ea(ab)+"</p>"); if(ai) H.push("<pre>"+ea(ai)+"</pre>"); }
+      if(r.v==="bike"&&(it=byId(data.bikes,r.id))){ var bd=clean(tx(it,"desc",lg)); if(bd) H.push("<p>"+ea(bd)+"</p>"); }
+      if(r.v==="rentals"||r.v==="bike"){ var BL=(data.bikes||[]).filter(function(x){ return x&&x.id&&x.name; }); if(BL.length) H.push("<ul>"+BL.map(function(x){ return "<li>"+a({v:"bike",id:x.id},lg,clean(x.name))+(num(x.price)?" – ฿"+fmt(num(x.price)):"")+"</li>"; }).join("")+"</ul>"); }
       if(r.v==="activities"||r.v==="tickets"||r.v==="act"){ var AL=(data.activities||[]).filter(function(x){ return x&&x.id&&(x.title_en||x.title_th)&&((r.v==="tickets")===(x.cat==="tickets")||r.v==="act"); }); if(AL.length) H.push("<ul>"+AL.slice(0,60).map(function(x){ var pn=priceNow(x,""); return "<li>"+a({v:"act",id:x.id},lg,clean(tx(x,"title",lg)))+(pn?" – ฿"+fmt(pn):"")+"</li>"; }).join("")+"</ul>"); }
       H.push("<p>"+[a({v:"home"},lg,th?"หน้าแรก":"Home"),a({v:"tours"},lg,th?"ทัวร์":"Tours"),a({v:"activities"},lg,th?"กิจกรรม":"Activities"),a({v:"tickets"},lg,th?"ซื้อตั๋ว":"Tickets"),a({v:"rentals"},lg,th?"เช่ารถ":"Rentals"),a({v:"deals"},lg,th?"โปรไฟไหม้":"Hot Deals")].join(" · ")+"</p>");
       var D=(data.destinations||[]).filter(function(x){ return toursOf(data,x).length; });
@@ -175,6 +192,7 @@
       (data.tours||[]).forEach(function(tr){ if(tr&&tr.id&&(tr.title_en||tr.title_th)) add({v:"tour",id:tr.id},tr.cat==="intl"); });
       ["activities","tickets","rentals","deals"].forEach(function(v){ add({v:v}); });
       (data.activities||[]).forEach(function(x){ if(x&&x.id&&(x.title_en||x.title_th)) add({v:"act",id:x.id}); });
+      (data.bikes||[]).forEach(function(x){ if(x&&x.id&&x.name) add({v:"bike",id:x.id}); });
       return U; }
     return {ORIGIN:ORIGIN,slugify:slugify,tourSlug:tourSlug,tourId:tourId,vhash:vhash,isTh:isTh,route:route,path:path,href:href,meta:meta,head:head,plain:plain,urls:urls,ea:ea};
   })();

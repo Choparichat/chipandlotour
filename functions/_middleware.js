@@ -72,7 +72,7 @@ async function page(context, url, mainOrigin) {
   // /tour/<id> or an old name in the address -> the current address of that tour
   if (!m.notFound && !r.nf) {
     const want = SEO.path(c.data, r, lg);
-    if (want !== p && (r.v === "tour" || r.v === "act")) return Response.redirect(url.origin + want + url.search, 301);
+    if (want !== p && (r.v === "tour" || r.v === "act" || r.v === "bike")) return Response.redirect(url.origin + want + url.search, 301);
   }
 
   const html = (lg === "th" ? c.pre.replace('<html lang="en"', '<html lang="th"') : c.pre) + "\n" + SEO.head(m) + "\n" + c.mid + "\n" + SEO.plain(c.data, r, lg, m) + c.post;

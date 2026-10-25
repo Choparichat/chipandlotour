@@ -698,9 +698,17 @@
   .fpop-nav:hover{background:#fff;transform:translateY(-50%) scale(1.08)}
   .fpop-nav.p{left:14px} .fpop-nav.n{right:14px}
   @media (max-width:520px){ .fpop-nav{width:40px;height:40px;font-size:1.5rem} .fpop-nav.p{left:10px} .fpop-nav.n{right:10px} }
+  /* phones: arrows on the photo; computers: arrows float outside the pop-up, left and right */
+  .fpop-nav.out{display:none}
+  @media (min-width:860px){
+    .fpop-nav.in{display:none}
+    .fpop-nav.out{display:grid;position:absolute;top:50%;width:54px;height:54px;font-size:2rem;z-index:3}
+    .fpop-nav.out.p{left:calc(50% - min(960px,calc(100vw - 180px))/2 - 72px)}
+    .fpop-nav.out.n{right:calc(50% - min(960px,calc(100vw - 180px))/2 - 72px)}
+  }
   /* computer: photo fills the left half, details on the right (phones keep the photo on top) */
   @media (min-width:860px){
-    .fpop:not(.idet) .fpop-box{max-width:960px;height:min(600px,88vh);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);overflow:hidden}
+    .fpop:not(.idet) .fpop-box{max-width:min(960px,calc(100vw - 180px));height:min(600px,88vh);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);overflow:hidden}
     .fpop:not(.idet) .fpop-media{aspect-ratio:auto;height:100%;border-radius:20px 0 0 20px}
     .fpop:not(.idet) .fpop-media.tall>img{object-fit:contain;position:relative;z-index:1;scale:1!important;object-position:50% 50%!important}
     .fpop:not(.idet) .fpop-media.tall::before{content:"";position:absolute;inset:-30px;background:var(--fbg) center/cover;filter:blur(26px) brightness(.55);z-index:0}
@@ -1389,7 +1397,7 @@
     function draw(){
       var ev=evs[k], link=ev.link||festLink(), ext=/^https?:/i.test(link);
       var H='<div class="fpop-box"><button class="fpop-x" type="button" aria-label="Close">×</button>';
-      H+='<div class="fpop-media">'+media(ev)+'<span class="fpop-tag">🏮 '+esc(t(es,"eyebrow")||(th?"อีเวนต์พิเศษ":"Special event"))+'</span>'+(evs.length>1?'<button class="fpop-nav p" type="button">‹</button><button class="fpop-nav n" type="button">›</button>':'')+'</div>';
+      H+='<div class="fpop-media">'+media(ev)+'<span class="fpop-tag">🏮 '+esc(t(es,"eyebrow")||(th?"อีเวนต์พิเศษ":"Special event"))+'</span>'+(evs.length>1?'<button class="fpop-nav p in" type="button" aria-label="Previous">‹</button><button class="fpop-nav n in" type="button" aria-label="Next">›</button>':'')+'</div>';
       var dl=evDaysTo(ev);
       H+='<div class="fpop-body">'+(dl!=null&&dl>0?'<span class="fpop-soon">🔜 '+(th?"อีก "+dl+" วัน":"In "+dl+" day"+(dl===1?"":"s"))+'</span>':(dl!=null&&dl<=0&&evInWindow(ev)?'<span class="fpop-soon">🎉 '+(th?"กำลังจัดงานอยู่ตอนนี้":"Happening now")+'</span>':''))+'<div class="fpop-eyebrow">'+esc(t(es,"title"))+'</div><h3>'+esc(t(ev,"title"))+'</h3>';
       if(t(ev,"date")) H+='<div class="fpop-date">📅 '+esc(t(ev,"date"))+(ev.price?' · ฿'+esc(ev.price):'')+'</div>';
@@ -1400,6 +1408,7 @@
       H+='<button class="btn btn-ghost fpop-close" type="button">'+(th?"ไว้ทีหลัง":"Maybe later")+'</button></div>';
       if(evs.length>1){ H+='<div class="fpop-dots">'; evs.forEach(function(_,n){ H+='<button type="button" data-k="'+n+'"'+(n===k?' class="on"':'')+' aria-label="'+(n+1)+'"></button>'; }); H+='</div>'; }
       H+='</div></div>';
+      if(evs.length>1) H+='<button class="fpop-nav p out" type="button" aria-label="Previous">‹</button><button class="fpop-nav n out" type="button" aria-label="Next">›</button>';
       v.innerHTML=H; fixLinks(v); readMore(v);
       try{ var r=ref("events."+data.events.indexOf(ev)+".img"); var im=v.querySelector(".fpop-media>img"); if(im) styleImg(im,r.obj[r.key+"_pos"]); }catch(e){}
       try{ var im2=v.querySelector(".fpop-media>img"), fm=v.querySelector(".fpop-media"); if(im2&&fm){ fm.style.setProperty("--fbg",'url("'+im2.src.replace(/"/g,"%22")+'")'); var tall=function(){ if(im2.naturalHeight>im2.naturalWidth*1.05) fm.classList.add("tall"); }; if(im2.complete) tall(); else im2.addEventListener("load",tall); } }catch(e){}

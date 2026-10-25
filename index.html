@@ -693,6 +693,11 @@
   .fpop-dots button.on{background:var(--btn,#1E88E5)}
   .fpop-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:1.3rem;cursor:pointer}
   .fpop-nav.p{left:10px} .fpop-nav.n{right:10px}
+  /* clearer arrows: white round buttons with a dark arrow and a shadow, readable on any photo */
+  .fpop-nav{width:46px;height:46px;background:rgba(255,255,255,.94);color:#0E2233;font-size:1.7rem;font-weight:700;line-height:1;display:grid;place-items:center;padding:0 0 3px;box-shadow:0 4px 14px rgba(0,0,0,.35);border:0;transition:transform .15s ease,background .15s ease}
+  .fpop-nav:hover{background:#fff;transform:translateY(-50%) scale(1.08)}
+  .fpop-nav.p{left:14px} .fpop-nav.n{right:14px}
+  @media (max-width:520px){ .fpop-nav{width:40px;height:40px;font-size:1.5rem} .fpop-nav.p{left:10px} .fpop-nav.n{right:10px} }
   /* computer: photo fills the left half, details on the right (phones keep the photo on top) */
   @media (min-width:860px){
     .fpop:not(.idet) .fpop-box{max-width:960px;height:min(600px,88vh);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);overflow:hidden}

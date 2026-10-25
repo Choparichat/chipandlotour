@@ -273,6 +273,9 @@
   .tcard .price{font-family:var(--serif);font-size:1.15rem;color:var(--ink)}
   .tcard .price b{color:var(--primary);font-weight:600}
   .tcard .act{margin-top:12px}
+  /* cards that have their own page: name, time, price and buttons only - the full text is on the page */
+  body:not(.editing) .tcard.has-det .desc{display:none}
+  body:not(.editing) .tcard.has-det .meta{margin-top:auto}
   .tcard .act .btn{width:100%;justify-content:center}
 
   /* gallery */
@@ -1498,7 +1501,7 @@
         if(vty(bk)!==v[0]||!keepIx[i]) return; var bt=v[0];
         var msg=(lang==="th"?"สวัสดีค่ะ สนใจเช่ารถ ":"Hi! I'd like to rent the ")+(bk.code?bk.code+" ":"")+(bk.name||"");
         var href=wab?wab+"?text="+encodeURIComponent(msg):"#contact";
-        H.push('<article class="tcard bcard" data-dg="arr:bikes" data-di="'+i+'"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+dragBtn());
+        H.push('<article class="tcard bcard'+(bk.id?' has-det':'')+'" data-dg="arr:bikes" data-di="'+i+'"><button class="card-del" data-del="bikes" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>'+dragBtn());
         var bph=(bk.photos||[]).filter(Boolean), bn=bph.length+(bk.img?1:0);
         var bdet=bk.id?"#/rental/"+encodeURIComponent(bk.id):"";
         H.push('<div class="media" data-open="bikes:'+i+'"'+(bdet?' data-det="'+esc(bdet)+'"':'')+'>'+(editing?'<span class="region"'+ed("bikes."+i+".code")+' data-ph="'+(lang==="th"?"ใส่รหัส":"Code")+'">'+esc(bk.code||"")+'</span>':(bk.code?'<span class="region">'+esc(bk.code)+'</span>':''))+media(bk)+imgOverlay("bikes."+i+".img")+((bn>1&&!editing)?'<span class="phcount">'+ICON.cam+bn+'</span>':'')+'</div>');
@@ -1639,7 +1642,7 @@
     var wab=waLink(data.contact&&data.contact.whatsapp), title=t(it,"title");
     var href=wab?wab+"?text="+encodeURIComponent((th?"สวัสดีค่ะ สนใจ ":"Hi! I'm interested in ")+(it.code?it.code+" ":"")+title):"#contact";
     var det=(isTour&&it.id)?"#/tour/"+encodeURIComponent(it.id):((arr==="activities"&&it.id)?"#/activity/"+encodeURIComponent(it.id):"");
-    var h='<article class="tcard'+(ps==="on"?' is-hot':'')+'" data-ti="'+i+'" data-arr="'+arr+'" data-dg="arr:'+arr+'" data-di="'+i+'">';
+    var h='<article class="tcard'+(ps==="on"?' is-hot':'')+(det?' has-det':'')+'" data-ti="'+i+'" data-arr="'+arr+'" data-dg="arr:'+arr+'" data-di="'+i+'">';
     h+='<button class="card-del" data-del="'+arr+'" data-i="'+i+'" title="Delete">'+ICON.trash+'</button>';
     h+='<button class="drag-h" type="button" title="'+(th?"กดค้างแล้วลากเพื่อย้าย":"Hold and drag to reorder")+'"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>'+(th?"ลาก":"Drag")+'</button>';
     var badge=it.code||(!isTour?t(it,"region"):"");
@@ -1931,7 +1934,7 @@
     var BL=data.bikes||[], rel=BL.map(function(_,j){ return j; }).filter(function(j){ return j!==i&&BL[j]; }).sort(function(a,b){ var ta=(BL[a].type||"bike")===(bk.type||"bike"), tb=(BL[b].type||"bike")===(bk.type||"bike"); return tb-ta||a-b; }).slice(0,3);
     if(rel.length&&!editing){ H+='<h2 class="grp-title">'+(th?"รถคันอื่นๆ":"Other vehicles")+'</h2><div class="tours-grid bikes-grid">';
       rel.forEach(function(j){ var x=BL[j], xd="#/rental/"+encodeURIComponent(x.id), xt=(x.type==="car"||x.type==="van")?x.type:"bike";
-        H+='<article class="tcard bcard"><div class="media" data-open="bikes:'+j+'" data-det="'+esc(xd)+'">'+(x.code?'<span class="region">'+esc(x.code)+'</span>':'')+media(x)+'</div><div class="body"><h3><a class="tlink" href="'+esc(xd)+'">'+esc(x.name||"")+'</a></h3><p class="desc">'+esc(t(x,"desc"))+'</p>'
+        H+='<article class="tcard bcard has-det"><div class="media" data-open="bikes:'+j+'" data-det="'+esc(xd)+'">'+(x.code?'<span class="region">'+esc(x.code)+'</span>':'')+media(x)+'</div><div class="body"><h3><a class="tlink" href="'+esc(xd)+'">'+esc(x.name||"")+'</a></h3><p class="desc">'+esc(t(x,"desc"))+'</p>'
           +'<div class="meta"><span class="dur">'+(xt==="bike"?ICON.bike:ICON.car)+'<span>'+esc(t(x,"spec"))+'</span></span>'+(x.price?'<span class="price">฿<b>'+esc(x.price)+'</b></span>':'')+'</div>'
           +'<div class="act"><a class="btn btn-primary btn-sm" href="'+esc(xd)+'">'+(th?"ดูรายละเอียด":"View details")+'</a></div></div></article>'; });
       H+='</div>'; }

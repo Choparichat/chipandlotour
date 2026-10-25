@@ -5,7 +5,7 @@
 <base href="/">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#151210">
-<script>try{var _t=localStorage.getItem("cnl_theme");if(_t==="light"||_t==="dark")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
+<script>try{var _t=localStorage.getItem("cnl_theme");if(_t==="light"||_t==="dark"||_t==="resort")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!--seo-->
 <title>Chiang Mai Tours, Elephants &amp; Doi Inthanon | Chip' n Lo Tour</title>
@@ -49,7 +49,7 @@
   }
   :root:not([data-theme="light"]){}
   @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
+    :root:not([data-theme="light"]):not([data-theme="resort"]){
       --bg:#151210; --surface:#201B16; --surface-2:#2A241D;
       --ink:#F2ECE1; --muted:#A79C8B; --border:#372F26;
       --primary:#2FA187; --primary-ink:#4FBFA3; --gold:#D6A64A;
@@ -133,6 +133,39 @@
   /* top bar */
   .topbar{background:var(--ink);color:var(--bg);font-size:.82rem}
   :root[data-theme="light"] .topbar{background:var(--surface-2);color:var(--muted);border-bottom:1px solid var(--border)}
+  /* Resort theme (admin: Theme → Resort navy): deep navy + soft blue-grey, elegant serif, dark footer */
+  :root[data-theme="resort"]{
+    --bg:#F5F8FB; --surface:#FFFFFF; --surface-2:#EBF1F7;
+    --ink:#0E2233; --muted:#5A6B7C; --border:#DCE5EE;
+    --primary:#0F3D57; --primary-ink:#0A2C40; --gold:#B8924A;
+    --btn:#0F3D57; --btn-hover:#0A2C40;
+    --shadow:0 1px 2px rgba(14,34,51,.05),0 10px 28px rgba(14,34,51,.08);
+    --radius:14px;
+    color-scheme:light;
+  }
+  :root[data-theme="resort"] h1,:root[data-theme="resort"] h2,:root[data-theme="resort"] h3{font-weight:400;letter-spacing:-.015em}
+  :root[data-theme="resort"] .eyebrow{color:#4A6A82;letter-spacing:.16em;font-weight:600}
+  :root[data-theme="resort"] .btn{border-radius:10px}
+  :root[data-theme="resort"] .btn-primary{box-shadow:0 6px 16px rgba(15,61,87,.22)}
+  :root[data-theme="resort"] .btn-ghost{border-color:#C9D6E2;color:var(--primary)}
+  :root[data-theme="resort"] .btn-ghost:hover{border-color:var(--primary);background:rgba(15,61,87,.05)}
+  :root[data-theme="resort"] .topbar{background:#0B2233;color:#C9D6E2;border-bottom:0}
+  :root[data-theme="resort"] header.site{background:rgba(255,255,255,.92);border-bottom:1px solid var(--border)}
+  :root[data-theme="resort"] .nav-links a.on{color:var(--primary);border-bottom-color:var(--primary)}
+  :root[data-theme="resort"] .langtog button.on{background:var(--primary);color:#fff}
+  :root[data-theme="resort"] .hero::after{background:linear-gradient(90deg,rgba(7,27,43,.78) 0%,rgba(7,27,43,.45) 45%,rgba(7,27,43,.08) 100%)}
+  :root[data-theme="resort"] .hero-inner .eyebrow{color:#fff;letter-spacing:.2em}
+  :root[data-theme="resort"] .hero p.tag{color:#F3DFB2}
+  :root[data-theme="resort"] .hero .btn-primary{background:#fff;color:var(--primary);box-shadow:0 8px 22px rgba(0,0,0,.25)}
+  :root[data-theme="resort"] .hero .btn-primary:hover{background:#EAF1F7}
+  :root[data-theme="resort"] .tcard,:root[data-theme="resort"] .fcard,:root[data-theme="resort"] .ev-card,:root[data-theme="resort"] .dcard{border-color:#E2EAF2;box-shadow:var(--shadow)}
+  :root[data-theme="resort"] .fcard .ico{background:#EAF1F7;color:var(--primary);border-radius:50%}
+  :root[data-theme="resort"] footer.site{background:#0B2233;color:#A9BACB;border-top:0}
+  :root[data-theme="resort"] footer.site strong{color:#fff!important}
+  :root[data-theme="resort"] footer.site a{color:#DCE6F0}
+  :root[data-theme="resort"] .hero .btn-ghost{color:#fff;border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.06)}
+  :root[data-theme="resort"] .hero .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.16);color:#fff}
+  :root[data-theme="resort"] #reviews.has-live{--bg:#0B2233;--surface:#12304A;--surface-2:#173A57;--ink:#F3F7FB;--muted:#A9BACB;--border:#24476A;--primary:#7FB6DA;--primary-ink:#A6CCE6;background:#0B2233!important}
   .topbar .wrap{display:flex;justify-content:flex-end;align-items:center;gap:8px;height:34px}
   .topbar a{color:inherit;text-decoration:none;opacity:.9;display:inline-flex;align-items:center;gap:6px}
   .topbar a:hover{opacity:1}
@@ -1573,8 +1606,8 @@
     if(!thaiOnly(arr,it)) return itemCard0(arr,i,it,opt);
     var lg=lang; lang="th"; try{ return itemCard0(arr,i,it,opt).replace('<article class="tcard','<article lang="th" class="tcard'); } finally{ lang=lg; }
   }
-  function themeStyle(){ return ((data.design||{}).theme==="light")?"light":"dark"; }
-  function applyTheme(){ try{ var t=themeStyle(); document.documentElement.setAttribute("data-theme",t); try{localStorage.setItem("cnl_theme",t);}catch(e){} var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",t==="light"?"#FFFFFF":"#151210"); }catch(e){} }
+  function themeStyle(){ var t=(data.design||{}).theme; return (t==="light"||t==="resort")?t:"dark"; }
+  function applyTheme(){ try{ var t=themeStyle(); document.documentElement.setAttribute("data-theme",t); try{localStorage.setItem("cnl_theme",t);}catch(e){} var m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute("content",t==="light"?"#FFFFFF":(t==="resort"?"#0B2233":"#151210")); }catch(e){} }
   function cardStyle(){ return ((data.design||{}).cards==="classic")?"classic":"travel"; }
   function travelCard(arr,i,it,opt){
     opt=opt||{};
@@ -2682,7 +2715,7 @@
       document.getElementById("ab-edit").onclick=function(){ try{ editing=true; editEnteredAt=Date.now(); render(); renderAdminBar(); toast(lang==="th"?"โหมดแก้ไข: แตะข้อความหรือรูปเพื่อเปลี่ยน":"Edit mode: tap any text or photo to change it"); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
     } else {
       msg.innerHTML='<strong>'+(lang==="th"?"โหมดแก้ไข":"Editing")+'</strong> <small>'+(lang==="th"?"— แตะข้อความ/รูป · สลับ EN·TH เพื่อแก้อีกภาษา":"— tap text/photos · switch EN·TH to edit each language")+'</small>';
-      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"ธีม":"Theme")+' <select id="ab-theme" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="dark"'+(themeStyle()==="dark"?" selected":"")+'>'+(lang==="th"?"สีดำ":"Dark")+'</option><option value="light"'+(themeStyle()==="light"?" selected":"")+'>'+(lang==="th"?"สีขาว มินิมอล":"White minimal")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-pop" type="button" title="'+(lang==="th"?"ตั้งค่าป๊อปอัปเทศกาลหน้าแรก":"Festival pop-up settings")+'">🏮 '+(lang==="th"?"ป๊อปอัป":"Pop-up")+'</button><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
+      btns.innerHTML='<label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"การ์ดทัวร์":"Tour cards")+' <select id="ab-cards" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="travel"'+(cardStyle()==="travel"?" selected":"")+'>'+(lang==="th"?"แบบใหม่ (รูปเต็มการ์ด)":"New (full photo)")+'</option><option value="classic"'+(cardStyle()==="classic"?" selected":"")+'>'+(lang==="th"?"แบบเดิม":"Classic")+'</option></select></label><label class="ab-style" style="display:inline-flex;align-items:center;gap:6px;font-size:.82rem;margin-right:6px">'+(lang==="th"?"ธีม":"Theme")+' <select id="ab-theme" style="font:inherit;padding:.25em .4em;border-radius:8px"><option value="dark"'+(themeStyle()==="dark"?" selected":"")+'>'+(lang==="th"?"สีดำ":"Dark")+'</option><option value="light"'+(themeStyle()==="light"?" selected":"")+'>'+(lang==="th"?"สีขาว มินิมอล":"White minimal")+'</option><option value="resort"'+(themeStyle()==="resort"?" selected":"")+'>'+(lang==="th"?"รีสอร์ต กรมท่า":"Resort navy")+'</option></select></label><button class="btn btn-ghost btn-sm" id="ab-pop" type="button" title="'+(lang==="th"?"ตั้งค่าป๊อปอัปเทศกาลหน้าแรก":"Festival pop-up settings")+'">🏮 '+(lang==="th"?"ป๊อปอัป":"Pop-up")+'</button><button class="btn btn-ghost btn-sm" id="ab-cancel">'+(lang==="th"?"ยกเลิก":"Discard")+'</button><button class="btn btn-primary btn-sm" id="ab-save">'+(lang==="th"?"บันทึก & เผยแพร่":"Save & publish")+'</button>';
       document.getElementById("ab-cancel").onclick=function(){ if(confirm(lang==="th"?"ยกเลิกการเปลี่ยนแปลงที่ยังไม่บันทึก?":"Discard unsaved changes?")) location.reload(); };
       document.getElementById("ab-save").onclick=save;
       var abp=document.getElementById("ab-pop"); if(abp) abp.onclick=function(){ openPopupForm(); };

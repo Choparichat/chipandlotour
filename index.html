@@ -1448,7 +1448,7 @@
     // motorbike rental
     if(d.rental&&d.bikes&&(d.bikes.length||editing)){
       var rt=d.rental, wab=waLink(d.contact&&d.contact.whatsapp);
-      var allB=d.bikes.length, shown={}, keepB=function(b){ if(!compact) return true; var ty=(b.type==="car"||b.type==="van")?b.type:"bike"; if(shown[ty]) return false; shown[ty]=1; return true; }, keepIx={};
+      var allB=d.bikes.length, shown={}, keepB=function(b){ if(!compact) return true; var ty=(b.type==="car"||b.type==="van")?b.type:"bike"; shown[ty]=(shown[ty]||0)+1; return shown[ty]<=(ty==="bike"?2:1); } /* home: first 2 motorbikes, first car, first van (drag to choose) */, keepIx={};
       d.bikes.forEach(function(b,i){ if(keepB(b)) keepIx[i]=1; });
       H.push('<section class="blk'+(full?' page-top':'')+(compact?' compact':'')+'" id="rental" style="background:var(--surface-2)"><div class="wrap">');
       if(full) H.push('<a class="back" href="#top" data-nav>← '+(lang==="th"?"กลับหน้าแรก":"Back to home")+'</a>');

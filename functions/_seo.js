@@ -111,7 +111,7 @@
       else if(r.v==="rentals"){ title=th?"เช่ามอเตอร์ไซค์ รถยนต์ รถตู้ เชียงใหม่ | "+brand:"Motorbike, Car & Van Rental in Chiang Mai | "+brand;
         desc=clean(clean(tx(data.rental,"sub",lg))+" "+(data.bikes||[]).filter(function(x){ return x&&x.name&&(!x.type||x.type==="bike"); }).map(function(x){ return clean(x.name); }).slice(0,5).join(" · "),170);
         m.ld.push(crumbs([home,[th?"เช่ารถ":"Rentals",P(r,lg)]])); }
-      else if(r.v==="top5"){ title="Top 5 | "+brand; desc=""; m.noindex=true; }
+      else if(r.v==="top5"){ title="Top 3 | "+brand; desc=""; m.noindex=true; }
       else { r={v:"home"};
         title=clean(S["title_"+lg])||(th?"ทัวร์เชียงใหม่ ดอยอินทนนท์ ปางช้าง ทัวร์ต่างประเทศ | "+brand:"Chiang Mai Tours, Elephants & Doi Inthanon | "+brand);
         desc=clean(S["desc_"+lg])||(th?"บริษัททัวร์เชียงใหม่ที่มีใบอนุญาต ทัวร์ดอยอินทนนท์ เชียงราย ปางช้าง เทศกาล ทัวร์ต่างประเทศ จองตั๋วรถและโชว์ เช่ามอเตอร์ไซค์ สอบถามทาง LINE และ WhatsApp":"Licensed local tour agency in Chiang Mai: Doi Inthanon and Chiang Rai day trips, elephant sanctuary visits, festival tours, tickets and motorbike rental.");

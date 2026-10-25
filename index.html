@@ -884,7 +884,7 @@
       else if(r.v==="rentals"){ title=th?"เช่ามอเตอร์ไซค์ รถยนต์ รถตู้ เชียงใหม่ | "+brand:"Motorbike, Car & Van Rental in Chiang Mai | "+brand;
         desc=clean(clean(tx(data.rental,"sub",lg))+" "+(data.bikes||[]).filter(function(x){ return x&&x.name&&(!x.type||x.type==="bike"); }).map(function(x){ return clean(x.name); }).slice(0,5).join(" · "),170);
         m.ld.push(crumbs([home,[th?"เช่ารถ":"Rentals",P(r,lg)]])); }
-      else if(r.v==="top5"){ title="Top 5 | "+brand; desc=""; m.noindex=true; }
+      else if(r.v==="top5"){ title="Top 3 | "+brand; desc=""; m.noindex=true; }
       else { r={v:"home"};
         title=clean(S["title_"+lg])||(th?"ทัวร์เชียงใหม่ ดอยอินทนนท์ ปางช้าง ทัวร์ต่างประเทศ | "+brand:"Chiang Mai Tours, Elephants & Doi Inthanon | "+brand);
         desc=clean(S["desc_"+lg])||(th?"บริษัททัวร์เชียงใหม่ที่มีใบอนุญาต ทัวร์ดอยอินทนนท์ เชียงราย ปางช้าง เทศกาล ทัวร์ต่างประเทศ จองตั๋วรถและโชว์ เช่ามอเตอร์ไซค์ สอบถามทาง LINE และ WhatsApp":"Licensed local tour agency in Chiang Mai: Doi Inthanon and Chiang Rai day trips, elephant sanctuary visits, festival tours, tickets and motorbike rental.");
@@ -1854,7 +1854,7 @@
       if(ps) H+='<div class="promo-note">🔥 '+esc(promoLine(it))+' · ฿'+esc(it.promo_price)+'</div>';
       H+='<div class="td-ebtns"><button class="btn btn-ghost btn-sm" type="button" data-promo="tours:'+i+'">🔥 '+(th?(ps?"แก้โปรไฟไหม้":"ตั้งโปรไฟไหม้"):(ps?"Edit hot deal":"Set a hot deal"))+'</button>';
       H+='<button class="btn btn-ghost btn-sm" type="button" data-poptour="'+esc(it.id)+'">🏮 '+(th?"ใส่ในป๊อปอัป":"Use in pop-up")+'</button>';
-      H+='<label class="catbtn"><input type="checkbox" data-top5="'+esc(it.id)+'"'+((data.top5||[]).indexOf(it.id)>=0?' checked':'')+'> ⭐ Top 5</label>';
+      H+='<label class="catbtn"><input type="checkbox" data-top5="'+esc(it.id)+'"'+((data.top5||[]).indexOf(it.id)>=0?' checked':'')+'> ⭐ Top 3</label>';
       H+='<button class="btn btn-ghost btn-sm" type="button" data-retr="tours:'+i+'">🌐 '+(th?"แปลอีกภาษาอัตโนมัติ":"Auto-translate other language")+'</button></div></div>';
     } else {
       H+='<div class="td-price">'+(pi.now?((pi.was?'<s>'+esc(pi.was)+'</s>':'<span class="from">'+(th?"เริ่มต้น":"From")+'</span>')+'<span class="now">'+esc(pi.now)+' '+(th?"บ.":"THB")+'</span>'):'<span class="ask">'+(th?"สอบถามราคา":"Ask for price")+'</span>')+'</div>';
@@ -1958,14 +1958,14 @@
   function homeTop5(){ return top5Page(true); }
   function top5Page(home){
     var sec=data.top5Section||{}, th=lang==="th", T=data.tours||[];
-    var ids=(data.top5||[]).filter(function(id){ return tourIdx(id)>=0; }).slice(0,5);
-    var fallback=false; if(!ids.length&&!editing){ if(home) return ""; ids=T.slice(0,5).map(function(x){ return x.id; }); fallback=true; }
+    var ids=(data.top5||[]).filter(function(id){ return tourIdx(id)>=0; }).slice(0,3);
+    var fallback=false; if(!ids.length&&!editing){ if(home) return ""; ids=T.slice(0,3).map(function(x){ return x.id; }); fallback=true; }
     var H=home?'<section class="blk top5-blk" id="top5"><div class="wrap">':'<section class="blk page-top" id="top5"><div class="wrap"><a class="back" href="#top" data-nav>← '+(th?"กลับหน้าแรก":"Back to home")+'</a>';
     var hx=home?"h2":"h1";
     H+='<div class="sec-head"><div class="eyebrow"'+ed("top5Section.eyebrow")+'>'+esc(t(sec,"eyebrow"))+'</div><'+hx+(home?'':' class="page-title"')+ed("top5Section.title")+'>'+esc(t(sec,"title"))+'</'+hx+'><p'+ed("top5Section.sub")+'>'+esc(t(sec,"sub"))+'</p></div>';
     if(editing){
-      H+='<div class="t5edit"><b>'+(th?"เลือกทัวร์ยอดนิยม 5 อันดับ":"Pick the top 5 tours")+'</b>';
-      for(var k=0;k<5;k++){
+      H+='<div class="t5edit"><b>'+(th?"เลือกทัวร์ยอดนิยม 3 อันดับ":"Pick the top 3 tours")+'</b>';
+      for(var k=0;k<3;k++){
         var sel=(data.top5||[])[k]||"";
         H+='<label class="catbtn">#'+(k+1)+' <select data-t5slot="'+k+'"><option value="">'+(th?"— ว่าง —":"— empty —")+'</option>';
         T.forEach(function(x){ H+='<option value="'+esc(x.id)+'"'+(x.id===sel?' selected':'')+'>'+esc((x.code?x.code+" · ":"")+(x.cat==="intl"?(x.title_th||x.title_en):t(x,"title")))+'</option>'; });
@@ -2388,9 +2388,9 @@
     var dbr=document.getElementById("dbrm"); if(dbr) dbr.onclick=function(){ syncEdits(); data.dealsSection.banner=""; render(); };
     Array.prototype.forEach.call(document.querySelectorAll("[data-retr]"),function(b){ b.onclick=function(e){ e.stopPropagation(); var v=b.getAttribute("data-retr").split(":"); forceTranslate(v[0],+v[1]); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-top5]"),function(cb){ cb.onchange=function(){ syncEdits(); var id=cb.getAttribute("data-top5"), L=data.top5=(data.top5||[]).filter(function(x){ return tourIdx(x)>=0; });
-      var k=L.indexOf(id); if(cb.checked&&k<0){ if(L.length>=5){ cb.checked=false; toast(lang==="th"?"Top 5 เต็มแล้ว เอาอันอื่นออกก่อน":"Top 5 is full — remove one first"); return; } L.push(id); } else if(!cb.checked&&k>=0) L.splice(k,1);
-      toast(lang==="th"?"อัปเดต Top 5 แล้ว อย่าลืมกดบันทึก":"Top 5 updated — remember to save"); }; });
-    Array.prototype.forEach.call(document.querySelectorAll("[data-t5slot]"),function(sel){ sel.onchange=function(){ syncEdits(); var k=+sel.getAttribute("data-t5slot"), L=(data.top5||[]).slice(0,5); while(L.length<5) L.push("");
+      var k=L.indexOf(id); if(cb.checked&&k<0){ if(L.length>=3){ cb.checked=false; toast(lang==="th"?"Top 3 เต็มแล้ว เอาอันอื่นออกก่อน":"Top 3 is full — remove one first"); return; } L.push(id); } else if(!cb.checked&&k>=0) L.splice(k,1);
+      toast(lang==="th"?"อัปเดต Top 3 แล้ว อย่าลืมกดบันทึก":"Top 3 updated — remember to save"); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-t5slot]"),function(sel){ sel.onchange=function(){ syncEdits(); var k=+sel.getAttribute("data-t5slot"), L=(data.top5||[]).slice(0,3); while(L.length<3) L.push("");
       var v=sel.value; if(v){ var dup=L.indexOf(v); if(dup>=0&&dup!==k) L[dup]=""; } L[k]=v; data.top5=L.filter(Boolean); render(); }; });
     // special events: open details popup
     Array.prototype.forEach.call(document.querySelectorAll(".ev-card"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a")) return; openEvent(+c.getAttribute("data-ev")); }; });

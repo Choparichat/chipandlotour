@@ -1293,7 +1293,9 @@
       H+='<div class="fpop-body">'+(dl!=null&&dl>0?'<span class="fpop-soon">🔜 '+(th?"อีก "+dl+" วัน":"In "+dl+" day"+(dl===1?"":"s"))+'</span>':(dl!=null&&dl<=0&&evInWindow(ev)?'<span class="fpop-soon">🎉 '+(th?"กำลังจัดงานอยู่ตอนนี้":"Happening now")+'</span>':''))+'<div class="fpop-eyebrow">'+esc(t(es,"title"))+'</div><h3>'+esc(t(ev,"title"))+'</h3>';
       if(t(ev,"date")) H+='<div class="fpop-date">📅 '+esc(t(ev,"date"))+(ev.price?' · ฿'+esc(ev.price):'')+'</div>';
       if(t(ev,"desc")) H+='<p>'+esc(t(ev,"desc"))+'</p>';
-      H+='<div class="fpop-act"><a class="btn btn-primary fpop-go" href="'+esc(link)+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+(th?"ไปดูทัวร์ต่อ →":"See the tours →")+'</a>';
+      // a tour picked for this event -> go to that tour; otherwise open the event's own details (all photos, full text, price)
+      if(ev.link) H+='<div class="fpop-act"><a class="btn btn-primary fpop-go" href="'+esc(link)+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+(th?"ไปดูทัวร์ต่อ →":"See the tour →")+'</a>';
+      else H+='<div class="fpop-act"><button class="btn btn-primary fpop-det" type="button">'+(th?"ดูรายละเอียด →":"View details →")+'</button>';
       H+='<button class="btn btn-ghost fpop-close" type="button">'+(th?"ไว้ทีหลัง":"Maybe later")+'</button></div>';
       if(evs.length>1){ H+='<div class="fpop-dots">'; evs.forEach(function(_,n){ H+='<button type="button" data-k="'+n+'"'+(n===k?' class="on"':'')+' aria-label="'+(n+1)+'"></button>'; }); H+='</div>'; }
       H+='</div></div>';
@@ -1304,6 +1306,7 @@
     v.addEventListener("click",function(e){ var tg=e.target;
       if(tg===v||tg.closest(".fpop-x")||tg.closest(".fpop-close")){ close(); return; }
       if(tg.closest(".fpop-go")){ setTimeout(close,10); return; }
+      if(tg.closest(".fpop-det")){ var ix=data.events.indexOf(evs[k]); close(); openEvent(ix); return; }
       if(tg.closest(".fpop-nav.p")){ k=(k-1+evs.length)%evs.length; draw(); return; }
       if(tg.closest(".fpop-nav.n")){ k=(k+1)%evs.length; draw(); return; }
       var dot=tg.closest(".fpop-dots button"); if(dot){ k=+dot.getAttribute("data-k"); draw(); } });
@@ -1314,7 +1317,6 @@
   function maybeFestPopup(){
     if(festShown||editing||view!=="home"||!popupOn()) return; festShown=true;
     if(!(data.events||[]).some(function(e){ return e&&(e.title_en||e.title_th)&&evInWindow(e); })) return;
-    try{ if(sessionStorage.getItem("cnl_fest_seen")) return; sessionStorage.setItem("cnl_fest_seen","1"); }catch(e){}
     setTimeout(function(){ if(!editing&&view==="home") openFestPopup(); },700);
   }
   // ---------- image framing (zoom / move) ----------

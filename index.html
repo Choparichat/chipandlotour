@@ -693,6 +693,20 @@
   .fpop-dots button.on{background:var(--btn,#1E88E5)}
   .fpop-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:1.3rem;cursor:pointer}
   .fpop-nav.p{left:10px} .fpop-nav.n{right:10px}
+  /* computer: photo fills the left half, details on the right (phones keep the photo on top) */
+  @media (min-width:860px){
+    .fpop:not(.idet) .fpop-box{max-width:960px;height:min(600px,88vh);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);overflow:hidden}
+    .fpop:not(.idet) .fpop-media{aspect-ratio:auto;height:100%;border-radius:20px 0 0 20px}
+    .fpop:not(.idet) .fpop-media.tall>img{object-fit:contain;position:relative;z-index:1;scale:1!important;object-position:50% 50%!important}
+    .fpop:not(.idet) .fpop-media.tall::before{content:"";position:absolute;inset:-30px;background:var(--fbg) center/cover;filter:blur(26px) brightness(.55);z-index:0}
+    .fpop:not(.idet) .fpop-soon{align-self:flex-start}
+    .fpop:not(.idet) .fpop-tag,.fpop:not(.idet) .fpop-nav{z-index:2}
+    .fpop:not(.idet) .fpop-body{display:flex;flex-direction:column;justify-content:center;padding:44px 40px 32px;overflow:auto}
+    .fpop:not(.idet) .fpop-body h3{font-size:1.9rem}
+    .fpop:not(.idet) .fpop-body p{-webkit-line-clamp:9}
+    .fpop:not(.idet) .fpop-x{background:rgba(0,0,0,.08);color:var(--ink)}
+    .fpop:not(.idet) .fpop-x:hover{background:rgba(0,0,0,.16)}
+  }
   .ev-popset{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 18px;padding:12px 14px;border:1px dashed var(--border);border-radius:12px;font-size:.92rem}
   .ev-popset label{display:flex;align-items:center;gap:8px;cursor:pointer}
   .ev-popset input[type=number]{width:70px;padding:.3em .5em;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font:inherit}
@@ -1383,6 +1397,7 @@
       H+='</div></div>';
       v.innerHTML=H; fixLinks(v); readMore(v);
       try{ var r=ref("events."+data.events.indexOf(ev)+".img"); var im=v.querySelector(".fpop-media>img"); if(im) styleImg(im,r.obj[r.key+"_pos"]); }catch(e){}
+      try{ var im2=v.querySelector(".fpop-media>img"), fm=v.querySelector(".fpop-media"); if(im2&&fm){ fm.style.setProperty("--fbg",'url("'+im2.src.replace(/"/g,"%22")+'")'); var tall=function(){ if(im2.naturalHeight>im2.naturalWidth*1.05) fm.classList.add("tall"); }; if(im2.complete) tall(); else im2.addEventListener("load",tall); } }catch(e){}
     }
     draw();
     v.addEventListener("click",function(e){ var tg=e.target;

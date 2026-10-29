@@ -1915,7 +1915,7 @@
     H=H.slice(0,hPos)+h1h+'<p>'+nShow+' '+(th?"โปรแกรมทัวร์":(nShow===1?"tour program":"tour programs"))+'</p></div>'+H.slice(hPos);
     if(subs.length&&!destSub){
       var gcard=function(href,cover,name,n,imgPath,extraCls,si){
-        var h='<article class="dcard gcard'+(extraCls||'')+'" data-href="'+esc(href)+'"'+(si!=null?' data-dg="arr:destinations.'+k+'.subs" data-di="'+si+'">'+dragBtn():'>')+'<div class="dmedia">'+media(cover)+(imgPath?imgOverlay(imgPath):'')+'</div>';
+        var h='<article class="dcard gcard'+(extraCls||'')+'" data-href="'+esc(href)+'"'+(si!=null?' data-dg="arr:destinations.'+k+'.subs" data-di="'+si+'">'+dragBtn()+'<button class="card-del sub-del" type="button" data-subdel="'+k+':'+si+'" title="'+(th?"ลบเมืองนี้":"Delete")+'">'+ICON.trash+'</button>':'>')+'<div class="dmedia">'+media(cover)+(imgPath?imgOverlay(imgPath):'')+'</div>';
         h+='<div class="dcap"><h3>'+(editing?esc(name):'<a href="'+esc(href)+'">'+esc(name)+'</a>')+'</h3><span class="dcount">'+n+' '+(th?"โปรแกรม":(n===1?"program":"programs"))+'</span></div>';
         if(editing) h+='<div class="dedit"><a class="btn btn-primary btn-sm" data-nav href="'+esc(href)+'">'+(th?"เปิดดู →":"Open →")+'</a></div>';
         return h+'</article>';
@@ -2530,6 +2530,12 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-dcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var d=dests()[+sel.getAttribute("data-dcat")]; d.cat=sel.value;
       (data.tours||[]).forEach(function(tr){ if(tr.dest===d.id) tr.cat=d.cat; }); render(); toast(lang==="th"?"ย้ายหมวดแล้ว อย่าลืมกดบันทึก":"Category changed — remember to save"); }; });
     Array.prototype.forEach.call(document.querySelectorAll(".dcard[data-href]"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a,select,input")) return; go(c.getAttribute("data-href")); }; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-subdel]"),function(b){ b.onclick=function(e){ e.preventDefault(); e.stopPropagation(); syncEdits();
+      var v=b.getAttribute("data-subdel").split(":"), d=dests()[+v[0]], s=d&&(d.subs||[])[+v[1]]; if(!s) return; var th=lang==="th";
+      var n=(data.tours||[]).filter(function(tr){ return tr.dest===d.id&&tr.sub===s.id; }).length, nm=th?(s.name_th||s.name_en):(s.name_en||s.name_th);
+      if(!confirm((th?"ลบ “"+nm+"” ?":"Delete “"+nm+"”?")+(n?(th?"\n\nทัวร์ "+n+" โปรแกรมในนี้จะย้ายไปอยู่ “อื่น ๆ” (ทัวร์ไม่หาย)":"\n\n"+n+" tour(s) inside will move to “Other” (they are not deleted)"):""))) return;
+      (data.tours||[]).forEach(function(tr){ if(tr.dest===d.id&&tr.sub===s.id) tr.sub=""; }); d.subs.splice(+v[1],1); render();
+      toast(th?"ลบแล้ว กด “บันทึก & เผยแพร่” เพื่อให้ขึ้นบนเว็บ":"Deleted — tap “Save & publish”"); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-dsubs]"),function(b){ b.onclick=function(){ openSubsForm(+b.getAttribute("data-dsubs")); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-dsub]"),function(b){ b.onclick=function(){ syncEdits(); destSub=b.getAttribute("data-dsub"); render(); }; });
     Array.prototype.forEach.call(document.querySelectorAll("[data-tcat]"),function(sel){ sel.onchange=function(){ syncEdits(); var it=data.tours[+sel.getAttribute("data-tcat")]; it.cat=sel.value;
@@ -2575,7 +2581,7 @@
     Array.prototype.forEach.call(document.querySelectorAll(".ev-card"),function(c){ c.onclick=function(e){ if(editing||e.target.closest("button,label,a")) return; var ev=data.events[+c.getAttribute("data-ev")]; if(ev&&ev.link&&!/^https?:/i.test(ev.link)) go(ev.link); else if(ev&&ev.link) window.open(ev.link,"_blank","noopener"); else openEvent(+c.getAttribute("data-ev")); }; });
     var li=document.getElementById("licimg"); if(li) li.onclick=function(e){ if(editing||e.target.closest("label")) return; if(data.license&&data.license.img) openLB([data.license.img],0); };
     // delete card
-    Array.prototype.forEach.call(document.querySelectorAll(".card-del"),function(b){
+    Array.prototype.forEach.call(document.querySelectorAll(".card-del:not([data-subdel])"),function(b){
       b.onclick=function(e){ e.stopPropagation(); syncEdits(); var arr=b.getAttribute("data-del"), i=+b.getAttribute("data-i");
         if(arr==="destinations"){ var dd=data.destinations[i], n=toursOf(dd.id).length; if(n&&!confirm(lang==="th"?"ลบ “"+dname(dd)+"” ? ทัวร์ "+n+" โปรแกรมข้างในจะย้ายไปอยู่จังหวัด/ประเทศแรกของหมวดเดียวกัน":"Delete “"+dname(dd)+"”? Its "+n+" tours will move to the first destination of the same category")) return;
           (data.tours||[]).forEach(function(tr){ if(tr.dest===dd.id){ tr.dest=""; tr.sub=""; } }); data.destinations.splice(i,1); (data.tours||[]).forEach(function(tr){ if(!tr.dest){ var f=tourDest(tr); tr.dest=f?f.id:""; } }); render(); return; }

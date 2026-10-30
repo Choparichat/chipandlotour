@@ -2853,12 +2853,20 @@
       function fix(o){ if(Array.isArray(o)) return o.map(fix); if(o&&typeof o==="object"){ if(o.__img) return o.__path; var r={}; for(var k in o) r[k]=fix(o[k]); return r; } return o; }
       var out=fix(copy);
       pendingImg=jobs.map(function(ph){ return [ph.__img,ph.__path]; });
-      files.push({path:"data.json",b64:b64utf8(JSON.stringify(out))});
+      lastSavedText=JSON.stringify(out); files.push({path:"data.json",b64:b64utf8(lastSavedText)});
       return files;
     });
   }
   // ---- overwrite protection: remember which version of data.json this page started from ----
-  var loadedDataSha=null;
+  var loadedDataSha=null, lastSavedText=null;
+  // The live site needs about a minute to publish a save. Keep this browser's last save for 10 minutes,
+  // so reloading the page in the meantime shows what was just saved instead of the older published copy.
+  var SAVED_KEY="cnl_last_save";
+  function rememberSave(){ try{ if(lastSavedText&&loadedDataSha) localStorage.setItem(SAVED_KEY,JSON.stringify({t:Date.now(),sha:loadedDataSha,json:lastSavedText})); }catch(e){} }
+  function recentSave(fetchedSha){ try{ var r=JSON.parse(localStorage.getItem(SAVED_KEY)||"null"); if(!r||!r.json||!r.sha) return null;
+      if(r.sha===fetchedSha||Date.now()-r.t>10*60*1000){ localStorage.removeItem(SAVED_KEY); return null; } return r; }catch(e){ return null; } }
+  // Leaving or reloading the page while editing would lose unsaved changes: ask first
+  window.addEventListener("beforeunload",function(e){ if(editing){ e.preventDefault(); e.returnValue=""; return ""; } });
   function gitBlobSha(text){
     var b=new TextEncoder().encode(text), h=new TextEncoder().encode("blob "+b.length+"\0"), all=new Uint8Array(h.length+b.length);
     all.set(h,0); all.set(b,h.length);
@@ -2896,7 +2904,7 @@
     document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังบันทึกขึ้นเว็บ...":"Publishing...");
     var nImg=0;
     flushTr().then(prepareSave).then(function(files){ nImg=files.length-1; if(nImg) document.getElementById("ab-msg").textContent=(lang==="th"?"กำลังอัปโหลดรูป "+nImg+" รูป...":"Uploading "+nImg+" photos..."); return ghCommitFiles(cfg,files,force); }).then(function(){
-      pendingImg.forEach(function(x){ uploadedImg[x[0]]=x[1]; }); pendingImg=[];
+      pendingImg.forEach(function(x){ uploadedImg[x[0]]=x[1]; }); pendingImg=[]; rememberSave();
       editing=false; bar.classList.remove("busy"); try{ mountWidget(); }catch(e){}
       try{ render(); }catch(e){}
       renderAdminBar();
@@ -3499,8 +3507,11 @@
     var booted=false, fin=function(){ if(booted) return; booted=true; appEl.style.visibility=""; try{ boot(); }catch(e){ showBanner("⚠ "+(e&&e.message||e)); } };
     fetch("data.json?v="+Date.now(),{cache:"no-store"}).then(function(r){ return r.ok?r.text():null; })
       .then(function(txt){ var j=null; try{ j=txt?JSON.parse(txt):null; }catch(e){}
-        if(j && typeof j==="object" && j.brand && !booted){ data=j; gitBlobSha(txt).then(function(h){ loadedDataSha=h; }).catch(function(){}); }
-        fin(); }).catch(fin);
+        if(!(j && typeof j==="object" && j.brand && !booted)){ fin(); return; }
+        gitBlobSha(txt).then(function(h){ if(booted) return; var rs=recentSave(h), sj=null; try{ sj=rs?JSON.parse(rs.json):null; }catch(e){}
+            if(sj&&sj.brand){ data=sj; loadedDataSha=rs.sha; setTimeout(function(){ try{ toast(lang==="th"?"เว็บจริงกำลังอัปเดต (ประมาณ 1 นาที) — กำลังแสดงข้อมูลที่คุณเพิ่งบันทึก":"The live site is still publishing — showing what you just saved"); }catch(e){} },900); }
+            else { data=j; loadedDataSha=h; } fin(); })
+          .catch(function(){ if(!booted) data=j; fin(); }); }).catch(fin);
     setTimeout(fin,6000);
   } else boot();
   try{

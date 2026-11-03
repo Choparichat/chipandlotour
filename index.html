@@ -2629,14 +2629,15 @@
     if(!editing) return;
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
-      var val=(/\.itin$/.test(path)?el.innerText:el.textContent).replace(/ /g," ").trim();
+      var ml=/\.itin$/.test(path); // multi-line field: keep line breaks, but never more than one empty line in a row
+      var val=(ml?el.innerText.replace(/\r/g,"").replace(/[ \t\u00a0]+\n/g,"\n").replace(/\n{3,}/g,"\n\n"):el.textContent).replace(/\u00a0/g," ").trim();
       if(/\.code$/.test(path)){ setPlain(path,normCode(val)); return; }
       if(/\.(stars|price_full|promo_price)$/.test(path)){ setPlain(path,val); return; }
       if(path==="brand.name"||path==="contact.phone"||path==="contact.email"||path==="contact.line"||path==="contact.whatsapp"||path==="contact.wechat"||path==="reviewsSection.url"||path==="contact.map_q"||path==="license.no"||/^social\.\d+\.name$/.test(path)||/^bikes\.\d+\.name$/.test(path)||path==="contact.line_link"||/^reviews\./.test(path)||/\.price$/.test(path)){
         setPlain(path,val);
       } else {
         var rr=ref(path), lg2=isThaiOnlyPath(path)?"th":lang, shown=rr.obj[rr.key+"_"+lg2]; if(shown==null||shown==="") shown=rr.obj[rr.key+"_en"]||"";
-        var nz=function(x){ return String(x||"").replace(/\s+/g," ").trim(); };
+        var nz=ml?function(x){ return String(x||"").replace(/\r/g,"").replace(/[ \t\u00a0]+\n/g,"\n").trim(); }:function(x){ return String(x||"").replace(/\s+/g," ").trim(); }; // line-break changes count in multi-line fields
         if(nz(shown)===nz(val)) return;
         setText(path,val);
       }

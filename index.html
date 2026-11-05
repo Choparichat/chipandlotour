@@ -1133,6 +1133,7 @@
   function normCode(v){ v=String(v||"").toUpperCase().replace(/[-_.\/,|]+/g," ").replace(/([A-Z฀-๿])(\d)/g,"$1 $2").replace(/(\d)([A-Z฀-๿])/g,"$1 $2").replace(/\s+/g," ").trim();
     return v.split(" ").map(function(w){ return /^\d{1,2}$/.test(w)?("00"+w).slice(-3):w; }).join(" "); }
   document.addEventListener("focusout",function(e){ var el=e.target; if(el&&el.getAttribute&&/\.code$/.test(el.getAttribute("data-edit")||"")){ var v=normCode(el.textContent); if(v!==el.textContent) el.textContent=v; } },true);
+  function mlx(v){ return String(v==null?"":v).replace(/\r/g,"").replace(/[ \t\u00a0]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim(); } // at most one empty line between lines
   function ed(path){ return ' data-edit="'+esc(path)+'" '; }
 
   // ---------- render ----------
@@ -1718,7 +1719,7 @@
     if(!editing&&ps==="on") h+='<div class="promo-left">⏰ '+esc(promoLine(it))+'</div>';
     h+='<div class="act">';
     if(editing){
-      if(det) h+='<a class="btn btn-primary btn-sm" href="'+esc(det)+'" data-nav>'+(th?"แก้ไขรายละเอียดทัวร์ →":"Edit tour details →")+'</a>';
+      if(det) h+='<a class="btn btn-primary btn-sm" href="'+esc(det)+'" data-nav>'+(isTour?(th?"แก้ไขรายละเอียดทัวร์ →":"Edit tour details →"):(th?"แก้ไขรายละเอียด →":"Edit details →"))+'</a>';
       h+='<div class="ebtns"><button class="btn btn-ghost btn-sm" type="button" data-promo="'+arr+':'+i+'">🔥 '+(ps?(th?"แก้โปร":"Edit deal"):(th?"ตั้งโปร":"Set deal"))+'</button><button class="btn btn-ghost btn-sm" type="button" data-retr="'+arr+':'+i+'">🌐 '+(th?"แปลอีกภาษา":"Translate")+'</button></div>';
     } else if(det){
       h+='<div class="act2"><a class="btn btn-primary btn-sm" href="'+esc(det)+'">'+(th?"ดูรายละเอียด":"View details")+'</a><a class="btn btn-ghost btn-sm"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a></div>';
@@ -1761,6 +1762,7 @@
   function toursOf(did){ var L=data.tours||[]; return L.map(function(_,i){ return i; }).filter(function(i){ var d=tourDest(L[i]); return d&&d.id===did; }); }
   function destCover(d){ if(d.img) return d; var ix=toursOf(d.id); for(var q=0;q<ix.length;q++){ var tr=data.tours[ix[q]]; if(tr.img) return {img:tr.img}; } return d; }
   function bikeIdx(id){ var L=data.bikes||[]; for(var i=0;i<L.length;i++) if(L[i]&&L[i].id===id) return i; return -1; }
+  function actIds(){ (data.activities||[]).forEach(function(a){ if(a&&!a.id) a.id=newId("a"); }); }
   function bikeIds(){ (data.bikes||[]).forEach(function(b){ if(b&&!b.id) b.id=newId("b"); }); }
   function actIdx(id){ var L=data.activities||[]; for(var i=0;i<L.length;i++) if(L[i]&&L[i].id===id) return i; return -1; }
   function tourIdx(id){ var L=data.tours||[]; for(var i=0;i<L.length;i++) if(L[i].id===id) return i; return -1; }
@@ -1977,7 +1979,7 @@
     H+='</div>';
     var rt=data.rental||{}; if(t(rt,"note")&&!editing) H+='<p class="td-hint" style="margin-top:14px">ℹ️ '+esc(t(rt,"note"))+'</p>';
     H+='</div></div>';
-    if(t(bk,"desc")||editing) H+='<div class="td-body"><h2>'+(th?"รายละเอียด":"Details")+'</h2><p class="td-desc"'+ed(P+"desc")+'>'+esc(t(bk,"desc"))+'</p></div>';
+    if(t(bk,"desc")||editing) H+='<div class="td-body"><h2>'+(th?"รายละเอียด":"Details")+'</h2><p class="td-desc"'+ed(P+"desc")+'>'+esc(mlx(t(bk,"desc")))+'</p></div>';
     var BL=data.bikes||[], rel=BL.map(function(_,j){ return j; }).filter(function(j){ return j!==i&&BL[j]; }).sort(function(a,b){ var ta=(BL[a].type||"bike")===(bk.type||"bike"), tb=(BL[b].type||"bike")===(bk.type||"bike"); return tb-ta||a-b; }).slice(0,3);
     if(rel.length&&!editing){ H+='<h2 class="grp-title">'+(th?"รถคันอื่นๆ":"Other vehicles")+'</h2><div class="tours-grid bikes-grid">';
       rel.forEach(function(j){ var x=BL[j], xd="#/rental/"+encodeURIComponent(x.id), xt=(x.type==="car"||x.type==="van")?x.type:"bike";
@@ -2040,8 +2042,8 @@
     var ph2=(data.contact&&data.contact.phone)||""; if(ph2) H+='<a class="btn btn-ghost" href="tel:'+esc(ph2.replace(/\s/g,""))+'">'+ICON.phone+(th?"โทรสอบถาม":"Call us")+'</a>';
     H+='</div></div></div>';
     H+='<div class="td-body">';
-    if(t(it,"desc")||editing) H+='<h2>'+(isT?(th?"รายละเอียดทัวร์":"About this tour"):(tk?(th?"รายละเอียด":"Details"):(th?"รายละเอียดกิจกรรม":"About this activity")))+'</h2><p class="td-desc"'+ed(P+"desc")+'>'+esc(t(it,"desc"))+'</p>';
-    if(t(it,"itin")||editing) H+='<h2>'+(isT?(th?"โปรแกรมการเดินทาง":"Itinerary"):(th?"กำหนดการ / สิ่งที่รวม":"Schedule & what's included"))+'</h2>'+(editing?'<p class="td-hint">'+(th?"พิมพ์ได้หลายบรรทัด เช่น วันที่ 1 … / วันที่ 2 …":"Multiple lines allowed, e.g. Day 1 … / Day 2 …")+'</p>':'')+'<div class="td-itin"'+ed(P+"itin")+'>'+esc(t(it,"itin"))+'</div>';
+    if(t(it,"desc")||editing) H+='<h2>'+(isT?(th?"รายละเอียดทัวร์":"About this tour"):(tk?(th?"รายละเอียด":"Details"):(th?"รายละเอียดกิจกรรม":"About this activity")))+'</h2><p class="td-desc"'+ed(P+"desc")+'>'+esc(mlx(t(it,"desc")))+'</p>';
+    if(t(it,"itin")||editing) H+='<h2>'+(isT?(th?"โปรแกรมการเดินทาง":"Itinerary"):(th?"กำหนดการ / สิ่งที่รวม":"Schedule & what's included"))+'</h2>'+(editing?'<p class="td-hint">'+(th?"พิมพ์ได้หลายบรรทัด เช่น วันที่ 1 … / วันที่ 2 …":"Multiple lines allowed, e.g. Day 1 … / Day 2 …")+'</p>':'')+'<div class="td-itin"'+ed(P+"itin")+'>'+esc(mlx(t(it,"itin")))+'</div>';
     H+='</div>';
     if(!isT){ var AL=data.activities||[], ra=AL.map(function(_,j){ return j; }).filter(function(j){ return j!==i&&AL[j]&&((AL[j].cat==="tickets")===tk); }).sort(function(a,b){ return (AL[b].cat===it.cat)-(AL[a].cat===it.cat)||a-b; }).slice(0,3);
       if(ra.length&&!editing){ H+='<h2 class="grp-title">'+(tk?(th?"ตั๋วอื่นๆ":"More tickets"):(th?"กิจกรรมอื่นๆ":"More activities"))+'</h2><div class="tours-grid">'; ra.forEach(function(j){ H+=itemCard("activities",j,AL[j]); }); H+='</div>'; }
@@ -2592,7 +2594,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-add]"),function(b){
       b.onclick=function(){ syncEdits(); var which=b.getAttribute("data-add");
         if(which==="events") data.events.push({title_en:"New event",title_th:"อีเวนต์ใหม่",date_en:"Date",date_th:"วันที่",desc_en:"Describe this event...",desc_th:"รายละเอียดอีเวนต์...",price:"",img:"",c1:"#2E6B6B",c2:"#123B3B",photos:[]});
-        else if(which==="activities") data.activities.push({cat:(actCat!=="all"?actCat:"adventure"),region_en:"Chiang Mai",region_th:"เชียงใหม่",title_en:"New activity",title_th:"กิจกรรมใหม่",desc_en:"Describe this activity...",desc_th:"อธิบายกิจกรรมนี้...",dur_en:"Half day",dur_th:"ครึ่งวัน",price:"",img:"",c1:"#1F5E55",c2:"#0E2E2A",photos:[]});
+        else if(which==="activities") data.activities.push({id:newId("a"),cat:(actCat!=="all"?actCat:"adventure"),region_en:"Chiang Mai",region_th:"เชียงใหม่",title_en:"New activity",title_th:"กิจกรรมใหม่",desc_en:"Describe this activity...",desc_th:"อธิบายกิจกรรมนี้...",dur_en:"Half day",dur_th:"ครึ่งวัน",price:"",img:"",c1:"#1F5E55",c2:"#0E2E2A",photos:[]});
         else if(which==="destinations"){ var dc=tourCat==="intl"?"intl":"thai"; data.destinations.push({id:newId("d"),cat:dc,name_en:dc==="intl"?"New country":"New province",name_th:dc==="intl"?"ประเทศใหม่":"จังหวัดใหม่",img:"",c1:"#2E6B6B",c2:"#123B3B",subs:[],_trAll:true}); }
         else if(which==="tickets") data.activities.push({id:newId("a"),cat:"tickets",code:"",region_en:"",region_th:"",title_en:"New ticket",title_th:"ตั๋วใหม่",desc_en:"Describe this ticket...",desc_th:"รายละเอียดตั๋ว...",dur_en:"One way",dur_th:"เที่ยวเดียว",price:"",img:"",c1:"#2E6B6B",c2:"#123B3B",photos:[],_trAll:true});
         else if(which==="tours_intl_legacy") data.tours.push({cat:"intl",img:"",c1:"#123B4E",c2:"#0B2330",region_en:"Country",region_th:"ประเทศ",title_en:"New tour",title_th:"ทัวร์ใหม่",desc_en:"Describe this tour...",desc_th:"อธิบายทัวร์นี้...",dur_en:"4 days 3 nights",dur_th:"4 วัน 3 คืน",price:""});
@@ -2629,7 +2631,7 @@
     if(!editing) return;
     Array.prototype.forEach.call(document.querySelectorAll("[data-edit]"),function(el){
       var path=el.getAttribute("data-edit");
-      var ml=/\.itin$/.test(path); // multi-line field: keep line breaks, but never more than one empty line in a row
+      var ml=/\.itin$/.test(path)||/pre/.test(getComputedStyle(el).whiteSpace); // multi-line field (itinerary, details on a detail page): keep line breaks, never more than one empty line in a row
       var val=(ml?el.innerText.replace(/\r/g,"").replace(/[ \t\u00a0]+\n/g,"\n").replace(/\n{3,}/g,"\n\n"):el.textContent).replace(/\u00a0/g," ").trim();
       if(/\.code$/.test(path)){ setPlain(path,normCode(val)); return; }
       if(/\.(stars|price_full|promo_price)$/.test(path)){ setPlain(path,val); return; }
@@ -2692,7 +2694,7 @@
       +(list.length?'<div class="fpop-media"><img src="'+esc(list[0])+'" alt="'+esc(title)+'">'+(list.length>1?'<button class="fpop-nav prev" type="button" aria-label="Previous">‹</button><button class="fpop-nav next" type="button" aria-label="Next">›</button><span class="idet-n">1 / '+list.length+'</span>':'')+'</div>':'')
       +'<div class="fpop-body">'+(it.code?'<div class="fpop-eyebrow">'+esc(it.code)+'</div>':'')+'<h3>'+esc(title)+'</h3>'
       +((t(it,"dur")||price)?'<div class="fpop-date">'+(t(it,"dur")?'🕘 '+esc(t(it,"dur")):'')+(t(it,"dur")&&price?' · ':'')+esc(price)+'</div>':'')
-      +'<p class="idet-txt">'+esc(t(it,"desc"))+'</p>'
+      +'<p class="idet-txt">'+esc(mlx(t(it,"desc")))+'</p>'
       +'<div class="fpop-act"><a class="btn btn-primary"'+(wab?' target="_blank" rel="noopener"':'')+' href="'+esc(href)+'">'+(th?"สอบถาม / จอง":"Enquire / Book")+'</a><button class="btn btn-ghost" type="button" data-x>'+(th?"ปิด":"Close")+'</button></div></div></div>';
     function close(){ v.classList.remove("show"); document.removeEventListener("keydown",key); setTimeout(function(){ v.remove(); },250); }
     function key(e){ if(e.key==="Escape") close(); }
@@ -3501,7 +3503,7 @@
     if((x=A("aqeshjo72"))){ fill(x,"title_en","Tandem skydiving"); fill(x,"desc_en","Jump from a plane with an expert instructor — the ultimate thrill."); }
     if((x=A("aqeshqbgk"))){ fill(x,"title_en","Doi Inthanon (with trekking)"); fill(x,"desc_en","Thailand's highest peak, the royal pagodas, waterfalls and a nature-trail walk."); }
   }
-  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureOct11d(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); ensureSeo1(); ensureCode1(); bikeIds(); render(); mountWidget(); maybeFestPopup();
+  function boot(){ ensureRental(); ensureActivities(); ensureIntlTours(); ensureMacau(); ensureIntl2(); ensureStructure(); ensureCMPrograms(); ensureCMFestival(); ensureRecat1(); ensureIntl3(); ensureOct6(); ensureOct11(); ensureOct11b(); ensureOct11d(); ensureSocial(); ensureEvents(); ensureOct11c(); ensureLicense(); ensureSeo1(); ensureCode1(); bikeIds(); actIds(); render(); mountWidget(); maybeFestPopup();
     try{ var h0=location.hash||""; if(view==="home"&&h0.length>1&&h0.charAt(1)!=="/"){ var e0=document.getElementById(h0.slice(1)); if(e0) setTimeout(function(){ e0.scrollIntoView(); },80); } }catch(e){} }
   if(IS_LIVE && /^https?:$/.test(location.protocol)){
     var appEl=document.getElementById("app"); appEl.style.visibility="hidden";

@@ -660,6 +660,9 @@
   .td-main{position:relative;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--surface-2);cursor:zoom-in;box-shadow:var(--shadow)}
   body.editing .td-main{cursor:default}
   .td-main>img,.td-main>.ph{width:100%;height:100%;object-fit:cover}
+  /* detail pages: the main photo keeps its own shape (posters are shown whole, never cut); very tall ones are limited in height */
+  body:not(.editing) .td-main{aspect-ratio:auto}
+  body:not(.editing) .td-main>img{display:block;height:auto;max-height:min(82vh,900px);object-fit:contain;object-position:50% 50%!important;scale:1!important}
   .td-off{position:absolute;right:16px;top:16px;z-index:3;width:96px;height:96px;border-radius:999px;background:#E5372B;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;box-shadow:0 8px 24px rgba(0,0,0,.35);transform:rotate(-6deg)}
   .td-off b{font-size:1.45rem} .td-off small{font-size:.72rem;font-weight:700}
   .td-main .hotbadge{top:auto;bottom:14px;right:14px}
